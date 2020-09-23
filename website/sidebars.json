@@ -9,13 +9,6 @@
           "rules/index",
           {
               "type": "category",
-              "label": "Custom Rules",
-              "items": [
-                  "custom-rules"
-              ]
-          },
-          {
-              "type": "category",
               "label": "Core Rules",
               "items": [
                   "rules/create-column-no-define-primary-key",
@@ -47,17 +40,17 @@
                   "rules/unique-constraint-name",
                   "rules/valid-context"
               ]
+          },
+          {
+              "type": "category",
+              "label": "Custom Rules",
+              "items": [
+                  "custom-rules"
+              ]
           }
       ],
       "Reporting": [
           "reporting/index",
-          {
-              "type": "category",
-              "label": "Custom Reporters",
-              "items": [
-                  "custom-reporters"
-              ]
-          },
           {
               "type": "category",
               "label": "Core Reporters",
@@ -65,6 +58,13 @@
                   "reporting/console",
                   "reporting/markdown",
                   "reporting/text"
+              ]
+          },
+          {
+              "type": "category",
+              "label": "Custom Reporters",
+              "items": [
+                  "custom-reporters"
               ]
           }
       ]
