@@ -28,16 +28,20 @@ jobs:
         needs: build
         strategy:
             matrix:
-                liquibase-version:
-                    - '[3.4.0,3.5.0)'
-                    - '[3.5.0,3.6.0)'
-#                    - '[3.6.0,3.7.0)'
-#                    - '[3.7.0,3.8.0)'
+                liquibase-minor-version:
+                    - '3.4'
+                    - '3.5'
+                    - '3.6'
+                    - '3.7'
                 include:
-                    -   liquibase-version: '[3.4.0,3.5.0)'
+                    -   liquibase-minor-version: '3.4'
                         yaml-version: '1.13'
-                    -   liquibase-version: '[3.5.0,3.6.0)'
+                    -   liquibase-minor-version: '3.5'
                         yaml-version: '1.17'
+                    -   liquibase-minor-version: '3.6'
+                        yaml-version: '1.18'
+                    -   liquibase-minor-version: '3.7'
+                        yaml-version: '1.23'
         steps:
             - uses: actions/checkout@v4
             - name: Set up JDK 8
@@ -46,5 +50,15 @@ jobs:
                   distribution: 'temurin'
                   java-version: '8'
                   cache: 'maven'
-            - name: Run Liquibase compatibility tests for liquibase version ${{ matrix.liquibase-version }}
-              run: mvn clean test --batch-mode -Dliquibase.version="${{ matrix.liquibase-version }}" -Dyaml.version="${{ matrix.yaml-version }}"
+            - name: Setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 'lts/*'
+            - name: Setup semver tool
+              run: npm install -g semver
+            - name: Run Liquibase compatibility tests for liquibase version ${{ matrix.liquibase-minor-version }}
+              run: >
+                LIQUIBASE_NEXT_MINOR_VERSION=$(semver ${{ matrix.liquibase-minor-version }}.0 --increment minor);
+                LIQUIBASE_VERSION_RANGE="[${{ matrix.liquibase-minor-version }}.0,${LIQUIBASE_NEXT_MINOR_VERSION})";
+                echo "Liquibase version range: ${LIQUIBASE_VERSION_RANGE}";
+                mvn clean test --batch-mode -Dliquibase.version="${LIQUIBASE_VERSION_RANGE}" -Dyaml.version="${{ matrix.yaml-version }}"
