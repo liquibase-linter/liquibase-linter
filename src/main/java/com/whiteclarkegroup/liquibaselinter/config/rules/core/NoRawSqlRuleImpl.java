@@ -7,6 +7,7 @@ import liquibase.change.Change;
 import liquibase.change.core.RawSQLChange;
 import liquibase.change.core.SQLFileChange;
 
+@SuppressWarnings("rawtypes")
 @AutoService({ChangeRule.class})
 public class NoRawSqlRuleImpl extends AbstractLintRule implements ChangeRule<Change> {
     private static final String NAME = "no-raw-sql";

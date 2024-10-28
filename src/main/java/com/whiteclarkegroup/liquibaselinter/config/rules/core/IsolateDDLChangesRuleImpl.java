@@ -6,6 +6,7 @@ import com.whiteclarkegroup.liquibaselinter.config.rules.AbstractLintRule;
 import com.whiteclarkegroup.liquibaselinter.config.rules.ChangeSetRule;
 import liquibase.changelog.ChangeSet;
 
+@SuppressWarnings("rawtypes")
 @AutoService({ChangeSetRule.class})
 public class IsolateDDLChangesRuleImpl extends AbstractLintRule implements ChangeSetRule {
     private static final String NAME = "isolate-ddl-changes";

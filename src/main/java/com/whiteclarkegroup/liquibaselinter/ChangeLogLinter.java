@@ -18,8 +18,8 @@ import java.util.Set;
 
 public class ChangeLogLinter {
 
-    public static final List<Class> DDL_CHANGE_TYPES =
-        ImmutableList.<Class>builder()
+    public static final List<Class<? extends Change>> DDL_CHANGE_TYPES =
+        ImmutableList.<Class<? extends Change>>builder()
             .add(DropViewChange.class)
             .add(AddUniqueConstraintChange.class)
             .add(DropColumnChange.class)
@@ -51,8 +51,8 @@ public class ChangeLogLinter {
             .add(AddPrimaryKeyChange.class)
             .add(AddDefaultValueChange.class)
             .build();
-    public static final List<Class> DML_CHANGE_TYPES =
-        ImmutableList.<Class>builder()
+    public static final List<Class<? extends Change>> DML_CHANGE_TYPES =
+        ImmutableList.<Class<? extends Change>>builder()
             .add(InsertDataChange.class)
             .add(UpdateDataChange.class)
             .add(DeleteDataChange.class)

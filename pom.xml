@@ -58,6 +58,8 @@
     </distributionManagement>
 
     <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- libraries -->
         <liquibase.version>[4.0.0,5.0.0)</liquibase.version>
         <junit.jupiter.version>5.11.3</junit.jupiter.version>
@@ -150,8 +152,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <annotationProcessorPaths>
                         <annotationProcessorPath>
                             <groupId>com.google.auto.service</groupId>

@@ -5,6 +5,7 @@ import com.whiteclarkegroup.liquibaselinter.config.rules.AbstractLintRule;
 import com.whiteclarkegroup.liquibaselinter.config.rules.ChangeRule;
 import liquibase.change.core.DropNotNullConstraintChange;
 
+@SuppressWarnings("rawtypes")
 @AutoService({ChangeRule.class})
 public class DropNotNullRequireColumnDataTypeRuleImpl extends AbstractLintRule implements ChangeRule<DropNotNullConstraintChange> {
     private static final String NAME = "drop-not-null-require-column-data-type";

@@ -5,6 +5,7 @@ import com.whiteclarkegroup.liquibaselinter.config.rules.AbstractLintRule;
 import com.whiteclarkegroup.liquibaselinter.config.rules.ChangeRule;
 import liquibase.change.core.AddUniqueConstraintChange;
 
+@SuppressWarnings("rawtypes")
 @AutoService({ChangeRule.class})
 public class UniqueConstraintNameRuleImpl extends AbstractLintRule implements ChangeRule<AddUniqueConstraintChange> {
     private static final String NAME = "unique-constraint-name";

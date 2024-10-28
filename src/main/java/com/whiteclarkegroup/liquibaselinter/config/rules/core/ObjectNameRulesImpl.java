@@ -42,6 +42,7 @@ public class ObjectNameRulesImpl {
         return Collections.emptyList();
     }
 
+    @SuppressWarnings("rawtypes")
     @AutoService({ChangeRule.class})
     public static class ObjectNameRuleImpl extends AbstractLintRule implements ChangeRule<AbstractChange> {
         private static final String NAME = "object-name";
@@ -74,6 +75,7 @@ public class ObjectNameRulesImpl {
 
     }
 
+    @SuppressWarnings("rawtypes")
     @AutoService({ChangeRule.class})
     public static class ObjectNameLengthRuleImpl extends AbstractLintRule implements ChangeRule<AbstractChange> {
         private static final String NAME = "object-name-length";

@@ -5,6 +5,7 @@ import com.whiteclarkegroup.liquibaselinter.config.rules.AbstractLintRule;
 import com.whiteclarkegroup.liquibaselinter.config.rules.ChangeRule;
 import liquibase.change.core.AddForeignKeyConstraintChange;
 
+@SuppressWarnings("rawtypes")
 @AutoService({ChangeRule.class})
 public class ForeignKeyNameRuleImpl extends AbstractLintRule implements ChangeRule<AddForeignKeyConstraintChange> {
     private static final String NAME = "foreign-key-name";

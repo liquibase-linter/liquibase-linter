@@ -126,6 +126,7 @@ public class TextReporter extends AbstractReporter {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     @AutoService(Reporter.Factory.class)
     public static class Factory extends AbstractReporter.Factory<TextReporter> {
 

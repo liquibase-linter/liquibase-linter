@@ -131,6 +131,7 @@ public class MarkdownReporter extends TextReporter {
         output.append("* DISABLED: ").println(countDisabledRules(report));
     }
 
+    @SuppressWarnings("rawtypes")
     @AutoService(Reporter.Factory.class)
     public static class Factory extends AbstractReporter.Factory<MarkdownReporter> {
 

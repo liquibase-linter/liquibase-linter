@@ -7,6 +7,7 @@ import liquibase.change.AbstractChange;
 import liquibase.change.core.CreateTableChange;
 import liquibase.change.core.RenameTableChange;
 
+@SuppressWarnings("rawtypes")
 @AutoService({ChangeRule.class})
 public class TableNameLengthRuleImpl extends AbstractLintRule implements ChangeRule<AbstractChange> {
     private static final String NAME = "table-name-length";
