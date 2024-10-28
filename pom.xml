@@ -71,7 +71,7 @@
         <yaml.version>1.26</yaml.version>
         <!-- plugins -->
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
-        <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.source.plugin.version>3.1.0</maven.source.plugin.version>
         <maven.javadoc.plugin.version>3.1.0</maven.javadoc.plugin.version>
