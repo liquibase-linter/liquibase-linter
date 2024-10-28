@@ -51,7 +51,12 @@ jobs:
                     - '4.26'
                     - '4.29'
                 include:
-                    -   yaml-version: '1.26'
+                  - liquibase-minor-version: '4.23'
+                    yaml-version: '2.0'
+                  - liquibase-minor-version: '4.26'
+                    yaml-version: '2.2'
+                  - liquibase-minor-version: '4.29'
+                    yaml-version: '2.2'
         steps:
             - uses: actions/checkout@v4.2.2
             - name: Set up JDK 8
