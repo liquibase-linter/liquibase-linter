@@ -7,6 +7,7 @@ import liquibase.changelog.DatabaseChangeLog;
 
 import java.util.Optional;
 
+@SuppressWarnings("rawtypes")
 @AutoService({ChangeLogRule.class})
 public class FileNameNoSpacesRuleImpl extends AbstractLintRule implements ChangeLogRule {
     private static final String NAME = "file-name-no-spaces";

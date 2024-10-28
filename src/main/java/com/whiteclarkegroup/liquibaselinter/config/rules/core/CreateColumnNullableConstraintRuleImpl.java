@@ -12,6 +12,7 @@ import liquibase.change.core.CreateTableChange;
 
 import java.util.List;
 
+@SuppressWarnings("rawtypes")
 @AutoService({ChangeRule.class})
 public class CreateColumnNullableConstraintRuleImpl extends AbstractLintRule implements ChangeRule<AbstractChange> {
     private static final String NAME = "create-column-nullable-constraint";

@@ -86,6 +86,7 @@ public class ConsoleReporter extends TextReporter {
         AnsiConsole.systemInstall();
     }
 
+    @SuppressWarnings("rawtypes")
     @AutoService(Reporter.Factory.class)
     public static class Factory extends AbstractReporter.Factory<ConsoleReporter> {
 

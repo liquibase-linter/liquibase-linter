@@ -6,6 +6,7 @@ import com.whiteclarkegroup.liquibaselinter.config.rules.ChangeRule;
 import liquibase.change.Change;
 import liquibase.change.DatabaseChange;
 
+@SuppressWarnings("rawtypes")
 @AutoService({ChangeRule.class})
 public class IllegalChangeTypesRuleImpl extends AbstractLintRule implements ChangeRule<Change> {
     private static final String NAME = "illegal-change-types";

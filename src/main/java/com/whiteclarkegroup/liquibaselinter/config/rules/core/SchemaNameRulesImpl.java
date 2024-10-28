@@ -97,6 +97,7 @@ public class SchemaNameRulesImpl {
         return Collections.emptyList();
     }
 
+    @SuppressWarnings("rawtypes")
     @AutoService({ChangeRule.class})
     public static class SchemaNameRuleImpl extends AbstractLintRule implements ChangeRule<AbstractChange> {
 
@@ -130,6 +131,7 @@ public class SchemaNameRulesImpl {
 
     }
 
+    @SuppressWarnings("rawtypes")
     @AutoService({ChangeRule.class})
     public static class NoSchemaNameRuleImpl extends AbstractLintRule implements ChangeRule<AbstractChange> {
 
