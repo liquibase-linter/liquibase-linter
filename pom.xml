@@ -67,7 +67,7 @@
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <spring.version>5.2.1.RELEASE</spring.version>
         <jansi.version>1.17.1</jansi.version>
-        <auto-service.version>1.0-rc6</auto-service.version>
+        <auto-service.version>1.1.1</auto-service.version>
         <yaml.version>1.26</yaml.version>
         <!-- plugins -->
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
