@@ -55,7 +55,7 @@ class ObjectNameLengthRuleImplTest {
     @Test
     void objectNameCanBeNull() {
         objectNameLengthRule.configure(RuleConfig.builder().withMaxLength(4).build());
-        assertFalse(objectNameLengthRule.invalid(getAddColumnChange(null)));
+        assertFalse(objectNameLengthRule.invalid(getAddColumnChange((String) null)));
         assertFalse(objectNameLengthRule.invalid(getAddForeignKeyConstraintChange(null)));
         assertFalse(objectNameLengthRule.invalid(getAddPrimaryKeyConstraintChange(null)));
         assertFalse(objectNameLengthRule.invalid(getAddUniqueConstraintChange(null)));
