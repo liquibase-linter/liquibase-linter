@@ -20,6 +20,7 @@ jobs:
               with:
                   distribution: 'temurin'
                   java-version: '8'
+                  cache: 'maven'
             - name: Build
               run: mvn --batch-mode clean package
     liquibase-compatibility:
@@ -44,5 +45,6 @@ jobs:
               with:
                   distribution: 'temurin'
                   java-version: '8'
+                  cache: 'maven'
             - name: Run Liquibase compatibility tests for liquibase version ${{ matrix.liquibase-version }}
               run: mvn clean test --batch-mode -Dliquibase.version="${{ matrix.liquibase-version }}" -Dyaml.version="${{ matrix.yaml-version }}"
