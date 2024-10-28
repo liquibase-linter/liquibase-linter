@@ -95,7 +95,7 @@ So for our example custom rules project `wcg-liquibase-linter` we would have the
     </configuration>
     <dependencies>
         <dependency>
-            <groupId>com.whiteclarkegroup</groupId>
+            <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-linter</artifactId>
         </dependency>
         <dependency>

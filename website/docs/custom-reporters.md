@@ -11,8 +11,8 @@ Java class implementing the reporting interface and do a little configuration.
 ## Writing the reporter
 
 There are a few interfaces to implement when writing a custom reporter in Java:
-- [Reporter](https://github.com/whiteclarkegroup/liquibase-linter/blob/master/src/main/java/com/whiteclarkegroup/liquibaselinter/report/Reporter.java) is the actual interface that your reporter must implement
-- [Reporter.Factory](https://github.com/whiteclarkegroup/liquibase-linter/blob/master/src/main/java/com/whiteclarkegroup/liquibaselinter/report/Reporter.java) is the piece which ties the reporter into the `lqlint.json` configuration.
+- [Reporter](https://github.com/liquibase-linter/liquibase-linter/blob/master/src/main/java/com/whiteclarkegroup/liquibaselinter/report/Reporter.java) is the actual interface that your reporter must implement
+- [Reporter.Factory](https://github.com/liquibase-linter/liquibase-linter/blob/master/src/main/java/com/whiteclarkegroup/liquibaselinter/report/Reporter.java) is the piece which ties the reporter into the `lqlint.json` configuration.
 
 Fortunately, there are existing abstract classes that make this easy to do. Furthermore, the `Reporter.Factory` can
 exist as inner classes to the main `Reporter` implementation.
@@ -93,7 +93,7 @@ So for our example custom reporting project `wcg-liquibase-linter` we would have
     </configuration>
     <dependencies>
         <dependency>
-            <groupId>com.whiteclarkegroup</groupId>
+            <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-linter</artifactId>
         </dependency>
         <dependency>

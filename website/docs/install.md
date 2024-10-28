@@ -20,7 +20,7 @@ See this simple [example](https://github.com/whiteclarkegroup/liquibase-linter/t
     </configuration>
     <dependencies>
         <dependency>
-            <groupId>com.whiteclarkegroup</groupId>
+            <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-linter</artifactId>
             <version>0.5.1</version>
         </dependency>
@@ -43,7 +43,7 @@ dependencies {
     liquibaseRuntime 'org.liquibase:liquibase-core:3.8.1'
     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.1.1'
     liquibaseRuntime 'org.hsqldb:hsqldb:2.5.0'
-    liquibaseRuntime 'com.whiteclarkegroup:liquibase-linter:0.5.1'
+    liquibaseRuntime 'io.github.liquibase-linter:liquibase-linter:0.5.1'
     liquibaseRuntime files('lqlint')
 }
 ```
@@ -52,7 +52,7 @@ dependencies {
 
 1. Start with the latest [Liquibase release zip](https://github.com/liquibase/liquibase/releases/).
 2. Download the latest Liquibase Linter jar from [maven central](https://repo1.maven.org/maven2/com/whiteclarkegroup/liquibase-linter/) and download 
-the [dependencies](https://mvnrepository.com/artifact/com.whiteclarkegroup/liquibase-linter) required by Liquibase Linter, then add them to 
+the [dependencies](https://mvnrepository.com/artifact/io.github.liquibase-linter/liquibase-linter) required by Liquibase Linter, then add them to 
 the `lib` directory.
 3. Add your `lqlint.json` configuration file to the `lib` directory.
 

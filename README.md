@@ -17,9 +17,9 @@
     </configuration>
     <dependencies>
         <dependency>
-            <groupId>com.whiteclarkegroup</groupId>
+            <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-linter</artifactId>
-            <version>0.5.1</version>
+            <version>0.6.0</version>
         </dependency>
     </dependencies>
     <executions>

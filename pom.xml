@@ -3,18 +3,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.whiteclarkegroup</groupId>
+    <groupId>io.github.liquibase-linter</groupId>
     <artifactId>liquibase-linter</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.6.0-SNAPSHOT</version>
 
     <name>Liquibase Linter</name>
     <description>Liquibase extension to add configurable script linting</description>
-    <url>https://github.com/whiteclarkegroup/liquibase-linter</url>
+    <url>https://github.com/liquibase-linter/liquibase-linter</url>
 
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
@@ -40,9 +40,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/whiteclarkegroup/liquibase-linter.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:whiteclarkegroup/liquibase-linter.git</developerConnection>
-        <url>https://github.com/whiteclarkegroup/liquibase-linter/tree/main</url>
+        <connection>scm:git:git://github.com/liquibase-linter/liquibase-linter.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:liquibase-linter/liquibase-linter.git</developerConnection>
+        <url>https://github.com/liquibase-linter/liquibase-linter/tree/main</url>
         <tag>HEAD</tag>
     </scm>
 
