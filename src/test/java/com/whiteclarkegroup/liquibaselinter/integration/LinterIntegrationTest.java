@@ -5,6 +5,7 @@ import com.whiteclarkegroup.liquibaselinter.resolvers.LiquibaseIntegrationTestRe
 import liquibase.Contexts;
 import liquibase.Liquibase;
 import liquibase.exception.ChangeLogParseException;
+import liquibase.exception.CommandExecutionException;
 import liquibase.parser.ChangeLogParserFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DynamicTest;
@@ -32,8 +33,10 @@ abstract class LinterIntegrationTest {
             final Writer nullWriter = CharStreams.nullWriter();
             final Contexts contexts = new Contexts();
             if (running.getMessage() != null) {
-                assertThatExceptionOfType(ChangeLogParseException.class)
+                assertThatExceptionOfType(CommandExecutionException.class)
                     .isThrownBy(() -> liquibase.update(contexts, nullWriter))
+                    .havingRootCause()
+                    .isInstanceOf(ChangeLogParseException.class)
                     .withMessageContaining(running.getMessage());
             } else {
                 liquibase.update(contexts, nullWriter);

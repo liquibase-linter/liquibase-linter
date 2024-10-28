@@ -47,9 +47,8 @@ jobs:
         strategy:
             matrix:
                 liquibase-minor-version:
-                    - '4.0'
-                    - '4.15'
                     - '4.23'
+                    - '4.26'
                     - '4.29'
                 include:
                     -   yaml-version: '1.26'
