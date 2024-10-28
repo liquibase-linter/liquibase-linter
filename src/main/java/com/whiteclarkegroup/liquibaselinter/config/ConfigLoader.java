@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.lang.System.getProperty;
@@ -41,10 +40,10 @@ public class ConfigLoader {
     }
 
     private Config loadConfig(ResourceAccessor resourceAccessor, String path) throws IOException {
-        final Set<InputStream> resourcesAsStream = resourceAccessor.getResourcesAsStream(path);
-        if (resourcesAsStream != null && !resourcesAsStream.isEmpty()) {
-            try (InputStream inputStream = resourcesAsStream.iterator().next()) {
-                final Config config = Config.fromInputStream(inputStream);
+        final InputStream stream = resourceAccessor.openStream(null, path);
+        if (stream != null) {
+            final Config config = Config.fromInputStream(stream);
+            if (config != null) {
                 return loadImports(resourceAccessor, config, config.getImports());
             }
         }

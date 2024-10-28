@@ -6,6 +6,8 @@ import liquibase.database.DatabaseConnection;
 import liquibase.database.OfflineConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.FileSystemResourceAccessor;
+import liquibase.resource.InputStreamList;
 import liquibase.resource.ResourceAccessor;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -15,8 +17,8 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Optional;
-import java.util.Set;
 
 public class LiquibaseIntegrationTestResolver implements ParameterResolver {
 
@@ -55,13 +57,20 @@ public class LiquibaseIntegrationTestResolver implements ParameterResolver {
         }
 
         @Override
-        public Set<InputStream> getResourcesAsStream(String path) throws IOException {
-            if (ConfigLoader.LQLINT_CONFIG.equals(path)) {
-                return super.getResourcesAsStream(configPath);
+        public InputStream openStream(String relativeTo, String streamPath) throws IOException {
+            if (relativeTo == null && ConfigLoader.LQLINT_CONFIG_CLASSPATH.equals(streamPath)) {
+                return getClass().getClassLoader().getResourceAsStream(configPath);
             }
-            return super.getResourcesAsStream(path);
+            return super.openStream(relativeTo, streamPath);
         }
 
+        @Override
+        public InputStreamList openStreams(String relativeTo, String streamPath) throws IOException {
+            if (relativeTo == null && ConfigLoader.LQLINT_CONFIG_CLASSPATH.equals(streamPath)) {
+                return new InputStreamList(URI.create(streamPath), getClass().getResourceAsStream(configPath));
+            }
+            return super.openStreams(relativeTo, streamPath);
+        }
     }
 
 }

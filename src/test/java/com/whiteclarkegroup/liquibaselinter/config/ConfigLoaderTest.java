@@ -2,6 +2,7 @@ package com.whiteclarkegroup.liquibaselinter.config;
 
 import com.google.common.collect.ImmutableSet;
 import liquibase.exception.UnexpectedLiquibaseException;
+import liquibase.resource.InputStreamList;
 import liquibase.resource.ResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,9 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Collections;
 
 import static com.whiteclarkegroup.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG;
+import static com.whiteclarkegroup.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_CLASSPATH;
 import static com.whiteclarkegroup.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_PATH_PROPERTY;
 import static com.whiteclarkegroup.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_IMPLICIT_PATH;
 import static org.assertj.core.api.Assertions.*;
@@ -41,20 +44,20 @@ class ConfigLoaderTest {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
         String customPath = "/test-lqlint.json";
         System.setProperty(LQLINT_CONFIG_PATH_PROPERTY, customPath);
-        when(resourceAccessor.getResourcesAsStream(customPath)).thenReturn(ImmutableSet.of(getInputStream()));
-        when(resourceAccessor.getResourcesAsStream(LQLINT_CONFIG)).thenReturn(ImmutableSet.of(getInputStream()));
-        when(resourceAccessor.getResourcesAsStream(LQLINT_CONFIG_IMPLICIT_PATH)).thenReturn(ImmutableSet.of(
-            getInputStream('/' + LQLINT_CONFIG_IMPLICIT_PATH)));
+        when(resourceAccessor.openStream(null, customPath)).thenReturn(getInputStream());
+        when(resourceAccessor.openStream(null, LQLINT_CONFIG)).thenReturn(getInputStream());
+        when(resourceAccessor.openStream(null, LQLINT_CONFIG_IMPLICIT_PATH))
+            .thenReturn(getInputStream(LQLINT_CONFIG_IMPLICIT_PATH));
         Config config = configLoader.load(resourceAccessor);
         assertThat(config).isNotNull();
-        verify(resourceAccessor, times(0)).getResourcesAsStream(LQLINT_CONFIG);
+        verify(resourceAccessor, times(0)).openStreams(null, LQLINT_CONFIG);
     }
 
     @DisplayName("Should throw if cannot load config")
     @Test
     void shouldThrowIfCannotLoadConfig() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
-        when(resourceAccessor.getResourcesAsStream(LQLINT_CONFIG)).thenReturn(Collections.emptySet());
+        when(resourceAccessor.openStreams(null, LQLINT_CONFIG)).thenReturn(null);
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> configLoader.load(resourceAccessor))
@@ -65,7 +68,7 @@ class ConfigLoaderTest {
     @Test
     void shouldThrowOnIoException() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
-        when(resourceAccessor.getResourcesAsStream(LQLINT_CONFIG)).thenThrow(new IOException());
+        when(resourceAccessor.openStreams(null, LQLINT_CONFIG)).thenThrow(new IOException());
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> configLoader.load(resourceAccessor))
@@ -76,8 +79,10 @@ class ConfigLoaderTest {
     @Test
     void shouldImportConfig() throws IOException {
         ResourceAccessor resourceAccessor = mockResourceAccessor();
-        when(resourceAccessor.getResourcesAsStream("lqlint-import-a.test.json")).thenReturn(ImmutableSet.of(getInputStream("/lqlint-import-a.test.json")));
-        when(resourceAccessor.getResourcesAsStream("lqlint-import-b.test.json")).thenReturn(ImmutableSet.of(getInputStream("/lqlint-import-b.test.json")));
+        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json"))
+            .thenReturn(getInputStream("lqlint-import-a.test.json"));
+        when(resourceAccessor.openStream(null, "lqlint-import-b.test.json"))
+            .thenReturn(getInputStream("lqlint-import-b.test.json"));
 
         Config config = configLoader.load(resourceAccessor);
         assertThat(config.getRules().asMap()).containsOnlyKeys("no-duplicate-includes", "no-preconditions", "file-name-no-spaces");
@@ -94,8 +99,10 @@ class ConfigLoaderTest {
     @Test
     void shouldOverrideImportedConfig() throws IOException {
         ResourceAccessor resourceAccessor = mockResourceAccessor();
-        when(resourceAccessor.getResourcesAsStream("lqlint-import-a.test.json")).thenReturn(ImmutableSet.of(getInputStream("/lqlint-import-a.test.json")));
-        when(resourceAccessor.getResourcesAsStream("lqlint-import-b.test.json")).thenReturn(ImmutableSet.of(getInputStream("/lqlint-import-b.test.json")));
+        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json"))
+            .thenReturn(getInputStream("lqlint-import-a.test.json"));
+        when(resourceAccessor.openStream(null, "lqlint-import-b.test.json"))
+            .thenReturn(getInputStream("lqlint-import-b.test.json"));
 
         Config config = configLoader.load(resourceAccessor);
         assertThat(config.getReporting().asMap()).containsOnlyKeys("console", "markdown");
@@ -116,7 +123,7 @@ class ConfigLoaderTest {
     @Test
     void shouldThrowOnImportedIoException() throws IOException {
         ResourceAccessor resourceAccessor = mockResourceAccessor();
-        when(resourceAccessor.getResourcesAsStream("lqlint-import-a.test.json")).thenThrow(new IOException());
+        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json")).thenThrow(new IOException());
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> configLoader.load(resourceAccessor))
@@ -125,18 +132,19 @@ class ConfigLoaderTest {
 
     private ResourceAccessor mockResourceAccessor() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
-        when(resourceAccessor.getResourcesAsStream(LQLINT_CONFIG)).thenReturn(ImmutableSet.of(getInputStream("/lqlint-importing.test.json")));
-        when(resourceAccessor.getResourcesAsStream(LQLINT_CONFIG_IMPLICIT_PATH)).thenReturn(ImmutableSet.of(
-            getInputStream('/' + LQLINT_CONFIG_IMPLICIT_PATH)));
+        when(resourceAccessor.openStream(null, LQLINT_CONFIG_CLASSPATH))
+            .thenReturn(getInputStream("lqlint-importing.test.json"));
+        when(resourceAccessor.openStream(null, LQLINT_CONFIG_IMPLICIT_PATH))
+            .thenReturn(getInputStream(LQLINT_CONFIG_IMPLICIT_PATH));
         return resourceAccessor;
     }
 
     private InputStream getInputStream() {
-        return getInputStream("/lqlint.test.json");
+        return getInputStream("lqlint.test.json");
     }
 
     private InputStream getInputStream(String path) {
-        return getClass().getResourceAsStream(path);
+        return getClass().getClassLoader().getResourceAsStream(path);
     }
 
 }

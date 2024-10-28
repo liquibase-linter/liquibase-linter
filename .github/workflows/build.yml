@@ -47,19 +47,16 @@ jobs:
         strategy:
             matrix:
                 liquibase-minor-version:
-                    - '3.4'
-                    - '3.5'
-                    - '3.6'
-                    - '3.7'
+                    - '4.23'
+                    - '4.26'
+                    - '4.29'
                 include:
-                    -   liquibase-minor-version: '3.4'
-                        yaml-version: '1.13'
-                    -   liquibase-minor-version: '3.5'
-                        yaml-version: '1.17'
-                    -   liquibase-minor-version: '3.6'
-                        yaml-version: '1.18'
-                    -   liquibase-minor-version: '3.7'
-                        yaml-version: '1.23'
+                  - liquibase-minor-version: '4.23'
+                    yaml-version: '2.0'
+                  - liquibase-minor-version: '4.26'
+                    yaml-version: '2.2'
+                  - liquibase-minor-version: '4.29'
+                    yaml-version: '2.2'
         steps:
             - uses: actions/checkout@v4.2.2
             - name: Set up JDK 8
