@@ -1,4 +1,4 @@
-name: build
+name: Build
 concurrency:
     group: ${{ github.workflow }}-${{ github.head_ref || (github.ref == 'refs/heads/main' && github.sha) || github.ref }}
     cancel-in-progress: true
@@ -15,7 +15,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4.2.2
-            - name: Set up JDK 8
+            - name: Set up JDK
               uses: actions/setup-java@v4
               with:
                   distribution: 'temurin'
@@ -23,9 +23,27 @@ jobs:
                   cache: 'maven'
             - name: Build
               run: mvn --batch-mode clean package
+
+    build-website:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4.2.2
+
+        - name: Setup Node
+          uses: actions/setup-node@v4
+          with:
+            node-version: '14'
+
+        - name: Build
+          working-directory: website
+          run: |
+            yarn install
+            yarn build
+
     liquibase-compatibility:
         runs-on: ubuntu-latest
-        needs: build
+        needs: [build, build-website]
         strategy:
             matrix:
                 liquibase-minor-version:
