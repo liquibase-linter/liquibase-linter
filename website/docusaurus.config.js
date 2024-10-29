@@ -39,7 +39,7 @@ module.exports = {
             items: [
                 {to: 'docs/install', label: 'Setup', position: 'right'},
                 {to: 'docs/rules/', label: 'Rules', position: 'right'},
-                {to: 'blog', label: 'Blog', position: 'right'},
+                {to: 'docs/reporting', label: 'Reporting', position: 'right'},
                 {href: 'https://github.com/liquibase-linter/liquibase-linter', label: 'GitHub', position: 'right'}
             ],
         },
