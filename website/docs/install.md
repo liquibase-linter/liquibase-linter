@@ -22,7 +22,7 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
         <dependency>
             <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-linter</artifactId>
-            <version>0.5.1</version>
+            <version>0.6.0</version>
         </dependency>
     </dependencies>
     <executions>
@@ -40,10 +40,10 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
 
 ```groovy
 dependencies {
-    liquibaseRuntime 'org.liquibase:liquibase-core:3.8.1'
-    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.1.1'
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.29.2'
+    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:4.0.0'
     liquibaseRuntime 'org.hsqldb:hsqldb:2.5.0'
-    liquibaseRuntime 'io.github.liquibase-linter:liquibase-linter:0.5.1'
+    liquibaseRuntime 'io.github.liquibase-linter:liquibase-linter:0.6.0'
     liquibaseRuntime files('lqlint')
 }
 ```
@@ -60,6 +60,6 @@ the `lib` directory.
 
 It doesn't matter whether you use Liquibase scripts written in XML, JSON or YAML, they will be linted just the same.
 
-Liquibase Linter has been tested with Liquibase versions 3.4.0 through to the latest version, so you can confidently use it with those. We'll be working to keep up with newer versions of Liquibase as they happen.
+Liquibase Linter has been tested with Liquibase versions 4.0 through to the latest version, so you can confidently use it with those. We'll be working to keep up with newer versions of Liquibase as they happen.
 
 As for Java support, Liquibase Linter needs at least Java 8, but you should have no issues with higher versions, unless they are with Liquibase itself.
