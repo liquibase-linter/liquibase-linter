@@ -9,7 +9,7 @@ Liquibase Linter is built with [the Extensions feature in Liquibase](https://liq
 1. Add `liquibase-linter` as a dependency of [the Liquibase Maven plugin](http://www.liquibase.org/documentation/maven/):
 2. Add `lqlint.json` to the root of your project
 
-See this simple [example](https://github.com/whiteclarkegroup/liquibase-linter/tree/main/examples/maven) maven project to help get you started
+See this simple [example](https://github.com/liquibase-linter/liquibase-linter/tree/main/examples/maven) maven project to help get you started
 
 ```xml
 <plugin>
@@ -36,7 +36,7 @@ See this simple [example](https://github.com/whiteclarkegroup/liquibase-linter/t
 1. Add `liquibase-linter` as a dependency of [the Liquibase Gradle plugin](https://github.com/liquibase/liquibase-gradle-plugin):
 2. Add `lqlint.json` to the `lqlint` directory under the root of your project
 
-See this simple [example](https://github.com/whiteclarkegroup/liquibase-linter/tree/main/examples/gradle) gradle project to help get you started
+See this simple [example](https://github.com/liquibase-linter/liquibase-linter/tree/main/examples/gradle) gradle project to help get you started
 
 ```groovy
 dependencies {
@@ -51,7 +51,7 @@ dependencies {
 ## Command Line
 
 1. Start with the latest [Liquibase release zip](https://github.com/liquibase/liquibase/releases/).
-2. Download the latest Liquibase Linter jar from [maven central](https://repo1.maven.org/maven2/com/whiteclarkegroup/liquibase-linter/) and download 
+2. Download the latest Liquibase Linter jar from [maven central](https://repo1.maven.org/maven2/io/github/liquibase-linter/) and download 
 the [dependencies](https://mvnrepository.com/artifact/io.github.liquibase-linter/liquibase-linter) required by Liquibase Linter, then add them to 
 the `lib` directory.
 3. Add your `lqlint.json` configuration file to the `lib` directory.
