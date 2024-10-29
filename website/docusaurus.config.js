@@ -43,14 +43,6 @@ module.exports = {
                 {href: 'https://github.com/liquibase-linter/liquibase-linter', label: 'GitHub', position: 'right'}
             ],
         },
-        footer: {
-            logo: {
-                alt: 'White Clarke Group Logo',
-                src: '/img/wcg-logo.svg',
-                href: 'https://whiteclarkegroup.com/',
-            },
-            copyright: `Copyright © ${new Date().getFullYear()} White Clarke Group`,
-        },
         image: 'img/docusaurus.png'
     },
 };
