@@ -22,7 +22,7 @@ jobs:
                   java-version: '8'
                   cache: 'maven'
             - name: Build
-              run: mvn --batch-mode clean package
+              run: mvn --no-transfer-progress --batch-mode clean package
 
     build-website:
       runs-on: ubuntu-latest
@@ -76,4 +76,4 @@ jobs:
                 LIQUIBASE_NEXT_MINOR_VERSION=$(semver ${{ matrix.liquibase-minor-version }}.0 --increment minor);
                 LIQUIBASE_VERSION_RANGE="[${{ matrix.liquibase-minor-version }}.0,${LIQUIBASE_NEXT_MINOR_VERSION})";
                 echo "Liquibase version range: ${LIQUIBASE_VERSION_RANGE}";
-                mvn clean test --batch-mode -Dliquibase.version="${LIQUIBASE_VERSION_RANGE}" -Dyaml.version="${{ matrix.yaml-version }}"
+                mvn clean test --no-transfer-progress --batch-mode -Dliquibase.version="${LIQUIBASE_VERSION_RANGE}" -Dyaml.version="${{ matrix.yaml-version }}"

@@ -1,0 +1,42 @@
+name: Publish Snapshots
+
+on:
+  push:
+    branches:
+      - 'main'
+concurrency:
+  group: ci-snapshots
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Publish snapshots on Sonatype OSS
+    if: github.repository == 'liquibase-linter/liquibase-linter'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure Git User
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+
+      - name: Set up Apache Maven Central
+        uses: actions/setup-java@v4
+        with:
+          java-version: 8
+          distribution: 'temurin'
+          cache: 'maven'
+          server-id: ossrh
+          server-username: OSSRH_USERNAME
+          server-password: OSSRH_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Build and publish
+        run: mvn deploy --no-transfer-progress --batch-mode --activate-profiles release
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}

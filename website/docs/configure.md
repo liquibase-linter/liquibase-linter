@@ -34,7 +34,7 @@ where `lqlint.json` is stored directly under `src/main/resources` in `lqlint-con
     </configuration>
     <dependencies>
         <dependency>
-            <groupId>com.whiteclarkegroup</groupId>
+            <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-linter</artifactId>
             <version>${liquibaselinter.version}</version>
         </dependency>

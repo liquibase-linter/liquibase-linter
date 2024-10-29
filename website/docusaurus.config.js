@@ -1,10 +1,10 @@
 module.exports = {
     title: 'Liquibase Linter',
     tagline: 'The configurable, extensible linter for Liquibase',
-    url: 'https://whiteclarkegroup.github.io',
+    url: 'https://liquibase-linter.github.io',
     baseUrl: '/liquibase-linter/',
     projectName: 'liquibase-linter',
-    organizationName: 'whiteclarkegroup',
+    organizationName: 'liquibase-linter',
     favicon: 'img/wcg-icon.svg',
     scripts: ['//buttons.github.io/buttons.js'],
     stylesheets: ['//fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,700;1,400;1,700&family=Inconsolata&display=swap'],
@@ -39,17 +39,9 @@ module.exports = {
             items: [
                 {to: 'docs/install', label: 'Setup', position: 'right'},
                 {to: 'docs/rules/', label: 'Rules', position: 'right'},
-                {to: 'blog', label: 'Blog', position: 'right'},
-                {href: 'https://github.com/whiteclarkegroup/liquibase-linter', label: 'GitHub', position: 'right'}
+                {to: 'docs/reporting', label: 'Reporting', position: 'right'},
+                {href: 'https://github.com/liquibase-linter/liquibase-linter', label: 'GitHub', position: 'right'}
             ],
-        },
-        footer: {
-            logo: {
-                alt: 'White Clarke Group Logo',
-                src: '/img/wcg-logo.svg',
-                href: 'https://whiteclarkegroup.com/',
-            },
-            copyright: `Copyright © ${new Date().getFullYear()} White Clarke Group`,
         },
         image: 'img/docusaurus.png'
     },

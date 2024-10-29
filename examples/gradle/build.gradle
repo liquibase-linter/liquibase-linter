@@ -3,10 +3,10 @@ plugins {
 }
 
 dependencies {
-    liquibaseRuntime 'org.liquibase:liquibase-core:3.8.1'
-    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.1.1'
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.29.2'
+    liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:4.0.0'
     liquibaseRuntime 'org.hsqldb:hsqldb:2.5.0'
-    liquibaseRuntime 'com.whiteclarkegroup:liquibase-linter:0.5.0'
+    liquibaseRuntime 'io.github.liquibase-linter:liquibase-linter:0.6.0'
     liquibaseRuntime files('lqlint')
 }
 
@@ -15,7 +15,7 @@ apply plugin: 'java'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-group = 'com.whiteclarkegroup'
+group = 'io.github.liquibase-linter'
 archivesBaseName = 'liquibase-linter-gradle-example'
 version = '0.0.1-SNAPSHOT'
 

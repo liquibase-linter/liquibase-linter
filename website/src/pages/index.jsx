@@ -22,7 +22,7 @@ const MyPage = () => {
                                 className="lqlint-cta button button--lg button--primary">
                                 Get started
                             </Link>
-                            <GitHubButton href="https://github.com/whiteclarkegroup/liquibase-linter" data-size="large"
+                            <GitHubButton href="https://github.com/liquibase-linter/liquibase-linter" data-size="large"
                                           aria-label="Star liquibase-linter on GitHub">Star</GitHubButton>
                         </div>
                     </div>

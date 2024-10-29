@@ -11,8 +11,8 @@ Java class implementing the reporting interface and do a little configuration.
 ## Writing the reporter
 
 There are a few interfaces to implement when writing a custom reporter in Java:
-- [Reporter](https://github.com/whiteclarkegroup/liquibase-linter/blob/master/src/main/java/com/whiteclarkegroup/liquibaselinter/report/Reporter.java) is the actual interface that your reporter must implement
-- [Reporter.Factory](https://github.com/whiteclarkegroup/liquibase-linter/blob/master/src/main/java/com/whiteclarkegroup/liquibaselinter/report/Reporter.java) is the piece which ties the reporter into the `lqlint.json` configuration.
+- [Reporter](https://github.com/liquibase-linter/liquibase-linter/blob/main/src/main/java/io/github/liquibaselinter/report/Reporter.java) is the actual interface that your reporter must implement
+- [Reporter.Factory](https://github.com/liquibase-linter/liquibase-linter/blob/main/src/main/java/io/github/liquibaselinter/report/Reporter.java) is the piece which ties the reporter into the `lqlint.json` configuration.
 
 Fortunately, there are existing abstract classes that make this easy to do. Furthermore, the `Reporter.Factory` can
 exist as inner classes to the main `Reporter` implementation.
@@ -22,10 +22,11 @@ exist as inner classes to the main `Reporter` implementation.
 ```java
 package com.fake.fancyapp.liquibase;
 
-import com.whiteclarkegroup.liquibaselinter.report.AbstractReporter;
-import com.whiteclarkegroup.liquibaselinter.report.Report;
-import com.whiteclarkegroup.liquibaselinter.report.ReporterConfig;
-import com.whiteclarkegroup.liquibaselinter.report.ReportItem;
+import report.io.github.liquibaselinter.AbstractReporter;
+import report.io.github.liquibaselinter.Report;
+import report.io.github.liquibaselinter.ReporterConfig;
+import report.io.github.liquibaselinter.ReportItem;
+
 import java.util.List;
 import java.io.PrintWriter;
 
@@ -58,7 +59,7 @@ Some notes about how we've done this:
 
 All the core reporters are implemented in this way as well, so if you're not sure how best to hook something up you
 might try looking in the source at
-[some existing core reporters](https://github.com/whiteclarkegroup/liquibase-linter/tree/master/src/main/java/com/whiteclarkegroup/liquibaselinter/report)
+[some existing core reporters](https://github.com/liquibase-linter/liquibase-linter/tree/main/src/main/java/io/github/liquibaselinter/report)
 that do something similar
 
 ## Making the reporter discoverable
@@ -72,7 +73,7 @@ approaches like that used by Spring.
 
 In our newly-created project, we'll create a new file at:
 
-`src/main/resources/META-INF/services/com.whiteclarkegroup.liquibaselinter.report.Reporter.Factory`
+`src/main/resources/META-INF/services/report.io.github.liquibaselinter.Reporter.Factory`
 
 And in the file, we'll write:
 
@@ -93,7 +94,7 @@ So for our example custom reporting project `wcg-liquibase-linter` we would have
     </configuration>
     <dependencies>
         <dependency>
-            <groupId>com.whiteclarkegroup</groupId>
+            <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-linter</artifactId>
         </dependency>
         <dependency>
@@ -121,10 +122,11 @@ adding in the `Config` class to the generic type declaration. Add `@JsonDeserial
 package com.fake.fancyapp.liquibase;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.whiteclarkegroup.liquibaselinter.report.AbstractReporter;
-import com.whiteclarkegroup.liquibaselinter.report.Report;
-import com.whiteclarkegroup.liquibaselinter.report.ReporterConfig;
-import com.whiteclarkegroup.liquibaselinter.report.ReportItem;
+import report.io.github.liquibaselinter.AbstractReporter;
+import report.io.github.liquibaselinter.Report;
+import report.io.github.liquibaselinter.ReporterConfig;
+import report.io.github.liquibaselinter.ReportItem;
+
 import java.util.List;
 import java.io.PrintWriter;
 
@@ -154,7 +156,7 @@ public class CustomReporter extends AbstractReporter {
     @JsonDeserialize(builder = Builder.class)
     public static class Config extends ReporterConfig {
         final String customConfigOption;
-        
+
         public Config(Builder builder) {
             super(builder);
             customConfigOption = builder.customConfigOption;

@@ -1,8 +1,16 @@
 # Liquibase Linter
 
-*Quality control for your Liquibase scripts*
+*Quality control for your Liquibase migration scripts*
 
-[![Build Status](https://travis-ci.org/whiteclarkegroup/liquibase-linter.svg?branch=master)](https://travis-ci.org/whiteclarkegroup/liquibase-linter) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/320a8a4be4fd44feb9d6102ccdc7e240)](https://www.codacy.com/project/whiteclarkegroup/liquibase-linter/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=whiteclarkegroup/liquibase-linter&amp;utm_campaign=Badge_Grade_Dashboard) ![Maven Central](https://img.shields.io/maven-central/v/com.whiteclarkegroup/liquibase-linter.svg) [![Gitter](https://badges.gitter.im/liquibase-linter/community.svg)](https://gitter.im/liquibase-linter/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Build Status](https://github.com/liquibase-linter/liquibase-linter/workflows/build/badge.svg)](https://github.com/liquibase-linter/liquibase-linter/actions)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.liquibase-linter/liquibase-linter.svg) 
+
+## Description
+
+*liquibase-linter* is a tool to help you write better Liquibase migration scripts. 
+It checks your scripts against a set of rules to ensure they are well-formed and maintainable.
+
+This is a friendly fork of the original [liquibase-linter](https://github.com/whiteclarkegroup/liquibase-linter) project that is unmaintained since 2021.
 
 ## Get Started
 
@@ -17,9 +25,9 @@
     </configuration>
     <dependencies>
         <dependency>
-            <groupId>com.whiteclarkegroup</groupId>
+            <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-linter</artifactId>
-            <version>0.5.1</version>
+            <version>0.6.0</version>
         </dependency>
     </dependencies>
     <executions>
@@ -29,6 +37,6 @@
 
 ```
 
-**2** Add the [config file](website/examples/lqlint.json) to your project root, and start turning on rules.
+**2** Add the [config file](https://liquibase-linter.github.io/liquibase-linter/docs/configure) to your project root, and start turning [on rules](https://liquibase-linter.github.io/liquibase-linter/docs/rules/).
 
-Try the [full documentation](https://whiteclarkegroup.github.io/liquibase-linter/docs/install) for details of config and rules.
+Try the [full documentation](https://liquibase-linter.github.io/liquibase-linter/docs/install) for details of config and rules.
