@@ -20,6 +20,7 @@ module.exports = {
                     path: './docs',
                     // Sidebars file relative to website dir.
                     sidebarPath: require.resolve('./sidebars.json'),
+                    sidebarCollapsible: false,
                 },
             },
         ],
@@ -50,7 +51,6 @@ module.exports = {
             },
             copyright: `Copyright © ${new Date().getFullYear()} White Clarke Group`,
         },
-        image: 'img/docusaurus.png',
-        sidebarCollapsible: false,
+        image: 'img/docusaurus.png'
     },
 };
