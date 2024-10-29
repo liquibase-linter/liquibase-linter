@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk=self.webpackChunk||[]).push([[1903],{1912:e=>{e.exports=JSON.parse('{"blogBasePath":"/liquibase-linter/blog","blogTitle":"Blog","authorsListPath":"/liquibase-linter/blog/authors"}')}}]);
