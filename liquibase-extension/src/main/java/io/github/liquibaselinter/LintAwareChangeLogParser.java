@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toSet;
 @SuppressWarnings("WeakerAccess")
 @AutoService(ChangeLogParser.class)
 public class LintAwareChangeLogParser implements ChangeLogParser {
-    protected final ConfigLoader configLoader = new ConfigLoader();
+    private final ConfigLoader configLoader = new ConfigLoader();
     private final ChangeLogLinter changeLogLinter = new ChangeLogLinter();
     private final ThreadLocal<LintingContext> context = new ThreadLocal<>();
 
@@ -74,7 +74,7 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
 
         } finally {
             if (isRootChangeLog) {
-                this.context.set(null);
+                this.context.remove();
             }
         }
     }
@@ -95,7 +95,7 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
 
     private static void checkForFilesNotIncluded(LintingContext linting, ResourceAccessor resourceAccessor) throws ChangeLogParseException {
         final Set<String> fileExtensions = linting.filesParsed.stream()
-            .map(file -> Files.getFileExtension(file))
+            .map(Files::getFileExtension)
             .filter(ext -> !Strings.isNullOrEmpty(ext))
             .collect(toSet());
 
@@ -130,7 +130,7 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
         }
     }
 
-    private static void runReports(LintingContext linting, Report report) throws ChangeLogParseException {
+    private static void runReports(LintingContext linting, Report report) {
         linting.config.getReporting().forEach((reportType, reporter) -> {
             if (reporter.getConfiguration().isEnabled()) {
                 reporter.processReport(report);

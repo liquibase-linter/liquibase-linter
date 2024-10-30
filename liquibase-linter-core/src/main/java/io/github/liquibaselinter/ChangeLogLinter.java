@@ -83,7 +83,7 @@ public class ChangeLogLinter {
 
     private boolean shouldLint(DatabaseChangeLog changeLog, Config config, RuleRunner ruleRunner) {
         return isEnabled(config, ruleRunner)
-            && !isFilePathIgnored(changeLog.getFilePath(), config)
+            && isFilePathNotIgnored(changeLog.getFilePath(), config)
             && !hasAlreadyBeenParsed(changeLog.getFilePath(), ruleRunner);
     }
 
@@ -98,7 +98,7 @@ public class ChangeLogLinter {
     private boolean shouldLint(ChangeSet changeSet, Config config, RuleRunner ruleRunner) {
         return isEnabled(config, ruleRunner)
             && !isContextIgnored(changeSet, config)
-            && !isFilePathIgnored(changeSet.getFilePath(), config)
+            && isFilePathNotIgnored(changeSet.getFilePath(), config)
             && !hasAlreadyBeenParsed(changeSet.getFilePath(), ruleRunner);
     }
 
@@ -111,12 +111,12 @@ public class ChangeLogLinter {
         return false;
     }
 
-    private boolean isFilePathIgnored(String filePath, Config config) {
+    private boolean isFilePathNotIgnored(String filePath, Config config) {
         if (filePath != null && config.getIgnoreFilesPattern() != null) {
             String changeLogPath = filePath.replace('\\', '/');
-            return config.getIgnoreFilesPattern().matcher(changeLogPath).matches();
+            return !config.getIgnoreFilesPattern().matcher(changeLogPath).matches();
         }
-        return false;
+        return true;
     }
 
 }
