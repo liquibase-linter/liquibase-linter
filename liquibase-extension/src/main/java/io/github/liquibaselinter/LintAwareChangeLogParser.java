@@ -67,11 +67,13 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
                 runReports(linting, ruleRunner.buildReport());
                 final long errorCount = linting.reportItems.stream().filter(item -> item.getType() == ReportItem.ReportItemType.ERROR).count();
                 if (errorCount > 0) {
-                    throw new ChangeLogParseException(String.format("Linting failed with %d errors", errorCount));
+                    throw new ChangeLogLintingException(String.format("Linting failed with %d errors", errorCount));
                 }
             }
             return changeLog;
 
+        } catch (ChangeLogLintingException lintingException) {
+            throw new ChangeLogParseException(lintingException.getMessage(), lintingException);
         } finally {
             if (isRootChangeLog) {
                 this.context.remove();
@@ -93,7 +95,7 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
             .filter(parser -> !(parser instanceof LintAwareChangeLogParser));
     }
 
-    private static void checkForFilesNotIncluded(LintingContext linting, ResourceAccessor resourceAccessor) throws ChangeLogParseException {
+    private static void checkForFilesNotIncluded(LintingContext linting, ResourceAccessor resourceAccessor) throws ChangeLogLintingException {
         final Set<String> fileExtensions = linting.filesParsed.stream()
             .map(Files::getFileExtension)
             .filter(ext -> !Strings.isNullOrEmpty(ext))
@@ -112,7 +114,7 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
                     if (!Strings.isNullOrEmpty(unparsedFiles)) {
                         final String errorMessage = Optional.ofNullable(ruleConfig.getErrorMessage())
                             .orElse("Changelog files not included in deltas change log: %s");
-                        throw new ChangeLogParseException(String.format(errorMessage, unparsedFiles));
+                        throw new ChangeLogLintingException(String.format(errorMessage, unparsedFiles));
                     }
                 } catch (IOException e) {
                     Scope.getCurrentScope().getLog(LintAwareChangeLogParser.class).warning("Cannot list files in " + path, e);
@@ -121,11 +123,11 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
         }
     }
 
-    private static void checkDuplicateIncludes(LintingContext linting, String physicalChangeLogLocation) throws ChangeLogParseException {
+    private static void checkDuplicateIncludes(LintingContext linting, String physicalChangeLogLocation) throws ChangeLogLintingException {
         if (linting.filesParsed.contains(physicalChangeLogLocation)) {
             for (RuleConfig ruleConfig : linting.config.getEnabledRuleConfig("no-duplicate-includes")) {
                 final String errorMessage = Optional.ofNullable(ruleConfig.getErrorMessage()).orElse("Changelog file '%s' was included more than once");
-                throw new ChangeLogParseException(String.format(errorMessage, physicalChangeLogLocation));
+                throw new ChangeLogLintingException(String.format(errorMessage, physicalChangeLogLocation));
             }
         }
     }

@@ -2,14 +2,13 @@ package io.github.liquibaselinter.config.rules;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Streams;
-import io.github.liquibaselinter.ChangeLogParseExceptionHelper;
+import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.report.Report;
 import io.github.liquibaselinter.report.ReportItem;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
-import liquibase.exception.ChangeLogParseException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +44,7 @@ public class RuleRunner {
         return filesParsed;
     }
 
-    public void checkChange(Change change) throws ChangeLogParseException {
+    public void checkChange(Change change) throws ChangeLogLintingException {
         final ChangeSet changeSet = change.getChangeSet();
         final DatabaseChangeLog changeLog = changeSet.getChangeLog();
 
@@ -70,7 +69,7 @@ public class RuleRunner {
         }
     }
 
-    public void checkChangeSet(ChangeSet changeSet) throws ChangeLogParseException {
+    public void checkChangeSet(ChangeSet changeSet) throws ChangeLogLintingException {
         final DatabaseChangeLog changeLog = changeSet.getChangeLog();
 
         for (ChangeSetRule changeSetRule : changeSetRules) {
@@ -91,7 +90,7 @@ public class RuleRunner {
         }
     }
 
-    public void checkChangeLog(DatabaseChangeLog changeLog) throws ChangeLogParseException {
+    public void checkChangeLog(DatabaseChangeLog changeLog) throws ChangeLogLintingException {
         for (ChangeLogRule changeLogRule : changeLogRules) {
             final String ruleName = changeLogRule.getName();
             final List<RuleConfig> configs = config.forRule(ruleName);
@@ -110,11 +109,11 @@ public class RuleRunner {
         }
     }
 
-    private void handleViolation(DatabaseChangeLog databaseChangeLog, ChangeSet changeSet, String rule, String message) throws ChangeLogParseException {
+    private void handleViolation(DatabaseChangeLog databaseChangeLog, ChangeSet changeSet, String rule, String message) throws ChangeLogLintingException {
         if (isIgnored(rule, changeSet)) {
             reportItems.add(ReportItem.ignored(databaseChangeLog, changeSet, rule, message));
         } else if (config.isFailFast()) {
-            throw ChangeLogParseExceptionHelper.build(databaseChangeLog, changeSet, message);
+            throw ChangeLogLintingException.from(databaseChangeLog, changeSet, message);
         } else {
             reportItems.add(ReportItem.error(databaseChangeLog, changeSet, rule, message));
         }

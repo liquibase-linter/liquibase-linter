@@ -1,6 +1,7 @@
 package io.github.liquibaselinter.integration;
 
 import com.google.common.io.CharStreams;
+import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.resolvers.LiquibaseIntegrationTestResolver;
 import io.github.liquibaselinter.resolvers.LiquibaseLinterIntegrationTest;
 import liquibase.Contexts;
@@ -19,7 +20,7 @@ class FileNameNoSpacesIntegrationTest extends LinterIntegrationTest {
     @LiquibaseLinterIntegrationTest(changeLogFile = "file-name-no-spaces/file-name no-spaces.xml", configFile = "file-name-no-spaces/file-name-no-spaces.json")
     void shouldNotAllowFileNameWithSpaces(Liquibase liquibase) {
         assertThatExceptionOfType(CommandExecutionException.class).isThrownBy(() -> liquibase.update(new Contexts(), CharStreams.nullWriter()))
-            .havingRootCause().isInstanceOf(ChangeLogParseException.class)
+            .havingRootCause().isInstanceOf(ChangeLogLintingException.class)
             .withMessageContaining("integration/file-name-no-spaces/file-name no-spaces.xml -- Message: Changelog filenames should not contain spaces");
     }
 

@@ -13,7 +13,6 @@ import liquibase.change.core.InsertDataChange;
 import liquibase.change.core.UpdateDataChange;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
-import liquibase.exception.ChangeLogParseException;
 import liquibase.precondition.core.PreconditionContainer;
 import liquibase.precondition.core.SqlPrecondition;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +48,7 @@ class ChangeLogLinterTest {
 
     @DisplayName("Should lint change sets with standard comment")
     @Test
-    void shouldLintChangeSetsWithStandardComment() throws ChangeLogParseException {
+    void shouldLintChangeSetsWithStandardComment() throws ChangeLogLintingException {
         Config config = new Config.Builder().withFailFast(true).build();
         DatabaseChangeLog databaseChangeLog = mock(DatabaseChangeLog.class);
         ChangeSet changeSet = getChangeSet(databaseChangeLog, ImmutableSet.of("ddl_test"), "Test Data column");
@@ -60,7 +59,7 @@ class ChangeLogLinterTest {
 
     @DisplayName("Should ignore rule violations for change sets with lint disabled comment")
     @Test
-    void shouldIgnoreChangeSetsWithLintIgnoreComment(Config config, RuleRunner ruleRunner) throws ChangeLogParseException {
+    void shouldIgnoreChangeSetsWithLintIgnoreComment(Config config, RuleRunner ruleRunner) throws ChangeLogLintingException {
         DatabaseChangeLog databaseChangeLog = mock(DatabaseChangeLog.class);
         ChangeSet changeSet = getChangeSet(databaseChangeLog, ImmutableSet.of("ddl_test"), "comment includes lql-ignore");
         addChangeToChangeSet(changeSet, new AddColumnChange(), new AddColumnChange());
@@ -71,7 +70,7 @@ class ChangeLogLinterTest {
 
     @DisplayName("Should not fall over on null comment")
     @Test
-    void shouldNotFallOverOnNullComment() throws ChangeLogParseException {
+    void shouldNotFallOverOnNullComment() throws ChangeLogLintingException {
         Config config = new Config.Builder().withFailFast(true).build();
         DatabaseChangeLog databaseChangeLog = mock(DatabaseChangeLog.class);
         ChangeSet changeSet = getChangeSet(databaseChangeLog, ImmutableSet.of("ddl_test"), "Comment");
@@ -86,7 +85,7 @@ class ChangeLogLinterTest {
         ChangeSet changeSet = getChangeSet(databaseChangeLog, ImmutableSet.of("ddl_test"), "Comment");
         addChangeToChangeSet(changeSet, new AddColumnChange(), new AddColumnChange());
 
-        assertThatExceptionOfType(ChangeLogParseException.class)
+        assertThatExceptionOfType(ChangeLogLintingException.class)
             .isThrownBy(() -> changeLogLinter.lintChangeLog(databaseChangeLog, config, ruleRunner))
             .withMessageContaining("Should only have a single ddl change per change set");
     }
@@ -108,7 +107,7 @@ class ChangeLogLinterTest {
         ChangeSet changeSet = getChangeSet(databaseChangeLog, ImmutableSet.of("dml_test"), "Comment");
         addChangeToChangeSet(changeSet, new AddColumnChange());
 
-        assertThatExceptionOfType(ChangeLogParseException.class)
+        assertThatExceptionOfType(ChangeLogLintingException.class)
             .isThrownBy(() -> changeLogLinter.lintChangeLog(databaseChangeLog, config, ruleRunner))
             .withMessageContaining("Should have a ddl changes under ddl contexts");
     }
@@ -120,7 +119,7 @@ class ChangeLogLinterTest {
         ChangeSet changeSet = getChangeSet(databaseChangeLog, ImmutableSet.of("ddl_test"), "Comment");
         addChangeToChangeSet(changeSet, new InsertDataChange());
 
-        assertThatExceptionOfType(ChangeLogParseException.class)
+        assertThatExceptionOfType(ChangeLogLintingException.class)
             .isThrownBy(() -> changeLogLinter.lintChangeLog(databaseChangeLog, config, ruleRunner))
             .withMessageContaining("Should have a ddl changes under ddl contexts");
     }
@@ -134,14 +133,14 @@ class ChangeLogLinterTest {
         DatabaseChangeLog failingChangelog = mock(DatabaseChangeLog.class);
         when(failingChangelog.getFilePath()).thenReturn("modules/foo/whoops space.xml");
 
-        assertThatExceptionOfType(ChangeLogParseException.class)
+        assertThatExceptionOfType(ChangeLogLintingException.class)
             .isThrownBy(() -> changeLogLinter.lintChangeLog(failingChangelog, config, ruleRunner))
             .withMessageContaining("Changelog filenames should not contain spaces");
     }
 
     @DisplayName("Should not lint baseline script")
     @Test
-    void shouldNotLintBaselineScript(Config config, RuleRunner ruleRunner) throws ChangeLogParseException {
+    void shouldNotLintBaselineScript(Config config, RuleRunner ruleRunner) throws ChangeLogLintingException {
         DatabaseChangeLog databaseChangeLog = mock(DatabaseChangeLog.class);
         ChangeSet changeSet = getChangeSet(databaseChangeLog, ImmutableSet.of("baseline_ddl_test"), "Test Data column");
         changeLogLinter.lintChangeLog(databaseChangeLog, config, ruleRunner);
@@ -150,7 +149,7 @@ class ChangeLogLinterTest {
 
     @DisplayName("Should not lint script matching ignore file pattern")
     @Test
-    void shouldNotLintScriptMatchingIgnoreFilePattern(Config config, RuleRunner ruleRunner) throws ChangeLogParseException {
+    void shouldNotLintScriptMatchingIgnoreFilePattern(Config config, RuleRunner ruleRunner) throws ChangeLogLintingException {
         DatabaseChangeLog databaseChangeLog = mock(DatabaseChangeLog.class);
         ChangeSet changeSet = getChangeSet(databaseChangeLog, ImmutableSet.of("baseline_ddl_test"), "Test Data column");
         when(changeSet.getFilePath()).thenReturn("/ignore/core/TEST.xml");
@@ -164,7 +163,7 @@ class ChangeLogLinterTest {
         DatabaseChangeLog databaseChangeLog = mock(DatabaseChangeLog.class);
         getChangeSet(databaseChangeLog, ImmutableSet.of("dml"), null);
 
-        assertThatExceptionOfType(ChangeLogParseException.class)
+        assertThatExceptionOfType(ChangeLogLintingException.class)
             .isThrownBy(() -> changeLogLinter.lintChangeLog(databaseChangeLog, config, ruleRunner))
             .withMessageContaining("Change set must have a comment");
     }
@@ -176,7 +175,7 @@ class ChangeLogLinterTest {
         ChangeSet changeSet = getChangeSet(databaseChangeLog, ImmutableSet.of("dml"), "Comment");
         addChangeToChangeSet(changeSet, new UpdateDataChange());
 
-        assertThatExceptionOfType(ChangeLogParseException.class)
+        assertThatExceptionOfType(ChangeLogLintingException.class)
             .isThrownBy(() -> changeLogLinter.lintChangeLog(databaseChangeLog, config, ruleRunner))
             .withMessageContaining("Context is incorrect, should end with '_test' or '_script'");
     }
@@ -194,7 +193,7 @@ class ChangeLogLinterTest {
         when(changeSet.getPreconditions()).thenReturn(preconditionContainer);
         addChangeToChangeSet(changeSet, new InsertDataChange());
 
-        assertThatExceptionOfType(ChangeLogParseException.class)
+        assertThatExceptionOfType(ChangeLogLintingException.class)
             .isThrownBy(() -> changeLogLinter.lintChangeLog(databaseChangeLog, config, ruleRunner))
             .withMessageContaining("Preconditions are not allowed in this project");
     }

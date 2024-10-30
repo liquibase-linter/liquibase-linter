@@ -1,6 +1,7 @@
 package io.github.liquibaselinter.integration;
 
 import com.google.common.io.CharStreams;
+import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.resolvers.LiquibaseIntegrationTestResolver;
 import liquibase.Contexts;
 import liquibase.Liquibase;
@@ -36,7 +37,7 @@ abstract class LinterIntegrationTest {
                 assertThatExceptionOfType(CommandExecutionException.class)
                     .isThrownBy(() -> liquibase.update(contexts, nullWriter))
                     .havingRootCause()
-                    .isInstanceOf(ChangeLogParseException.class)
+                    .isInstanceOf(ChangeLogLintingException.class)
                     .withMessageContaining(running.getMessage());
             } else {
                 liquibase.update(contexts, nullWriter);

@@ -9,7 +9,6 @@ import liquibase.change.Change;
 import liquibase.change.core.*;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
-import liquibase.exception.ChangeLogParseException;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,14 +59,14 @@ public class ChangeLogLinter {
             .add(LoadUpdateDataChange.class)
             .build();
 
-    public void lintChangeLog(final DatabaseChangeLog databaseChangeLog, Config config, RuleRunner ruleRunner) throws ChangeLogParseException {
+    public void lintChangeLog(final DatabaseChangeLog databaseChangeLog, Config config, RuleRunner ruleRunner) throws ChangeLogLintingException {
         if (shouldLint(databaseChangeLog, config, ruleRunner)) {
             ruleRunner.checkChangeLog(databaseChangeLog);
         }
         lintChangeSets(databaseChangeLog, config, ruleRunner);
     }
 
-    private void lintChangeSets(DatabaseChangeLog databaseChangeLog, Config config, RuleRunner ruleRunner) throws ChangeLogParseException {
+    private void lintChangeSets(DatabaseChangeLog databaseChangeLog, Config config, RuleRunner ruleRunner) throws ChangeLogLintingException {
         final List<ChangeSet> changeSets = databaseChangeLog.getChangeSets();
 
         for (ChangeSet changeSet : changeSets) {

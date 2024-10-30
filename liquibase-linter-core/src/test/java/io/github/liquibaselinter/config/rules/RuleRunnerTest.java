@@ -2,11 +2,11 @@ package io.github.liquibaselinter.config.rules;
 
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
+import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.report.Report;
 import liquibase.change.Change;
 import liquibase.change.core.RenameTableChange;
-import liquibase.exception.ChangeLogParseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 class RuleRunnerTest {
     @DisplayName("Should add rule violation to report as an error")
     @Test
-    void shouldReportErrorsForFailureWhenNotIgnored() throws ChangeLogParseException {
+    void shouldReportErrorsForFailureWhenNotIgnored() throws ChangeLogLintingException {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule(null, false);
 
         ruleRunner.checkChange(mockInvalidChange(null, "TBL_TABLE"));
@@ -38,7 +38,7 @@ class RuleRunnerTest {
 
     @DisplayName("Should add rule violations to report as errors from additional configs of same rule")
     @Test
-    void shouldReportErrorsForMultipleRuleConfigFailures() throws ChangeLogParseException {
+    void shouldReportErrorsForMultipleRuleConfigFailures() throws ChangeLogLintingException {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule(null, false);
 
         ruleRunner.checkChange(mockInvalidChange(null, "FOO_TABLE"));
@@ -50,7 +50,7 @@ class RuleRunnerTest {
 
     @DisplayName("Should add rule violation to report as ignored, when an ignore comment matches")
     @Test
-    void shouldReportIgnoredWhenIgnored() throws ChangeLogParseException {
+    void shouldReportIgnoredWhenIgnored() throws ChangeLogLintingException {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule(null, false);
 
         ruleRunner.checkChange(mockInvalidChange("Test comment lql-ignore:table-name", "TBL_TABLE"));
@@ -65,14 +65,14 @@ class RuleRunnerTest {
     void shouldThrowForErrorsWhenFailFastOn() {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule(null, true);
 
-        assertThatExceptionOfType(ChangeLogParseException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(ChangeLogLintingException.class).isThrownBy(() -> {
             ruleRunner.checkChange(mockInvalidChange(null, "TBL_TABLE"));
         }).withMessageContaining("Table name does not follow pattern");
     }
 
     @DisplayName("Should report rule violation as ignored when ignored via comment and fail-fast is on")
     @Test
-    void shouldNotThrowForIgnoredWhenFailFastOn() throws ChangeLogParseException {
+    void shouldNotThrowForIgnoredWhenFailFastOn() throws ChangeLogLintingException {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule(null, true);
 
         ruleRunner.checkChange(mockInvalidChange("Test comment lql-ignore:table-name", "TBL_TABLE"));
@@ -84,7 +84,7 @@ class RuleRunnerTest {
 
     @DisplayName("Should add rule violation to report as an error when condition resolves to true")
     @Test
-    void shouldReportErrorWhenConditionTrue() throws ChangeLogParseException {
+    void shouldReportErrorWhenConditionTrue() throws ChangeLogLintingException {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule("true", false);
 
         ruleRunner.checkChange(mockInvalidChange(null, "TBL_TABLE"));
@@ -96,7 +96,7 @@ class RuleRunnerTest {
 
     @DisplayName("Should add rule violation to report as ignored when condition resolves to false")
     @Test
-    void shouldReportIgnoredWhenConditionTrue() throws ChangeLogParseException {
+    void shouldReportIgnoredWhenConditionTrue() throws ChangeLogLintingException {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule("true", false);
 
         ruleRunner.checkChange(mockInvalidChange("Test comment lql-ignore:table-name", "TBL_TABLE"));
@@ -108,7 +108,7 @@ class RuleRunnerTest {
 
     @DisplayName("Should not report violation when condition resolves to false")
     @Test
-    void shouldNotReportWhenConditionFalse() throws ChangeLogParseException {
+    void shouldNotReportWhenConditionFalse() throws ChangeLogLintingException {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule("false", false);
 
         ruleRunner.checkChange(mockInvalidChange(null, "TBL_TABLE"));
