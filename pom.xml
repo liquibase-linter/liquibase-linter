@@ -6,9 +6,10 @@
     <groupId>io.github.liquibase-linter</groupId>
     <artifactId>liquibase-linter</artifactId>
     <version>0.6.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <name>Liquibase Linter</name>
-    <description>Liquibase extension to add configurable script linting</description>
+    <description>Linter for your Liquibase migration scripts</description>
     <url>https://github.com/liquibase-linter/liquibase-linter</url>
 
     <licenses>
@@ -42,6 +43,11 @@
             <organizationUrl>https://www.whiteclarkegroup.com/</organizationUrl>
         </developer>
     </developers>
+
+    <modules>
+        <module>liquibase-linter-core</module>
+        <module>liquibase-extension</module>
+    </modules>
 
     <scm>
         <connection>scm:git:git://github.com/liquibase-linter/liquibase-linter.git</connection>
@@ -81,73 +87,42 @@
         <maven.release.plugin.version>3.1.1</maven.release.plugin.version>
         <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
         <maven.javadoc.plugin.version>3.10.1</maven.javadoc.plugin.version>
+        <maven.jar.plugin.version>3.4.2</maven.jar.plugin.version>
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
         <maven.pmd.plugin.version>3.12.0</maven.pmd.plugin.version>
         <nexus.staging.maven.plugin.version>1.6.8</nexus.staging.maven.plugin.version>
+        <assertj.version>3.26.3</assertj.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.26.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>${commons-beanutils.version}</version>
-        </dependency>
-        <dependency>
-            <artifactId>spring-expression</artifactId>
-            <groupId>org.springframework</groupId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>${jansi.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.auto.service</groupId>
-            <artifactId>auto-service</artifactId>
-            <version>${auto-service.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>${yaml.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service-annotations</artifactId>
+                <version>${auto-service.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -157,13 +132,6 @@
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
                     <release>${java.version}</release>
-                    <annotationProcessorPaths>
-                        <annotationProcessorPath>
-                            <groupId>com.google.auto.service</groupId>
-                            <artifactId>auto-service</artifactId>
-                            <version>${auto-service.version}</version>
-                        </annotationProcessorPath>
-                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
