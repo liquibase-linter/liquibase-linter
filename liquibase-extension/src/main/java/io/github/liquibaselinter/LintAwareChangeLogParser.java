@@ -57,7 +57,7 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
             final RuleRunner ruleRunner = new RuleRunner(linting.config, linting.reportItems, linting.filesParsed);
 
             if (!changeLog.getChangeSets().isEmpty()) {
-                checkDuplicateIncludes(linting, physicalChangeLogLocation);
+                ruleRunner.checkDuplicateIncludes(changeLog);
             }
             changeLogLinter.lintChangeLog(changeLog, linting.config, ruleRunner);
             linting.filesParsed.add(physicalChangeLogLocation);
@@ -119,15 +119,6 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
                 } catch (IOException e) {
                     Scope.getCurrentScope().getLog(LintAwareChangeLogParser.class).warning("Cannot list files in " + path, e);
                 }
-            }
-        }
-    }
-
-    private static void checkDuplicateIncludes(LintingContext linting, String physicalChangeLogLocation) throws ChangeLogLintingException {
-        if (linting.filesParsed.contains(physicalChangeLogLocation)) {
-            for (RuleConfig ruleConfig : linting.config.getEnabledRuleConfig("no-duplicate-includes")) {
-                final String errorMessage = Optional.ofNullable(ruleConfig.getErrorMessage()).orElse("Changelog file '%s' was included more than once");
-                throw new ChangeLogLintingException(String.format(errorMessage, physicalChangeLogLocation));
             }
         }
     }
