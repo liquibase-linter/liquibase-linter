@@ -11,6 +11,10 @@
 
     <artifactId>liquibase-linter-core</artifactId>
 
+    <properties>
+        <guava.version>33.2.1-jre</guava.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.liquibase</groupId>
