@@ -71,14 +71,13 @@
         <java.version>8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- libraries -->
+        <auto-service.version>1.1.1</auto-service.version>
         <liquibase.version>[4.0.0,5.0.0)</liquibase.version>
+        <yaml.version>2.3</yaml.version>
+        <!-- test libraries -->
+        <assertj.version>3.26.3</assertj.version>
         <junit.jupiter.version>5.11.3</junit.jupiter.version>
         <mockito.version>3.1.0</mockito.version>
-        <jackson.version>2.18.1</jackson.version>
-        <commons-beanutils.version>1.9.4</commons-beanutils.version>
-        <jansi.version>1.17.1</jansi.version>
-        <auto-service.version>1.1.1</auto-service.version>
-        <yaml.version>2.3</yaml.version>
         <!-- plugins -->
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
@@ -89,7 +88,6 @@
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
         <maven.pmd.plugin.version>3.12.0</maven.pmd.plugin.version>
         <nexus.staging.maven.plugin.version>1.6.8</nexus.staging.maven.plugin.version>
-        <assertj.version>3.26.3</assertj.version>
     </properties>
 
     <dependencyManagement>
