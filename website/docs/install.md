@@ -21,7 +21,7 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
     <dependencies>
         <dependency>
             <groupId>io.github.liquibase-linter</groupId>
-            <artifactId>liquibase-extension</artifactId>
+            <artifactId>liquibase-parser-extension</artifactId>
             <version>0.6.0</version>
         </dependency>
     </dependencies>

@@ -46,7 +46,7 @@
 
     <modules>
         <module>liquibase-linter-core</module>
-        <module>liquibase-extension</module>
+        <module>liquibase-parser-extension</module>
     </modules>
 
     <scm>

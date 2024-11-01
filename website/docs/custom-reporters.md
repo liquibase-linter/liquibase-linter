@@ -95,7 +95,7 @@ So for our example custom reporting project `wcg-liquibase-linter` we would have
     <dependencies>
         <dependency>
             <groupId>io.github.liquibase-linter</groupId>
-            <artifactId>liquibase-extension</artifactId>
+            <artifactId>liquibase-parser-extension</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fake.fancyapp</groupId>

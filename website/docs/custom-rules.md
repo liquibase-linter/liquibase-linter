@@ -96,7 +96,7 @@ So for our example custom rules project `wcg-liquibase-linter` we would have the
     <dependencies>
         <dependency>
             <groupId>io.github.liquibase-linter</groupId>
-            <artifactId>liquibase-extension</artifactId>
+            <artifactId>liquibase-parser-extension</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fake.fancyapp</groupId>
