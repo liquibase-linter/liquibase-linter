@@ -13,6 +13,7 @@
 
     <properties>
         <guava.version>33.2.1-jre</guava.version>
+        <spring.version>5.3.39</spring.version>
     </properties>
 
     <dependencies>
