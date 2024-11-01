@@ -31,8 +31,8 @@
                     </dependency>
                     <dependency>
                         <groupId>io.github.liquibase-linter</groupId>
-                        <artifactId>liquibase-linter</artifactId>
-                        <version>0.6.0</version>
+                        <artifactId>liquibase-extension</artifactId>
+                        <version>0.6.0-SNAPSHOT</version>
                     </dependency>
                 </dependencies>
                 <executions>

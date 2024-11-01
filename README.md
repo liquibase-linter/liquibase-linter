@@ -26,7 +26,7 @@ This is a friendly fork of the original [liquibase-linter](https://github.com/wh
     <dependencies>
         <dependency>
             <groupId>io.github.liquibase-linter</groupId>
-            <artifactId>liquibase-linter</artifactId>
+            <artifactId>liquibase-extension</artifactId>
             <version>0.6.0</version>
         </dependency>
     </dependencies>
