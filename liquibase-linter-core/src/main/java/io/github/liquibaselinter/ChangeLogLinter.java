@@ -1,7 +1,7 @@
 package io.github.liquibaselinter;
 
 import io.github.liquibaselinter.config.Config;
-import io.github.liquibaselinter.rules.RuleRunner;
+import io.github.liquibaselinter.report.Report;
 import liquibase.ContextExpression;
 import liquibase.change.Change;
 import liquibase.change.core.*;
@@ -61,49 +61,71 @@ public class ChangeLogLinter {
         )
     );
 
-    public void lintChangeLog(final DatabaseChangeLog databaseChangeLog, Config config, RuleRunner ruleRunner) throws ChangeLogLintingException {
-        if (shouldLint(databaseChangeLog, config, ruleRunner)) {
-            ruleRunner.checkChangeLog(databaseChangeLog);
-        }
-        lintChangeSets(databaseChangeLog, config, ruleRunner);
+    private final Config config;
+    private final RuleRunner ruleRunner;
+
+    public ChangeLogLinter(Config config) {
+        this.config = config;
+        this.ruleRunner = new RuleRunner(config);
     }
 
-    private void lintChangeSets(DatabaseChangeLog databaseChangeLog, Config config, RuleRunner ruleRunner) throws ChangeLogLintingException {
-        final List<ChangeSet> changeSets = databaseChangeLog.getChangeSets();
+    public void lintChangeLog(final DatabaseChangeLog databaseChangeLog) throws ChangeLogLintingException {
 
+        if (shouldLint(databaseChangeLog)) {
+            ruleRunner.checkChangeLog(databaseChangeLog);
+        }
+
+        lintChangeSets(databaseChangeLog.getChangeSets());
+
+        ruleRunner.getFilesParsed().add(databaseChangeLog.getPhysicalFilePath());
+    }
+
+    private void lintChangeSets(List<ChangeSet> changeSets) throws ChangeLogLintingException {
         for (ChangeSet changeSet : changeSets) {
-            if (shouldLint(changeSet, config, ruleRunner)) {
+
+            DatabaseChangeLog databaseChangeLog = changeSet.getChangeLog();
+            if (shouldLint(databaseChangeLog) && isNotRootChangeLog(databaseChangeLog)) {
+                ruleRunner.checkChangeLog(databaseChangeLog);
+            }
+            ruleRunner.checkDuplicateIncludes(databaseChangeLog);
+
+            if (shouldLint(changeSet)) {
                 ruleRunner.checkChangeSet(changeSet);
 
                 for (Change change : changeSet.getChanges()) {
                     ruleRunner.checkChange(change);
                 }
             }
+
+            ruleRunner.getFilesParsed().add(databaseChangeLog.getPhysicalFilePath());
         }
     }
 
-    private boolean shouldLint(DatabaseChangeLog changeLog, Config config, RuleRunner ruleRunner) {
-        return isEnabled(config, ruleRunner)
-            && isFilePathNotIgnored(changeLog.getFilePath(), config)
-            && !hasAlreadyBeenParsed(changeLog.getFilePath(), ruleRunner);
+    private static boolean isNotRootChangeLog(DatabaseChangeLog databaseChangeLog) {
+        return databaseChangeLog.getRootChangeLog() != databaseChangeLog;
     }
 
-    private boolean isEnabled(Config config, RuleRunner ruleRunner) {
-        return StringUtils.isEmpty(config.getEnableAfter()) || hasAlreadyBeenParsed(config.getEnableAfter(), ruleRunner);
+    private boolean shouldLint(DatabaseChangeLog changeLog) {
+        return isEnabled()
+            && isFilePathNotIgnored(changeLog.getFilePath())
+            && !hasAlreadyBeenParsed(changeLog.getFilePath());
     }
 
-    private boolean hasAlreadyBeenParsed(String filePath, RuleRunner ruleRunner) {
+    private boolean isEnabled() {
+        return StringUtils.isEmpty(config.getEnableAfter()) || hasAlreadyBeenParsed(config.getEnableAfter());
+    }
+
+    private boolean hasAlreadyBeenParsed(String filePath) {
         return ruleRunner.getFilesParsed().contains(filePath);
     }
 
-    private boolean shouldLint(ChangeSet changeSet, Config config, RuleRunner ruleRunner) {
-        return isEnabled(config, ruleRunner)
-            && !isContextIgnored(changeSet, config)
-            && isFilePathNotIgnored(changeSet.getFilePath(), config)
-            && !hasAlreadyBeenParsed(changeSet.getFilePath(), ruleRunner);
+    private boolean shouldLint(ChangeSet changeSet) {
+        return isEnabled()
+            && !isContextIgnored(changeSet)
+            && isFilePathNotIgnored(changeSet.getFilePath());
     }
 
-    private boolean isContextIgnored(ChangeSet changeSet, Config config) {
+    private boolean isContextIgnored(ChangeSet changeSet) {
         final Set<String> contexts = Optional.ofNullable(changeSet.getContexts())
             .map(ContextExpression::getContexts).orElseGet(Collections::emptySet);
         if (config.getIgnoreContextPattern() != null && !contexts.isEmpty()) {
@@ -112,7 +134,7 @@ public class ChangeLogLinter {
         return false;
     }
 
-    private boolean isFilePathNotIgnored(String filePath, Config config) {
+    private boolean isFilePathNotIgnored(String filePath) {
         if (filePath != null && config.getIgnoreFilesPattern() != null) {
             String changeLogPath = filePath.replace('\\', '/');
             return !config.getIgnoreFilesPattern().matcher(changeLogPath).matches();
@@ -120,4 +142,11 @@ public class ChangeLogLinter {
         return true;
     }
 
+    public Set<String> getFilesParsed() {
+        return ruleRunner.getFilesParsed();
+    }
+
+    public Report report() {
+        return ruleRunner.buildReport();
+    }
 }

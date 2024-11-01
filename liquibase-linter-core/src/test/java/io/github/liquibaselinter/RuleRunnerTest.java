@@ -1,19 +1,14 @@
-package io.github.liquibaselinter.rules;
+package io.github.liquibaselinter;
 
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
-import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.report.Report;
 import io.github.liquibaselinter.config.RuleConfig;
-import io.github.liquibaselinter.rules.RuleRunner;
 import liquibase.change.Change;
 import liquibase.change.core.RenameTableChange;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.IGNORED;
@@ -135,8 +130,8 @@ class RuleRunnerTest {
                 .withPattern("^(?!FOO)[A-Z_]+(?<!_)$")
                 .withCondition(condition)
                 .build());
-        return new RuleRunner(new Config.Builder().withRules(ruleConfigMap).withFailFast(failFast).withEnableAfter(enableAfter).build(),
-            new ArrayList<>(), new HashSet<>());
+        return new RuleRunner(new Config.Builder().withRules(ruleConfigMap).withFailFast(failFast).withEnableAfter(enableAfter).build()
+        );
     }
 
     private Change mockInvalidChange(String changeComment, String tableName) {

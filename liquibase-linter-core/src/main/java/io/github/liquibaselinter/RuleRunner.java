@@ -1,16 +1,21 @@
-package io.github.liquibaselinter.rules;
+package io.github.liquibaselinter;
 
-import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.Report;
 import io.github.liquibaselinter.report.ReportItem;
+import io.github.liquibaselinter.rules.ChangeLogRule;
+import io.github.liquibaselinter.rules.ChangeRule;
+import io.github.liquibaselinter.rules.ChangeSetRule;
+import io.github.liquibaselinter.rules.ConditionHelper;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
@@ -20,7 +25,7 @@ import java.util.stream.StreamSupport;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("unchecked")
-public class RuleRunner {
+class RuleRunner {
 
     private static final String LQL_IGNORE_TOKEN = "lql-ignore";
 
@@ -28,13 +33,11 @@ public class RuleRunner {
     private final List<ChangeRule> changeRules = loadAvailablesServices(ChangeRule.class);
     private final List<ChangeSetRule> changeSetRules = loadAvailablesServices(ChangeSetRule.class);
     private final List<ChangeLogRule> changeLogRules = loadAvailablesServices(ChangeLogRule.class);
-    private final List<ReportItem> reportItems;
-    private final Set<String> filesParsed;
+    private final List<ReportItem> reportItems = new ArrayList<>();
+    private final Set<String> filesParsed = new HashSet<>();
 
-    public RuleRunner(Config config, List<ReportItem> reportItems, Set<String> filesParsed) {
+    public RuleRunner(Config config) {
         this.config = config;
-        this.reportItems = reportItems;
-        this.filesParsed = filesParsed;
     }
 
     private static <T> List<T> loadAvailablesServices(Class<T> clazz) {
