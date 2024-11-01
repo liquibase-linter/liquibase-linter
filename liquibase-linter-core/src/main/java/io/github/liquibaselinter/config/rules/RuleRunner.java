@@ -1,7 +1,5 @@
 package io.github.liquibaselinter.config.rules;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Streams;
 import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.report.Report;
@@ -9,12 +7,14 @@ import io.github.liquibaselinter.report.ReportItem;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 
@@ -24,9 +24,9 @@ public class RuleRunner {
     private static final String LQL_IGNORE_TOKEN = "lql-ignore";
 
     private final Config config;
-    private final List<ChangeRule> changeRules = Streams.stream(ServiceLoader.load(ChangeRule.class)).collect(toList());
-    private final List<ChangeSetRule> changeSetRules = Streams.stream(ServiceLoader.load(ChangeSetRule.class)).collect(toList());
-    private final List<ChangeLogRule> changeLogRules = Streams.stream(ServiceLoader.load(ChangeLogRule.class)).collect(toList());
+    private final List<ChangeRule> changeRules = loadAvailablesServices(ChangeRule.class);
+    private final List<ChangeSetRule> changeSetRules = loadAvailablesServices(ChangeSetRule.class);
+    private final List<ChangeLogRule> changeLogRules = loadAvailablesServices(ChangeLogRule.class);
     private final List<ReportItem> reportItems;
     private final Set<String> filesParsed;
 
@@ -34,6 +34,10 @@ public class RuleRunner {
         this.config = config;
         this.reportItems = reportItems;
         this.filesParsed = filesParsed;
+    }
+
+    private static <T> List<T> loadAvailablesServices(Class<T> clazz) {
+        return StreamSupport.stream(ServiceLoader.load(clazz).spliterator(), false).collect(toList());
     }
 
     public Report buildReport() {
@@ -134,7 +138,7 @@ public class RuleRunner {
 
     private boolean isEnabled(RuleConfig ruleConfig) {
         return ruleConfig.isEnabled()
-            && (Strings.isNullOrEmpty(ruleConfig.getEnableAfter()) || filesParsed.contains(ruleConfig.getEnableAfter()));
+            && (StringUtils.isEmpty(ruleConfig.getEnableAfter()) || filesParsed.contains(ruleConfig.getEnableAfter()));
     }
 
     public void checkDuplicateIncludes(DatabaseChangeLog changeLog) throws ChangeLogLintingException {

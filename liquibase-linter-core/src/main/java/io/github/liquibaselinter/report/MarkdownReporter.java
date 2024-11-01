@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.padEnd;
-import static com.google.common.base.Strings.repeat;
 import static java.lang.Math.max;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.repeat;
+import static org.apache.commons.lang3.StringUtils.rightPad;
 
 public class MarkdownReporter extends TextReporter {
     public static final String NAME = "markdown";
@@ -33,7 +33,7 @@ public class MarkdownReporter extends TextReporter {
     @Override
     protected void printChangeLogHeader(PrintWriter output, String fileName) {
         output.append("# ");
-        if (isNullOrEmpty(fileName)) {
+        if (isEmpty(fileName)) {
             output.println("*Other*");
         } else {
             output.append('`').append(fileName).println('`');
@@ -50,7 +50,7 @@ public class MarkdownReporter extends TextReporter {
             .collect(groupingBy(item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse(""), TreeMap::new, toList()));
 
         for (Map.Entry<String, List<ReportItem>> changeSetEntry : itemsByChangeSet.entrySet()) {
-            String changeSet = tableCellFormat(isNullOrEmpty(changeSetEntry.getKey()) ? "*none*" : changeSetEntry.getKey());
+            String changeSet = tableCellFormat(isEmpty(changeSetEntry.getKey()) ? "*none*" : changeSetEntry.getKey());
             maxWidth[COL_CHANGE_SET] = max(maxWidth[COL_CHANGE_SET], tableCellWidth(changeSet));
 
             final SortedMap<ReportItem.ReportItemType, List<ReportItem>> itemsByType = changeSetEntry.getValue().stream()
@@ -110,7 +110,7 @@ public class MarkdownReporter extends TextReporter {
 
     private void printTableRow(PrintWriter output, String[] row, int[] maxWidth) {
         for (int col = 0; col < row.length; col++) {
-            output.append("| ").append(padEnd(row[col], maxWidth[col], ' ')).append(' ');
+            output.append("| ").append(rightPad(row[col], maxWidth[col], ' ')).append(' ');
         }
         output.println('|');
 

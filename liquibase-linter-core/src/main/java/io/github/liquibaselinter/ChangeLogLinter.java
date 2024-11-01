@@ -1,7 +1,5 @@
 package io.github.liquibaselinter;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.rules.RuleRunner;
 import liquibase.ContextExpression;
@@ -9,7 +7,9 @@ import liquibase.change.Change;
 import liquibase.change.core.*;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -17,47 +17,49 @@ import java.util.Set;
 
 public class ChangeLogLinter {
 
-    public static final List<Class<? extends Change>> DDL_CHANGE_TYPES =
-        ImmutableList.<Class<? extends Change>>builder()
-            .add(DropViewChange.class)
-            .add(AddUniqueConstraintChange.class)
-            .add(DropColumnChange.class)
-            .add(DropIndexChange.class)
-            .add(AddForeignKeyConstraintChange.class)
-            .add(ModifyDataTypeChange.class)
-            .add(DropNotNullConstraintChange.class)
-            .add(RenameTableChange.class)
-            .add(MergeColumnChange.class)
-            .add(AlterSequenceChange.class)
-            .add(CreateIndexChange.class)
-            .add(RenameViewChange.class)
-            .add(DropPrimaryKeyChange.class)
-            .add(DropUniqueConstraintChange.class)
-            .add(DropSequenceChange.class)
-            .add(RenameSequenceChange.class)
-            .add(CreateSequenceChange.class)
-            .add(AddNotNullConstraintChange.class)
-            .add(DropDefaultValueChange.class)
-            .add(AddColumnChange.class)
-            .add(DropTableChange.class)
-            .add(DropAllForeignKeyConstraintsChange.class)
-            .add(CreateViewChange.class)
-            .add(CreateTableChange.class)
-            .add(RenameColumnChange.class)
-            .add(CreateProcedureChange.class)
-            .add(DropForeignKeyConstraintChange.class)
-            .add(DropProcedureChange.class)
-            .add(AddPrimaryKeyChange.class)
-            .add(AddDefaultValueChange.class)
-            .build();
-    public static final List<Class<? extends Change>> DML_CHANGE_TYPES =
-        ImmutableList.<Class<? extends Change>>builder()
-            .add(InsertDataChange.class)
-            .add(UpdateDataChange.class)
-            .add(DeleteDataChange.class)
-            .add(LoadDataChange.class)
-            .add(LoadUpdateDataChange.class)
-            .build();
+    public static final List<Class<? extends Change>> DDL_CHANGE_TYPES = Collections.unmodifiableList(
+        Arrays.asList(
+            DropViewChange.class,
+            AddUniqueConstraintChange.class,
+            DropColumnChange.class,
+            DropIndexChange.class,
+            AddForeignKeyConstraintChange.class,
+            ModifyDataTypeChange.class,
+            DropNotNullConstraintChange.class,
+            RenameTableChange.class,
+            MergeColumnChange.class,
+            AlterSequenceChange.class,
+            CreateIndexChange.class,
+            RenameViewChange.class,
+            DropPrimaryKeyChange.class,
+            DropUniqueConstraintChange.class,
+            DropSequenceChange.class,
+            RenameSequenceChange.class,
+            CreateSequenceChange.class,
+            AddNotNullConstraintChange.class,
+            DropDefaultValueChange.class,
+            AddColumnChange.class,
+            DropTableChange.class,
+            DropAllForeignKeyConstraintsChange.class,
+            CreateViewChange.class,
+            CreateTableChange.class,
+            RenameColumnChange.class,
+            CreateProcedureChange.class,
+            DropForeignKeyConstraintChange.class,
+            DropProcedureChange.class,
+            AddPrimaryKeyChange.class,
+            AddDefaultValueChange.class
+        )
+    );
+    public static final List<Class<? extends Change>> DML_CHANGE_TYPES = Collections.unmodifiableList(
+        Arrays.asList(
+            InsertDataChange.class,
+            UpdateDataChange.class,
+            DeleteDataChange.class,
+            LoadDataChange.class,
+            LoadUpdateDataChange.class
+        )
+    );
 
     public void lintChangeLog(final DatabaseChangeLog databaseChangeLog, Config config, RuleRunner ruleRunner) throws ChangeLogLintingException {
         if (shouldLint(databaseChangeLog, config, ruleRunner)) {
@@ -87,7 +89,7 @@ public class ChangeLogLinter {
     }
 
     private boolean isEnabled(Config config, RuleRunner ruleRunner) {
-        return Strings.isNullOrEmpty(config.getEnableAfter()) || hasAlreadyBeenParsed(config.getEnableAfter(), ruleRunner);
+        return StringUtils.isEmpty(config.getEnableAfter()) || hasAlreadyBeenParsed(config.getEnableAfter(), ruleRunner);
     }
 
     private boolean hasAlreadyBeenParsed(String filePath, RuleRunner ruleRunner) {

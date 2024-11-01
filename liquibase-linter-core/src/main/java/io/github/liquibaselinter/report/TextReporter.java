@@ -7,10 +7,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 public class TextReporter extends AbstractReporter {
     public static final String NAME = "text";
@@ -42,7 +42,7 @@ public class TextReporter extends AbstractReporter {
     }
 
     protected void printChangeLogHeader(PrintWriter output, String fileName) {
-        if (isNullOrEmpty(fileName)) {
+        if (isEmpty(fileName)) {
             output.println("Other");
         } else {
             output.println(fileName);
@@ -117,9 +117,9 @@ public class TextReporter extends AbstractReporter {
 
         @Override
         public int compare(String o1, String o2) {
-            if (isNullOrEmpty(o1)) {
-                return isNullOrEmpty(o2) ? 0 : 1;
-            } else if (isNullOrEmpty(o2)) {
+            if (isEmpty(o1)) {
+                return isEmpty(o2) ? 0 : 1;
+            } else if (isEmpty(o2)) {
                 return -1;
             }
             return o1.compareTo(o2);

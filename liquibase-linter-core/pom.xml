@@ -11,12 +11,26 @@
 
     <artifactId>liquibase-linter-core</artifactId>
 
+    <properties>
+        <commons-beanutils.version>1.9.4</commons-beanutils.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <jackson.version>2.18.1</jackson.version>
+        <jansi.version>1.17.1</jansi.version>
+        <guava.version>33.2.1-jre</guava.version>
+        <spring.version>5.3.39</spring.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

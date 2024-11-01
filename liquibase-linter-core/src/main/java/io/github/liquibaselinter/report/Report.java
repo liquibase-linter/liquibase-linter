@@ -1,10 +1,12 @@
 package io.github.liquibaselinter.report;
 
-import com.google.common.collect.ImmutableList;
 import io.github.liquibaselinter.config.Config;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.Collections.emptyList;
 
 public class Report {
     private final Config config;
@@ -12,7 +14,7 @@ public class Report {
 
     public Report(Config config, List<ReportItem> items) {
         this.config = config;
-        this.items = Optional.ofNullable(items).map(ImmutableList::copyOf).orElse(ImmutableList.of());
+        this.items = Optional.ofNullable(items).map(Collections::unmodifiableList).orElse(emptyList());
     }
 
     public Config getConfig() {
