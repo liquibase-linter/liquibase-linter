@@ -1,9 +1,9 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.ChangeLogLinter;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeSetRule;
+import io.github.liquibaselinter.rules.Changes;
 import liquibase.changelog.ChangeSet;
 
 @SuppressWarnings("rawtypes")
@@ -18,6 +18,6 @@ public class IsolateDDLChangesRule extends AbstractLintRule implements ChangeSet
 
     @Override
     public boolean invalid(ChangeSet changeSet) {
-        return changeSet.getChanges().stream().filter(cng -> ChangeLogLinter.DDL_CHANGE_TYPES.contains(cng.getClass())).count() > 1;
+        return changeSet.getChanges().stream().filter(Changes::isDDL).count() > 1;
     }
 }

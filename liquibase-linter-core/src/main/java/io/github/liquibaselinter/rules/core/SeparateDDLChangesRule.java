@@ -1,9 +1,9 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.ChangeLogLinter;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeSetRule;
+import io.github.liquibaselinter.rules.Changes;
 import liquibase.ContextExpression;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
@@ -25,13 +25,13 @@ public class SeparateDDLChangesRule extends AbstractLintRule implements ChangeSe
         if (contextExpression != null && !contextExpression.getContexts().isEmpty()) {
             Collection<String> contexts = contextExpression.getContexts();
             for (Change change : changeSet.getChanges()) {
-                if (ChangeLogLinter.DDL_CHANGE_TYPES.contains(change.getClass())) {
+                if (Changes.isDDL(change)) {
                     for (String context : contexts) {
                         if (!getConfig().getPattern().map(pattern -> pattern.matcher(context).matches()).orElse(true)) {
                             return true;
                         }
                     }
-                } else if (ChangeLogLinter.DML_CHANGE_TYPES.contains(change.getClass())) {
+                } else if (Changes.isDML(change)) {
                     for (String context : contexts) {
                         if (getConfig().getPattern().map(pattern -> pattern.matcher(context).matches()).orElse(false)) {
                             return true;
