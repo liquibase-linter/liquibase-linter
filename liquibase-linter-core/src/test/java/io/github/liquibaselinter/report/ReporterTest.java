@@ -6,7 +6,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import io.github.liquibaselinter.config.Config;
-import io.github.liquibaselinter.config.rules.RuleConfig;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.ReportItem.ReportItemType;
 import org.fusesource.jansi.HtmlAnsiOutputStream;
 import org.junit.jupiter.api.DynamicTest;

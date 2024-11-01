@@ -3,7 +3,6 @@ package io.github.liquibaselinter.config;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableListMultimap;
-import io.github.liquibaselinter.config.rules.RuleConfig;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,7 @@ class ConfigTest {
             "}";
         assertThatExceptionOfType(JsonMappingException.class)
             .isThrownBy(() -> OBJECT_MAPPER.readValue(configJson, Config.class))
-            .withMessageContaining("instance of `io.github.liquibaselinter.config.rules.RuleConfig$RuleConfigBuilder`");
+            .withMessageContaining("instance of `io.github.liquibaselinter.config.RuleConfig$RuleConfigBuilder`");
     }
 
     @DisplayName("Should support having rule config value as boolean")

@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Streams;
-import io.github.liquibaselinter.config.rules.RuleConfig;
 import io.github.liquibaselinter.report.Reporter;
 import io.github.liquibaselinter.report.ReporterConfig;
 import liquibase.exception.UnexpectedLiquibaseException;

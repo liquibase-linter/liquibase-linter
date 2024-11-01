@@ -1,7 +1,7 @@
 package io.github.liquibaselinter;
 
 import io.github.liquibaselinter.config.Config;
-import io.github.liquibaselinter.config.rules.RuleRunner;
+import io.github.liquibaselinter.rules.RuleRunner;
 import liquibase.ContextExpression;
 import liquibase.change.Change;
 import liquibase.change.core.*;

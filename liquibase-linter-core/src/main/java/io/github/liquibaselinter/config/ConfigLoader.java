@@ -2,7 +2,6 @@ package io.github.liquibaselinter.config;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import io.github.liquibaselinter.config.rules.RuleConfig;
 import io.github.liquibaselinter.report.Reporter;
 import liquibase.exception.UnexpectedLiquibaseException;
 import liquibase.resource.ResourceAccessor;

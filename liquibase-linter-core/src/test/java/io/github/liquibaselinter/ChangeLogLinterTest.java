@@ -2,7 +2,7 @@ package io.github.liquibaselinter;
 
 import com.google.common.collect.ImmutableSet;
 import io.github.liquibaselinter.config.Config;
-import io.github.liquibaselinter.config.rules.RuleRunner;
+import io.github.liquibaselinter.rules.RuleRunner;
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
 import io.github.liquibaselinter.resolvers.DefaultConfigParameterResolver;
 import io.github.liquibaselinter.resolvers.RuleRunnerParameterResolver;

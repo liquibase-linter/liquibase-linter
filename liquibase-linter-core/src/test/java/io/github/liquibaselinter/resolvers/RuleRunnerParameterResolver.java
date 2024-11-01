@@ -1,7 +1,7 @@
 package io.github.liquibaselinter.resolvers;
 
 import io.github.liquibaselinter.config.Config;
-import io.github.liquibaselinter.config.rules.RuleRunner;
+import io.github.liquibaselinter.rules.RuleRunner;
 import liquibase.exception.UnexpectedLiquibaseException;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
