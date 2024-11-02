@@ -1,17 +1,26 @@
 package io.github.liquibaselinter;
 
+import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import io.github.liquibaselinter.config.Config;
-import io.github.liquibaselinter.report.Report;
+import io.github.liquibaselinter.config.RuleConfig;
+import io.github.liquibaselinter.report.ReportItem;
 import liquibase.ContextExpression;
+import liquibase.Scope;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
+import liquibase.resource.ResourceAccessor;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
 
 public class ChangeLogLinter {
 
@@ -96,11 +105,43 @@ public class ChangeLogLinter {
         return true;
     }
 
-    public Set<String> getFilesParsed() {
-        return ruleRunner.getFilesParsed();
+    public void checkForFilesNotIncluded(ResourceAccessor resourceAccessor) throws ChangeLogLintingException {
+        final Set<String> fileExtensions = ruleRunner.getFilesParsed().stream()
+            .map(Files::getFileExtension)
+            .filter(ext -> !Strings.isNullOrEmpty(ext))
+            .collect(toSet());
+
+        for (RuleConfig ruleConfig : config.getEnabledRuleConfig("file-not-included")) {
+            List<String> paths = Optional.ofNullable(ruleConfig.getValues())
+                .orElseThrow(() -> new IllegalArgumentException("values not configured for rule `file-not-included`"));
+
+            for (String path : paths) {
+                try {
+                    final String unparsedFiles = resourceAccessor.list(null, path, true, true, false).stream()
+                        .filter(file -> fileExtensions.contains(Files.getFileExtension(file)))
+                        .filter(file -> !ruleRunner.getFilesParsed().contains(file))
+                        .collect(joining(","));
+                    if (!Strings.isNullOrEmpty(unparsedFiles)) {
+                        final String errorMessage = Optional.ofNullable(ruleConfig.getErrorMessage())
+                            .orElse("Changelog files not included in deltas change log: %s");
+                        throw new ChangeLogLintingException(String.format(errorMessage, unparsedFiles));
+                    }
+                } catch (IOException e) {
+                    Scope.getCurrentScope().getLog(ChangeLogLinter.class).warning("Cannot list files in " + path, e);
+                }
+            }
+        }
     }
 
-    public Report report() {
-        return ruleRunner.buildReport();
+    public void reports() throws ChangeLogLintingException {
+        config.getReporting().forEach((reportType, reporter) -> {
+            if (reporter.getConfiguration().isEnabled()) {
+                reporter.processReport(ruleRunner.buildReport());
+            }
+        });
+        final long errorCount = ruleRunner.buildReport().getItems().stream().filter(item -> item.getType() == ReportItem.ReportItemType.ERROR).count();
+        if (errorCount > 0) {
+            throw new ChangeLogLintingException(String.format("Linting failed with %d errors", errorCount));
+        }
     }
 }
