@@ -10,8 +10,6 @@ import liquibase.resource.ResourceAccessor;
 
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.joining;
-
 @SuppressWarnings("WeakerAccess")
 @AutoService(ChangeLogParser.class)
 public class LintAwareChangeLogParser implements ChangeLogParser {

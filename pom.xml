@@ -88,6 +88,7 @@
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
         <maven.pmd.plugin.version>3.12.0</maven.pmd.plugin.version>
         <nexus.staging.maven.plugin.version>1.6.8</nexus.staging.maven.plugin.version>
+        <directory-maven-plugin.version>0.3.1</directory-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -157,6 +158,23 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>directory-maven-plugin</artifactId>
+                <version>${directory-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>directories</id>
+                        <goals>
+                            <goal>highest-basedir</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <property>main.basedir</property>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>${maven.pmd.plugin.version}</version>
@@ -166,7 +184,8 @@
                     <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
                     <rulesets>
-                        <ruleset>rulesets/java/quickstart.xml</ruleset>
+                        <!-- This could be replaced by ${session.rootDirectory} in Maven >= 4.0 -->
+                        <ruleset>${main.basedir}/pmd-rules.xml</ruleset>
                     </rulesets>
                 </configuration>
                 <executions>
