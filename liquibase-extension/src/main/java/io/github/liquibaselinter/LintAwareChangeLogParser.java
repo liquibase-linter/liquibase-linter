@@ -1,8 +1,6 @@
 package io.github.liquibaselinter;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.config.Config;
-import io.github.liquibaselinter.config.ConfigLoader;
 import liquibase.changelog.ChangeLogParameters;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.exception.ChangeLogParseException;
@@ -34,12 +32,7 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
             final DatabaseChangeLog changeLog = parseChangeLog(physicalChangeLogLocation, changeLogParameters, resourceAccessor);
 
             if (isRootChangeLog(changeLog)) {
-                Config config = new ConfigLoader().load(resourceAccessor);
-
-                ChangeLogLinter changeLogLinter = new ChangeLogLinter(config);
-                changeLogLinter.lintChangeLog(changeLog);
-                changeLogLinter.checkForFilesNotIncluded(resourceAccessor);
-                changeLogLinter.reports();
+                new ChangeLogLinter(resourceAccessor).lintChangeLog(changeLog);
             }
             return changeLog;
 

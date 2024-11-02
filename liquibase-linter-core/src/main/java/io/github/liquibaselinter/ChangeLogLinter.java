@@ -3,6 +3,7 @@ package io.github.liquibaselinter;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import io.github.liquibaselinter.config.Config;
+import io.github.liquibaselinter.config.ConfigLoader;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.ReportItem;
 import liquibase.ContextExpression;
@@ -26,9 +27,11 @@ public class ChangeLogLinter {
 
     private final Config config;
     private final RuleRunner ruleRunner;
+    private final ResourceAccessor resourceAccessor;
 
-    public ChangeLogLinter(Config config) {
-        this.config = config;
+    public ChangeLogLinter(ResourceAccessor resourceAccessor) {
+        this.resourceAccessor = resourceAccessor;
+        this.config = new ConfigLoader().load(resourceAccessor);
         this.ruleRunner = new RuleRunner(config);
     }
 
@@ -41,6 +44,9 @@ public class ChangeLogLinter {
         lintChangeSets(databaseChangeLog.getChangeSets());
 
         ruleRunner.getFilesParsed().add(databaseChangeLog.getPhysicalFilePath());
+
+        checkForFilesNotIncluded();
+        reports();
     }
 
     private void lintChangeSets(List<ChangeSet> changeSets) throws ChangeLogLintingException {
@@ -105,7 +111,7 @@ public class ChangeLogLinter {
         return true;
     }
 
-    public void checkForFilesNotIncluded(ResourceAccessor resourceAccessor) throws ChangeLogLintingException {
+    private void checkForFilesNotIncluded() throws ChangeLogLintingException {
         final Set<String> fileExtensions = ruleRunner.getFilesParsed().stream()
             .map(Files::getFileExtension)
             .filter(ext -> !Strings.isNullOrEmpty(ext))
@@ -133,7 +139,7 @@ public class ChangeLogLinter {
         }
     }
 
-    public void reports() throws ChangeLogLintingException {
+    private void reports() throws ChangeLogLintingException {
         config.getReporting().forEach((reportType, reporter) -> {
             if (reporter.getConfiguration().isEnabled()) {
                 reporter.processReport(ruleRunner.buildReport());
