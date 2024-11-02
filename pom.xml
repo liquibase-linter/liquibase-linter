@@ -47,6 +47,7 @@
     <modules>
         <module>liquibase-linter-core</module>
         <module>liquibase-parser-extension</module>
+        <module>liquibase-linter-maven-plugin</module>
     </modules>
 
     <scm>
@@ -76,7 +77,7 @@
         <yaml.version>2.3</yaml.version>
         <!-- test libraries -->
         <assertj.version>3.26.3</assertj.version>
-        <junit.jupiter.version>5.11.3</junit.jupiter.version>
+        <junit.version>5.11.3</junit.version>
         <mockito.version>4.11.0</mockito.version>
         <!-- plugins -->
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
@@ -101,10 +102,11 @@
             </dependency>
 
             <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${junit.jupiter.version}</version>
-                <scope>test</scope>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
@@ -183,6 +185,9 @@
                     <targetJdk>1.8</targetJdk>
                     <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
+                    <excludeRoots>
+                        <excludeRoot>${project.build.directory}/generated-sources/</excludeRoot>
+                    </excludeRoots>
                     <rulesets>
                         <!-- This could be replaced by ${session.rootDirectory} in Maven >= 4.0 -->
                         <ruleset>${main.basedir}/pmd-rules.xml</ruleset>

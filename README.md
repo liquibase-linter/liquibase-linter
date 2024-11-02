@@ -14,6 +14,10 @@ This is a friendly fork of the original [liquibase-linter](https://github.com/wh
 
 ## Get Started
 
+### With the liquibase-maven-plugin
+
+If you're already using the `liquibase-maven-plugin`, you can add `liquibase-parser-extension` that will lint automatically your scripts when they're parsed by Liquibase:
+
 **1** Add `liquibase-linter` to your pom as a dependency of `liquibase-maven-plugin`:
 
 ```xml
@@ -27,7 +31,7 @@ This is a friendly fork of the original [liquibase-linter](https://github.com/wh
         <dependency>
             <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-parser-extension</artifactId>
-            <version>0.6.0</version>
+            <version>0.6.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <executions>
@@ -38,5 +42,33 @@ This is a friendly fork of the original [liquibase-linter](https://github.com/wh
 ```
 
 **2** Add the [config file](https://liquibase-linter.github.io/liquibase-linter/docs/configure) to your project root, and start turning [on rules](https://liquibase-linter.github.io/liquibase-linter/docs/rules/).
+
+### With the dedicated liquibase-linter-maven-plugin
+
+**1** Add `liquibase-linter` to your pom as a dependency of `liquibase-maven-plugin`:
+
+```xml
+
+<plugin>
+    <groupId>io.github.liquibase-linter</groupId>
+    <artifactId>liquibase-linter-maven-plugin</artifactId>
+    <version>0.6.0-SNAPSHOT</version>
+    <configuration>
+        <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
+        <configurationFile>src/test/resources/lqlint.json</configurationFile>
+    </configuration>
+    <executions>
+        <execution>
+            <id>lint-liquibase-scripts</id>
+            <goals>
+                <goal>lint</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+
+```
+
+**2** Add the [config file](https://liquibase-linter.github.io/liquibase-linter/docs/configure), and start turning [on rules](https://liquibase-linter.github.io/liquibase-linter/docs/rules/).
 
 Try the [full documentation](https://liquibase-linter.github.io/liquibase-linter/docs/install) for details of config and rules.
