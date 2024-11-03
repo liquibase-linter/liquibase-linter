@@ -2,6 +2,9 @@
     "fail-fast": true,
     "ignore-files-pattern": "^.*ignore change log with spaces.xml.*$",
     "rules": {
-        "file-name-no-spaces": true
+        "changelog-file-name": {
+            "enabled": true,
+            "pattern": "^[^ ]+$"
+        }
     }
 }
