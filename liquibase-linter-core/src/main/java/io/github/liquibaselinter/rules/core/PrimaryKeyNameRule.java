@@ -47,7 +47,8 @@ public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule<C
             .stream()
             .map(ColumnConfig::getConstraints)
             .filter(Objects::nonNull)
-            .map(ConstraintsConfig::getPrimaryKeyName);
+            .map(ConstraintsConfig::getPrimaryKeyName)
+            .distinct();
     }
 
     @Override

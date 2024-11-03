@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PrimaryKeyNameRuleTest {
@@ -93,18 +94,34 @@ class PrimaryKeyNameRuleTest {
             assertEquals(primaryKeyNameRule.getMessage(createTableChange("INVALID_PK")), "Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
         }
 
-        private CreateTableChange createTableChange(String primaryKeyName) {
-            ConstraintsConfig constraints = new ConstraintsConfig();
-            constraints.setPrimaryKeyName(primaryKeyName);
-            constraints.setPrimaryKey("true");
-
-            ColumnConfig column = new ColumnConfig();
-            column.setConstraints(constraints);
+        @Test
+        @DisplayName("Name of composite primary key should only be reported once")
+        void compositePrimaryKeyNameShouldOnlyBeReportedOnce() {
+            primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK$").withErrorMessage("Primary key constraints %s must follow pattern '%s'").build());
 
             CreateTableChange createTableChange = new CreateTableChange();
             createTableChange.setTableName("TABLE");
-            createTableChange.addColumn(column);
+            createTableChange.addColumn(columnWithPrimaryKeyConstraintName("INVALID_PK"));
+            createTableChange.addColumn(columnWithPrimaryKeyConstraintName("INVALID_PK"));
+
+            assertThat(primaryKeyNameRule.getMessage(createTableChange)).isEqualTo("Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
+        }
+
+        private CreateTableChange createTableChange(String primaryKeyName) {
+
+            CreateTableChange createTableChange = new CreateTableChange();
+            createTableChange.setTableName("TABLE");
+            createTableChange.addColumn(columnWithPrimaryKeyConstraintName(primaryKeyName));
             return createTableChange;
+        }
+
+        private ColumnConfig columnWithPrimaryKeyConstraintName(String primaryKeyName) {
+            ConstraintsConfig constraints = new ConstraintsConfig();
+            constraints.setPrimaryKeyName(primaryKeyName);
+
+            ColumnConfig column = new ColumnConfig();
+            column.setConstraints(constraints);
+            return column;
         }
     }
 }
