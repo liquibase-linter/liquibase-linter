@@ -55,13 +55,13 @@ class ConfigTest {
     void shouldSupportHavingRuleConfigAsBoolean() throws IOException {
         String configJson = "{\n" +
             "  \"rules\": {\n" +
-            "    \"file-name-no-spaces\": true\n" +
+            "    \"isolate-ddl-changes\": true\n" +
             "  }\n" +
             "}";
         Config config = OBJECT_MAPPER.readValue(configJson, Config.class);
 
         assertThat(config.getRules().size()).isEqualTo(1);
-        assertThat(config.getRules().get("file-name-no-spaces")).extracting("enabled").containsExactly(true);
+        assertThat(config.getRules().get("isolate-ddl-changes")).extracting("enabled").containsExactly(true);
     }
 
     @DisplayName("Should support having an array of configs for one rule")
@@ -90,12 +90,12 @@ class ConfigTest {
     void shouldReturnDisabledRuleForNullConfigObject() throws IOException {
         String configJson = "{\n" +
             "  \"rules\": {\n" +
-            "    \"file-name-no-spaces\": null\n" +
+            "    \"isolate-ddl-changes\": null\n" +
             "  }\n" +
             "}";
         Config config = OBJECT_MAPPER.readValue(configJson, Config.class);
         assertThat(config.getRules().size()).isEqualTo(1);
-        assertThat(config.getRules().get("file-name-no-spaces")).extracting("enabled").containsExactly(false);
+        assertThat(config.getRules().get("isolate-ddl-changes")).extracting("enabled").containsExactly(false);
     }
 
     @DisplayName("Should support a simple import")

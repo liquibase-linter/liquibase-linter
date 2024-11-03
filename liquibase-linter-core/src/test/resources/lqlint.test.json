@@ -9,7 +9,10 @@
             "pattern": "^\\$\\{[a-z_]+\\}$",
             "errorMessage": "Must use schema name token, not %s"
         },
-        "file-name-no-spaces": true,
+        "changelog-file-name": {
+            "enabled": true,
+            "pattern": "^[^ ]+$"
+        },
         "no-preconditions": true,
         "has-comment": true,
         "has-context": {},
