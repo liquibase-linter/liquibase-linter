@@ -68,7 +68,7 @@ public abstract class AbstractReporter implements Reporter {
             reporterClass = (Class<? extends R>) factoryTypes[0];
             configClass = (Class<? extends C>) factoryTypes[1];
             configBuilderClass = Optional.ofNullable(configClass.getAnnotation(JsonDeserialize.class))
-                .map(json -> json.builder())
+                .map(JsonDeserialize::builder)
                 .orElseThrow(() -> new UnexpectedLiquibaseException("Cannot find builder for " + configClass));
         }
 

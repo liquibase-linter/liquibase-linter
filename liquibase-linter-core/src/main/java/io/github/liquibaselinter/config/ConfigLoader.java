@@ -39,11 +39,12 @@ public class ConfigLoader {
     }
 
     private Config loadConfig(ResourceAccessor resourceAccessor, String path) throws IOException {
-        final InputStream stream = resourceAccessor.openStream(null, path);
-        if (stream != null) {
-            final Config config = Config.fromInputStream(stream);
-            if (config != null) {
-                return loadImports(resourceAccessor, config, config.getImports());
+        try(InputStream stream = resourceAccessor.openStream(null, path)) {
+            if (stream != null) {
+                final Config config = Config.fromInputStream(stream);
+                if (config != null) {
+                    return loadImports(resourceAccessor, config, config.getImports());
+                }
             }
         }
         return null;

@@ -8,7 +8,7 @@ import liquibase.changelog.DatabaseChangeLog;
 
 import java.util.Optional;
 
-public class ConditionHelper {
+public final class ConditionHelper {
 
     private ConditionHelper() {
 
@@ -32,7 +32,7 @@ public class ConditionHelper {
             .orElse(true);
     }
 
-    private static class ConditionContext {
+    private static final class ConditionContext {
         private final DatabaseChangeLog changeLog;
         private final ChangeSet changeSet;
         private final Change change;

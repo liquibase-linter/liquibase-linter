@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
-public class RuleConfig {
+public final class RuleConfig {
 
     private static final String DYNAMIC_VALUE = "{{value}}";
 
@@ -37,11 +37,11 @@ public class RuleConfig {
     }
 
     public static RuleConfig enabled() {
-        return RuleConfig.builder().withEnabled(true).build();
+        return builder().withEnabled(true).build();
     }
 
     public static RuleConfig disabled() {
-        return RuleConfig.builder().withEnabled(false).build();
+        return builder().withEnabled(false).build();
     }
 
     public static RuleConfigBuilder builder() {

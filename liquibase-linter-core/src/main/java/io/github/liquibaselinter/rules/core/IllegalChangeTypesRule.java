@@ -23,11 +23,11 @@ public class IllegalChangeTypesRule extends AbstractLintRule implements ChangeRu
 
     @Override
     public boolean invalid(Change change) {
-        if (ruleConfig.getValues() != null) {
-            return ruleConfig.getValues().stream()
-                .anyMatch(illegal -> getChangeName(change).equals(illegal) || getChangeClassName(change).equals(illegal));
+        if (ruleConfig.getValues() == null) {
+            return false;
         }
-        return false;
+        return ruleConfig.getValues().stream()
+            .anyMatch(illegal -> getChangeName(change).equals(illegal) || getChangeClassName(change).equals(illegal));
     }
 
     private String getChangeClassName(Change change) {

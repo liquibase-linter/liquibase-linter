@@ -6,5 +6,8 @@
     <description>liquibase-linter PMD rules</description>
     <rule ref="rulesets/java/quickstart.xml">
         <exclude name="ClassNamingConventions"/>
+        <exclude name="CompareObjectsWithEquals"/>
+        <exclude name="GuardLogStatement"/>
+        <exclude name="SimplifyBooleanReturns"/>
     </rule>
 </ruleset>

@@ -18,7 +18,7 @@ public class HasCommentRule extends AbstractLintRule implements ChangeSetRule {
 
     @Override
     public boolean invalid(ChangeSet changeSet) {
-        if (changeSet.getChanges().stream().anyMatch(change -> change instanceof TagDatabaseChange)) {
+        if (changeSet.getChanges().stream().anyMatch(TagDatabaseChange.class::isInstance)) {
             /*
             https://github.com/whiteclarkegroup/liquibase-linter/issues/90
             tagDatabase changes cannot have any siblings in a changeSet - not even comments
