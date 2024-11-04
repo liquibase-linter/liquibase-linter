@@ -185,6 +185,7 @@
                     <targetJdk>1.8</targetJdk>
                     <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
+                    <linkXRef>false</linkXRef>
                     <excludeRoots>
                         <excludeRoot>${project.build.directory}/generated-sources/</excludeRoot>
                     </excludeRoots>
