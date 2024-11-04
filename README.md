@@ -18,7 +18,7 @@ This is a friendly fork of the original [liquibase-linter](https://github.com/wh
 
 If you're already using the `liquibase-maven-plugin`, you can add `liquibase-parser-extension` that will lint automatically your scripts when they're parsed by Liquibase:
 
-**1** Add `liquibase-linter` to your pom as a dependency of `liquibase-maven-plugin`:
+**1** Add `liquibase-parser-extension` to your pom as a dependency of `liquibase-maven-plugin`:
 
 ```xml
 <plugin>
@@ -45,16 +45,16 @@ If you're already using the `liquibase-maven-plugin`, you can add `liquibase-par
 
 ### With the dedicated liquibase-linter-maven-plugin
 
-**1** Add `liquibase-linter` to your pom as a dependency of `liquibase-maven-plugin`:
+**1** Add the `liquibase-linter-maven-plugin` to your pom:
 
 ```xml
-
 <plugin>
     <groupId>io.github.liquibase-linter</groupId>
     <artifactId>liquibase-linter-maven-plugin</artifactId>
     <version>0.6.0-SNAPSHOT</version>
     <configuration>
         <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
+        <!-- This is the default value for configurationFile -->
         <configurationFile>src/test/resources/lqlint.json</configurationFile>
     </configuration>
     <executions>

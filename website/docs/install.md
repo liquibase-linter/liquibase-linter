@@ -2,14 +2,48 @@
 title: Install
 ---
 
-Liquibase Linter is built with [the Extensions feature in Liquibase](https://liquibase.jira.com/wiki/spaces/CONTRIB/overview), so it works by simply being on the classpath with Liquibase.
+There are a few ways to set up Liquibase Linter, depending on how you're using Liquibase.
 
 ## Maven
 
-1. Add `liquibase-linter` as a dependency of [the Liquibase Maven plugin](http://www.liquibase.org/documentation/maven/):
+### Using the liquibase-linter-maven-plugin
+
+If you just want to lint your liquibase scripts during build, but are not already using the `liquibase-maven-plugin`, you probably want to use the maven plugin provided by Liquibase Linter:
+
+1. Add the `liquibase-linter-maven-plugin` to your pom.
+2. Add `lqlint.json` to the `src/test/resources` directory of your project. This is the default location, but you can change it in the plugin configuration.
+ 
+See this simple [example](https://github.com/liquibase-linter/liquibase-linter/tree/main/examples/liquibase-linter-maven-plugin) maven project to help get you started.
+
+```xml
+<plugin>
+    <groupId>io.github.liquibase-linter</groupId>
+    <artifactId>liquibase-linter-maven-plugin</artifactId>
+    <version>0.6.0-SNAPSHOT</version>
+    <configuration>
+        <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
+        <!-- This is the default value for configurationFile -->
+        <configurationFile>src/test/resources/lqlint.json</configurationFile>
+    </configuration>
+    <executions>
+        <execution>
+            <id>lint-liquibase-scripts</id>
+            <goals>
+                <goal>lint</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+### Using the liquibase-maven-plugin
+
+If you're already using the `liquibase-maven-plugin`, you can add `liquibase-parser-extension` that will lint automatically your scripts when they're parsed by Liquibase, using [the Extensions feature in Liquibase](https://contribute.liquibase.com/extensions-integrations/extensions-overview/):
+
+1. Add `liquibase-parser-extension` as a dependency of [the Liquibase Maven plugin](https://docs.liquibase.com/tools-integrations/maven/home.html):
 2. Add `lqlint.json` to the root of your project
 
-See this simple [example](https://github.com/liquibase-linter/liquibase-linter/tree/main/examples/maven) maven project to help get you started
+See this simple [example](https://github.com/liquibase-linter/liquibase-linter/tree/main/examples/liquibase-maven-plugin) maven project to help get you started
 
 ```xml
 <plugin>
@@ -22,7 +56,7 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
         <dependency>
             <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-parser-extension</artifactId>
-            <version>0.6.0</version>
+            <version>0.6.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <executions>
@@ -33,7 +67,7 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
 
 ## Gradle
 
-1. Add `liquibase-linter` as a dependency of [the Liquibase Gradle plugin](https://github.com/liquibase/liquibase-gradle-plugin):
+1. Add `liquibase-parser-extension` as a dependency of [the Liquibase Gradle plugin](https://github.com/liquibase/liquibase-gradle-plugin):
 2. Add `lqlint.json` to the `lqlint` directory under the root of your project
 
 See this simple [example](https://github.com/liquibase-linter/liquibase-linter/tree/main/examples/gradle) gradle project to help get you started
@@ -43,7 +77,7 @@ dependencies {
     liquibaseRuntime 'org.liquibase:liquibase-core:4.29.2'
     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:4.0.0'
     liquibaseRuntime 'org.hsqldb:hsqldb:2.5.0'
-    liquibaseRuntime 'io.github.liquibase-linter:liquibase-linter:0.6.0'
+    liquibaseRuntime 'io.github.liquibase-linter:liquibase-parser-extension:0.6.0-SNAPSHOT'
     liquibaseRuntime files('lqlint')
 }
 ```
