@@ -20,6 +20,12 @@ class PrimaryKeyNameIntegrationTest extends LinterIntegrationTest {
             "primary-key-name/primary-key-name-complex.json",
             "Primary key constraint 'BAZ_PK' must be named, ending with '_PK', and start with table name (unless too long)");
 
+        shouldFail(
+            "Should fail when the table name can be enforced and isn't used",
+            "primary-key-name/primary-key-name-fail-on-create-table-tablename.xml",
+            "primary-key-name/primary-key-name-complex.json",
+            "Primary key constraint 'BAZ_PK' must be named, ending with '_PK', and start with table name (unless too long)");
+
         shouldPass(
             "Should pass when used correctly",
             "primary-key-name/primary-key-name-pass.xml",
