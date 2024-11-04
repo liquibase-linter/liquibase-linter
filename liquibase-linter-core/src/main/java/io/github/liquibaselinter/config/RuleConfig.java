@@ -48,7 +48,7 @@ public class RuleConfig {
         return new RuleConfigBuilder();
     }
 
-    private boolean isDynamicPattern() {
+    public boolean hasDynamicPattern() {
         return patternString.contains(DYNAMIC_VALUE);
     }
 
@@ -86,15 +86,28 @@ public class RuleConfig {
         return Optional.ofNullable(dynamicValueExpression);
     }
 
+    public Pattern getDynamicPattern(String value) {
+        if (!hasDynamicPattern()) {
+            throw new IllegalStateException("Pattern is not dynamic");
+        }
+        return Pattern.compile(getPatternString().replace(DYNAMIC_VALUE, value));
+    }
+
+    public String getDynamicValue(Object subject) {
+        return getDynamicValueExpression()
+            .map(expression -> expression.getValue(subject, String.class))
+            .orElse(null);
+    }
+
     public Optional<Pattern> getPattern() {
-        if (pattern == null && patternString != null && !isDynamicPattern()) {
+        if (pattern == null && patternString != null && !hasDynamicPattern()) {
             pattern = Pattern.compile(patternString);
         }
         return Optional.ofNullable(pattern);
     }
 
     public boolean hasPattern() {
-        return patternString != null && !patternString.equals("");
+        return patternString != null && !patternString.isEmpty();
     }
 
     public String getEnableAfter() {

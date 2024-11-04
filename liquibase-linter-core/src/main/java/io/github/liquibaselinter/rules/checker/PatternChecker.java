@@ -2,10 +2,9 @@ package io.github.liquibaselinter.rules.checker;
 
 import io.github.liquibaselinter.config.RuleConfig;
 
-import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class PatternChecker {
-    private static final String DYNAMIC_VALUE = "{{value}}";
 
     private final RuleConfig ruleConfig;
 
@@ -13,24 +12,17 @@ public class PatternChecker {
         this.ruleConfig = ruleConfig;
     }
 
-    private Pattern getDynamicPattern(String value) {
-        return Pattern.compile(ruleConfig.getPatternString().replace(DYNAMIC_VALUE, value));
-    }
-
-    private String getDynamicValue(Object subject) {
-        return ruleConfig.getDynamicValueExpression()
-            .map(expression -> expression.getValue(subject, String.class))
-            .orElse(null);
-    }
-
     public boolean check(String value, Object subject) {
-        if (value == null || value.equals("")) {
+        if (value == null || value.isEmpty()) {
             return false;
         }
-        if (ruleConfig.getPatternString().contains(DYNAMIC_VALUE)) {
-            return !getDynamicPattern(getDynamicValue(subject)).matcher(value).matches();
-        } else {
-            return !ruleConfig.getPattern().map(pattern -> pattern.matcher(value).matches()).orElse(true);
+        if (ruleConfig.hasDynamicPattern()) {
+            String dynamicValue = ruleConfig.getDynamicValue(subject);
+            return !ruleConfig.getDynamicPattern(dynamicValue).matcher(value).matches();
         }
+        return !ruleConfig.getPattern()
+            .map(pattern -> pattern.matcher(value))
+            .map(Matcher::matches)
+            .orElse(true);
     }
 }
