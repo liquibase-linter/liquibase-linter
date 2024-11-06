@@ -18,7 +18,7 @@ import liquibase.change.core.CreateTableChange;
 @AutoService({ChangeRule.class})
 public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule<Change> {
     private static final String NAME = "primary-key-name";
-    private static final String MESSAGE = "Primary key name is missing or does not follow pattern";
+    private static final String MESSAGE = "Primary key name %s is missing or does not follow pattern '%s'";
 
     public PrimaryKeyNameRule() {
         super(NAME, MESSAGE);
@@ -73,6 +73,7 @@ public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule<C
             .stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
-        return formatMessage(String.join(",", primaryKeys), ruleConfig.getPatternString());
+        String pattern = ruleConfig.hasDynamicPattern() ? ruleConfig.getDynamicPattern(ruleConfig.getDynamicValue(change)).pattern() : ruleConfig.getPatternString();
+        return formatMessage(String.join(",", primaryKeys), pattern);
     }
 }

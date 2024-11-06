@@ -36,6 +36,8 @@ class PrimaryKeyNameRuleTest {
         void primaryKeyNameMustFollowPatternBasic() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
             assertTrue(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK")));
+            assertThat(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo("Primary key name INVALID_PK is missing or does not follow pattern '^VALID_PK$'");
+
             assertFalse(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("VALID_PK")));
         }
 
@@ -44,6 +46,8 @@ class PrimaryKeyNameRuleTest {
         void primaryKeyNameMustFollowPatternDynamicValue() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^{{value}}_PK$").withDynamicValue("tableName").build());
             assertTrue(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK")));
+            assertThat(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo("Primary key name INVALID_PK is missing or does not follow pattern '^TABLE_PK$'");
+
             assertFalse(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("TABLE_PK")));
         }
 
