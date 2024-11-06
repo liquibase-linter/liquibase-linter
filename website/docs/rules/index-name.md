@@ -1,5 +1,5 @@
 ---
-title: create-index-name
+title: index-name
 ---
 
 ## Why?
@@ -22,7 +22,7 @@ To simply ensure that a name is always given:
 ```json
 {
     "rules": {
-        "create-index-name": true
+        "index-name": true
     }
 }
 ```
@@ -32,7 +32,7 @@ To ensure that a pattern is matched, including the table name:
 ```json
 {
     "rules": {
-        "create-index-name": {
+        "index-name": {
             "pattern": "^{{value}}_I\\d$",
             "dynamicValue": "tableName",
             "errorMessage": "Index names must be the table name, suffixed with 'I' and a number, e.g. FOO_I2"
