@@ -36,7 +36,7 @@ class PrimaryKeyNameRuleTest {
         void primaryKeyNameMustFollowPatternBasic() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
             assertTrue(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK")));
-            assertThat(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo("Primary key name INVALID_PK is missing or does not follow pattern '^VALID_PK$'");
+            assertThat(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo("Primary key name 'INVALID_PK' is missing or does not follow pattern '^VALID_PK$'");
 
             assertFalse(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("VALID_PK")));
         }
@@ -46,7 +46,7 @@ class PrimaryKeyNameRuleTest {
         void primaryKeyNameMustFollowPatternDynamicValue() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^{{value}}_PK$").withDynamicValue("tableName").build());
             assertTrue(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK")));
-            assertThat(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo("Primary key name INVALID_PK is missing or does not follow pattern '^TABLE_PK$'");
+            assertThat(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo("Primary key name 'INVALID_PK' is missing or does not follow pattern '^TABLE_PK$'");
 
             assertFalse(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("TABLE_PK")));
         }
@@ -72,15 +72,28 @@ class PrimaryKeyNameRuleTest {
         @DisplayName("Primary key name must not be null")
         @Test
         void primaryKeyNameMustNotBeNull() {
-            assertTrue(primaryKeyNameRule.invalid(createTableChange(null)));
+            primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
+
+            CreateTableChange change = new CreateTableChange();
+            change.setTableName("TABLE");
+            change.addColumn(columnWithPrimaryKeyConstraint(null, true));
+
+            assertThat(primaryKeyNameRule.supports(change)).isTrue();
+            assertThat(primaryKeyNameRule.invalid(change)).isTrue();
         }
 
         @DisplayName("Primary key name must follow pattern basic")
         @Test
         void primaryKeyNameMustFollowPatternBasic() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
-            assertTrue(primaryKeyNameRule.invalid(createTableChange("INVALID_PK")));
-            assertFalse(primaryKeyNameRule.invalid(createTableChange("VALID_PK")));
+
+            CreateTableChange invalidChange = createTableChange("INVALID_PK");
+            assertThat(primaryKeyNameRule.supports(invalidChange)).isTrue();
+            assertThat(primaryKeyNameRule.invalid(invalidChange)).isTrue();
+
+            CreateTableChange validChange = createTableChange("VALID_PK");
+            assertThat(primaryKeyNameRule.supports(validChange)).isTrue();
+            assertThat(primaryKeyNameRule.invalid(validChange)).isFalse();
         }
 
         @DisplayName("Primary key name must follow pattern dynamic value")
@@ -105,23 +118,50 @@ class PrimaryKeyNameRuleTest {
 
             CreateTableChange createTableChange = new CreateTableChange();
             createTableChange.setTableName("TABLE");
-            createTableChange.addColumn(columnWithPrimaryKeyConstraintName("INVALID_PK"));
-            createTableChange.addColumn(columnWithPrimaryKeyConstraintName("INVALID_PK"));
+            createTableChange.addColumn(columnWithPrimaryKeyConstraint("INVALID_PK", false));
+            createTableChange.addColumn(columnWithPrimaryKeyConstraint("INVALID_PK", false));
 
             assertThat(primaryKeyNameRule.getMessage(createTableChange)).isEqualTo("Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
+        }
+
+        @Test
+        @DisplayName("Creating a table without primary key should not be invalid")
+        void createTableWithoutPrimaryKeyShouldNotBeInvalid() {
+            primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
+
+            CreateTableChange createTableChange = new CreateTableChange();
+            createTableChange.setTableName("TABLE");
+            createTableChange.addColumn(new ColumnConfig());
+
+            assertThat(primaryKeyNameRule.supports(createTableChange)).isFalse();
+        }
+
+        @Test
+        @DisplayName("A table with a valid primary key and an invalid primary key should only report invalid primary key")
+        void createTableWithMultiplePrimaryKeysShouldDetectInvalidPrimaryKey() {
+            primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK.*$").build());
+
+            CreateTableChange createTableChange = new CreateTableChange();
+            createTableChange.setTableName("TABLE");
+            createTableChange.addColumn(columnWithPrimaryKeyConstraint("VALID_PK", false));
+            createTableChange.addColumn(columnWithPrimaryKeyConstraint("INVALID_PK", true));
+
+            assertThat(primaryKeyNameRule.invalid(createTableChange)).isTrue();
+            assertThat(primaryKeyNameRule.getMessage(createTableChange)).isEqualTo("Primary key name 'INVALID_PK' is missing or does not follow pattern '^VALID_PK.*$'");
         }
 
         private CreateTableChange createTableChange(String primaryKeyName) {
 
             CreateTableChange createTableChange = new CreateTableChange();
             createTableChange.setTableName("TABLE");
-            createTableChange.addColumn(columnWithPrimaryKeyConstraintName(primaryKeyName));
+            createTableChange.addColumn(columnWithPrimaryKeyConstraint(primaryKeyName, false));
             return createTableChange;
         }
 
-        private ColumnConfig columnWithPrimaryKeyConstraintName(String primaryKeyName) {
+        private ColumnConfig columnWithPrimaryKeyConstraint(String primaryKeyName, Boolean isPrimaryKey) {
             ConstraintsConfig constraints = new ConstraintsConfig();
             constraints.setPrimaryKeyName(primaryKeyName);
+            constraints.setPrimaryKey(isPrimaryKey);
 
             ColumnConfig column = new ColumnConfig();
             column.setConstraints(constraints);

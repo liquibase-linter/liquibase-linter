@@ -35,7 +35,7 @@ class PrimaryKeyNameIntegrationTest extends LinterIntegrationTest {
             "Should fail when omitted with simple config",
             "primary-key-name/primary-key-name-fail-omitted.xml",
             "primary-key-name/primary-key-name-simple.json",
-            "Primary key name is missing or does not follow pattern");
+            "Primary key name '' is missing or does not follow pattern");
 
         shouldFail(
             "Should fail when omitted with complex config",

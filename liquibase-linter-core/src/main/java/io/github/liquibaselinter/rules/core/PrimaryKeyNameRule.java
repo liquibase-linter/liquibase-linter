@@ -5,9 +5,9 @@ import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import liquibase.change.Change;
 import liquibase.change.ColumnConfig;
 import liquibase.change.ConstraintsConfig;
@@ -18,7 +18,7 @@ import liquibase.change.core.CreateTableChange;
 @AutoService({ChangeRule.class})
 public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule<Change> {
     private static final String NAME = "primary-key-name";
-    private static final String MESSAGE = "Primary key name %s is missing or does not follow pattern '%s'";
+    private static final String MESSAGE = "Primary key name '%s' is missing or does not follow pattern '%s'";
 
     public PrimaryKeyNameRule() {
         super(NAME, MESSAGE);
@@ -31,49 +31,52 @@ public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule<C
 
     @Override
     public boolean supports(Change change) {
-        return change.getClass().isAssignableFrom(AddPrimaryKeyChange.class)
-            || change.getClass().isAssignableFrom(CreateTableChange.class) && createTableContainsPrimaryKey((CreateTableChange)change);
+        if (change.getClass().isAssignableFrom(AddPrimaryKeyChange.class)) {
+            return true;
+        }
+        if (change.getClass().isAssignableFrom(CreateTableChange.class)) {
+            return !primaryKeyNamesFromCreateTable((CreateTableChange)change).isEmpty();
+        }
+        return false;
     }
 
-    private boolean createTableContainsPrimaryKey(CreateTableChange change) {
-        return primaryKeyNamesFromCreateTable(change).anyMatch(Objects::nonNull);
-    }
-
-    private static Stream<String> primaryKeyNamesFromCreateTable(CreateTableChange change) {
+    private static List<String> primaryKeyNamesFromCreateTable(CreateTableChange change) {
         if (change.getColumns() == null) {
-            return Stream.empty();
+            return Collections.emptyList();
         }
         return change.getColumns()
             .stream()
             .map(ColumnConfig::getConstraints)
             .filter(Objects::nonNull)
+            .filter(constraint -> Boolean.TRUE.equals(constraint.isPrimaryKey()) || constraint.getPrimaryKeyName() != null)
             .map(ConstraintsConfig::getPrimaryKeyName)
-            .distinct();
+            .distinct()
+            .collect(Collectors.toList());
     }
 
     @Override
     public boolean invalid(Change change) {
-        return extractConstraintNames(change).stream().anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
+        return extractConstraintNamesFrom(change).stream().anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
     }
 
-    private Collection<String> extractConstraintNames(Change change) {
+    private Collection<String> extractConstraintNamesFrom(Change change) {
         if (change instanceof AddPrimaryKeyChange) {
             return Collections.singleton(((AddPrimaryKeyChange) change).getConstraintName());
         }
         if (change instanceof CreateTableChange) {
-            CreateTableChange createTableChange = (CreateTableChange) change;
-            return primaryKeyNamesFromCreateTable(createTableChange).collect(Collectors.toList());
+            return primaryKeyNamesFromCreateTable((CreateTableChange) change);
         }
         throw new IllegalStateException("Can't retrieve constraint names from " + change.getClass());
     }
 
     @Override
     public String getMessage(Change change) {
-        Collection<String> primaryKeys = extractConstraintNames(change)
+        String invalidPrimaryKeys = extractConstraintNamesFrom(change)
             .stream()
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+            .filter(constraintName -> checkMandatoryPattern(constraintName, change))
+            .map(constraintName -> constraintName == null ? "" : constraintName)
+            .collect(Collectors.joining(","));
         String pattern = ruleConfig.hasDynamicPattern() ? ruleConfig.getDynamicPattern(ruleConfig.getDynamicValue(change)).pattern() : ruleConfig.getPatternString();
-        return formatMessage(String.join(",", primaryKeys), pattern);
+        return formatMessage(invalidPrimaryKeys, pattern);
     }
 }
