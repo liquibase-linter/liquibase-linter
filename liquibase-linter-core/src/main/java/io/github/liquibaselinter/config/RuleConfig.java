@@ -49,7 +49,7 @@ public final class RuleConfig {
     }
 
     public boolean hasDynamicPattern() {
-        return patternString.contains(DYNAMIC_VALUE);
+        return patternString != null && patternString.contains(DYNAMIC_VALUE);
     }
 
     public boolean isEnabled() {
