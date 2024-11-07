@@ -3,7 +3,7 @@
     "ignore-files-pattern": "^/ignore/core/.*$",
     "fail-fast": true,
     "rules": {
-        "no-duplicate-includes": {},
+        "isolate-ddl-changes": {},
         "schema-name": {
             "enabled": true,
             "pattern": "^\\$\\{[a-z_]+\\}$",

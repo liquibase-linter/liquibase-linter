@@ -81,8 +81,8 @@ class ConfigLoaderTest {
             .thenReturn(getInputStream("lqlint-import-b.test.json"));
 
         Config config = configLoader.load(resourceAccessor);
-        assertThat(config.getRules().asMap()).containsOnlyKeys("no-duplicate-includes", "no-preconditions", "changelog-file-name");
-        assertThat(config.getRules().get("no-duplicate-includes")).extracting("enabled").containsExactly(true);
+        assertThat(config.getRules().asMap()).containsOnlyKeys("isolate-ddl-changes", "no-preconditions", "changelog-file-name");
+        assertThat(config.getRules().get("isolate-ddl-changes")).extracting("enabled").containsExactly(true);
         assertThat(config.getRules().get("no-preconditions")).extracting("enabled").containsExactly(false);
         assertThat(config.getRules().get("changelog-file-name")).extracting("enabled").containsExactly(true);
 
