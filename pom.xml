@@ -181,7 +181,6 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>${maven.pmd.plugin.version}</version>
                 <configuration>
-                    <sourceEncoding>UTF-8</sourceEncoding>
                     <targetJdk>1.8</targetJdk>
                     <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
