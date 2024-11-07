@@ -12,7 +12,7 @@ No rules are turned on by default, but most can be turned on simply by adding a 
 ```json
 {
     "rules": {
-        "no-duplicate-includes": true
+        "isolate-ddl-changes": true
     }
 }
 ```
@@ -22,7 +22,7 @@ The value can also be an options object:
 ```json
 {
     "rules": {
-        "no-duplicate-includes": {
+        "isolate-ddl-changes": {
             "enabled": true
         }
     }

@@ -56,7 +56,6 @@ public class ChangeLogLinter {
             if (shouldLint(databaseChangeLog) && isNotRootChangeLog(databaseChangeLog)) {
                 ruleRunner.checkChangeLog(databaseChangeLog);
             }
-            ruleRunner.checkDuplicateIncludes(databaseChangeLog);
 
             if (shouldLint(changeSet)) {
                 ruleRunner.checkChangeSet(changeSet);

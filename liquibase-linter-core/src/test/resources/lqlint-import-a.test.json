@@ -1,6 +1,6 @@
 {
     "rules": {
-        "no-duplicate-includes": true
+        "isolate-ddl-changes": true
     },
     "reporting": {
         "console": {

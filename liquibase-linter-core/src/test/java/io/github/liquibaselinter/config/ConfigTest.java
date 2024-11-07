@@ -42,7 +42,7 @@ class ConfigTest {
     void shouldNotSupportInValidConfigObject() throws IOException {
         String configJson = "{\n" +
             "  \"rules\": {\n" +
-            "    \"no-duplicate-includes\": \"foo\"\n" +
+            "    \"isolate-ddl-changes\": \"foo\"\n" +
             "  }\n" +
             "}";
         assertThatExceptionOfType(JsonMappingException.class)

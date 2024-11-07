@@ -144,13 +144,4 @@ class RuleRunner {
         return ruleConfig.isEnabled()
             && (StringUtils.isEmpty(ruleConfig.getEnableAfter()) || filesParsed.contains(ruleConfig.getEnableAfter()));
     }
-
-    public void checkDuplicateIncludes(DatabaseChangeLog changeLog) throws ChangeLogLintingException {
-        if (filesParsed.contains(changeLog.getPhysicalFilePath())) {
-            for (RuleConfig ruleConfig : config.getEnabledRuleConfig("no-duplicate-includes")) {
-                final String errorMessage = Optional.ofNullable(ruleConfig.getErrorMessage()).orElse("Changelog file '%s' was included more than once");
-                throw new ChangeLogLintingException(String.format(errorMessage, changeLog));
-            }
-        }
-    }
 }
