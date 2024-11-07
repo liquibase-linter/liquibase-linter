@@ -51,9 +51,8 @@
     </modules>
 
     <scm>
-        <connection>scm:git:git://github.com/liquibase-linter/liquibase-linter.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:liquibase-linter/liquibase-linter.git</developerConnection>
-        <url>https://github.com/liquibase-linter/liquibase-linter/tree/main</url>
+        <connection>scm:git:https://github.com/liquibase-linter/liquibase-linter.git</connection>
+        <url>https://github.com/liquibase-linter/liquibase-linter</url>
         <tag>HEAD</tag>
     </scm>
 
