@@ -15,12 +15,12 @@ import liquibase.change.core.AddPrimaryKeyChange;
 import liquibase.change.core.CreateTableChange;
 
 @SuppressWarnings("rawtypes")
-@AutoService({ChangeRule.class})
-public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule<Change> {
-    private static final String NAME = "primary-key-name";
-    private static final String MESSAGE = "Primary key name '%s' is missing or does not follow pattern '%s'";
+@AutoService(ChangeRule.class)
+public class PrimaryKeyTablespaceRule extends AbstractLintRule implements ChangeRule<Change> {
+    private static final String NAME = "primary-key-tablespace";
+    private static final String MESSAGE = "Tablespace '%s' is empty or does not follow pattern '%s'";
 
-    public PrimaryKeyNameRule() {
+    public PrimaryKeyTablespaceRule() {
         super(NAME, MESSAGE);
     }
 
@@ -35,12 +35,12 @@ public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule<C
             return true;
         }
         if (change.getClass().isAssignableFrom(CreateTableChange.class)) {
-            return !primaryKeyNamesFromCreateTable((CreateTableChange)change).isEmpty();
+            return !primaryKeyTablespacesFromCreateTable((CreateTableChange)change).isEmpty();
         }
         return false;
     }
 
-    private static List<String> primaryKeyNamesFromCreateTable(CreateTableChange change) {
+    private static List<String> primaryKeyTablespacesFromCreateTable(CreateTableChange change) {
         if (change.getColumns() == null) {
             return Collections.emptyList();
         }
@@ -48,34 +48,34 @@ public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule<C
             .stream()
             .map(ColumnConfig::getConstraints)
             .filter(Objects::nonNull)
-            .filter(constraint -> Boolean.TRUE.equals(constraint.isPrimaryKey()) || constraint.getPrimaryKeyName() != null)
-            .map(ConstraintsConfig::getPrimaryKeyName)
+            .filter(constraint -> Boolean.TRUE.equals(constraint.isPrimaryKey()) || constraint.getPrimaryKeyTablespace() != null)
+            .map(ConstraintsConfig::getPrimaryKeyTablespace)
             .distinct()
             .collect(Collectors.toList());
     }
 
     @Override
     public boolean invalid(Change change) {
-        return extractConstraintNamesFrom(change).stream().anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
+        return extractTablespacesFrom(change).stream().anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
     }
 
-    private Collection<String> extractConstraintNamesFrom(Change change) {
+    private Collection<String> extractTablespacesFrom(Change change) {
         if (change instanceof AddPrimaryKeyChange) {
-            return Collections.singleton(((AddPrimaryKeyChange) change).getConstraintName());
+            return Collections.singleton(((AddPrimaryKeyChange) change).getTablespace());
         }
         if (change instanceof CreateTableChange) {
-            return primaryKeyNamesFromCreateTable((CreateTableChange) change);
+            return primaryKeyTablespacesFromCreateTable((CreateTableChange) change);
         }
-        throw new IllegalStateException("Can't retrieve constraint names from " + change.getClass());
+        throw new IllegalStateException("Can't retrieve tablespace from " + change.getClass());
     }
 
     @Override
     public String getMessage(Change change) {
-        String invalidPrimaryKeys = extractConstraintNamesFrom(change)
+        String invalidTablespaces = extractTablespacesFrom(change)
             .stream()
-            .filter(constraintName -> checkMandatoryPattern(constraintName, change))
-            .map(constraintName -> constraintName == null ? "" : constraintName)
+            .filter(tablespace -> checkMandatoryPattern(tablespace, change))
+            .map(tablespace -> tablespace == null ? "" : tablespace)
             .collect(Collectors.joining(","));
-        return formatMessage(invalidPrimaryKeys, getPatternForMessage(change));
+        return formatMessage(invalidTablespaces, getPatternForMessage(change));
     }
 }

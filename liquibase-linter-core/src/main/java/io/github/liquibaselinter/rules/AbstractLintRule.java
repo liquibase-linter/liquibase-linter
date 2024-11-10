@@ -36,6 +36,12 @@ public abstract class AbstractLintRule implements LintRule {
         return ruleConfig;
     }
 
+    protected String getPatternForMessage(Object subject) {
+        return getConfig().hasDynamicPattern()
+            ? getConfig().getDynamicPattern(getConfig().getDynamicValue(subject)).pattern()
+            : getConfig().getPatternString();
+    }
+
     protected boolean checkBlank(String value) {
         return value != null && !value.isEmpty();
     }
