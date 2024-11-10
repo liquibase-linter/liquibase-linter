@@ -17,6 +17,8 @@
                   "rules/create-table-remarks",
                   "rules/drop-not-null-require-column-data-type",
                   "rules/changelog-file-name",
+                  "rules/changeset-author",
+                  "rules/changeset-id",
                   "rules/file-not-included",
                   "rules/foreign-key-name",
                   "rules/has-comment",
