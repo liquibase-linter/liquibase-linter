@@ -32,8 +32,7 @@ public abstract class AbstractLintRule implements LintRule {
         }
     }
 
-    @Override
-    public RuleConfig getConfig() {
+    protected RuleConfig getConfig() {
         return ruleConfig;
     }
 

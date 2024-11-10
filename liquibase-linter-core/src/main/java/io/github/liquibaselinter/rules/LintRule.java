@@ -7,7 +7,5 @@ public interface LintRule {
 
     void configure(RuleConfig ruleConfig);
 
-    RuleConfig getConfig();
-
     String getMessage();
 }
