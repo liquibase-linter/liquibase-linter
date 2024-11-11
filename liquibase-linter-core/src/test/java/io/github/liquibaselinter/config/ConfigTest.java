@@ -3,6 +3,7 @@ package io.github.liquibaselinter.config;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableListMultimap;
+import io.github.liquibaselinter.report.Reporter;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -180,12 +181,12 @@ class ConfigTest {
 
         assertThat(config.getReporting().get("text")).extracting("path").containsExactly("path/to/report.txt");
 
-        assertThat(config.getReporting().get("console")).extracting("configuration.enabled").containsExactly(true);
+        assertThat(config.getReporting().get("console")).extracting(Reporter::isEnabled).containsExactly(true);
         assertThat(config.getReporting().get("console").get(0)).extracting("filter", as(InstanceOfAssertFactories.ITERABLE)).containsExactly(ERROR);
 
         assertThat(config.getReporting().get("markdown")).extracting("path").containsExactly("path/to/report.md", "path/to/report2.md");
         assertThat(config.getReporting().get("markdown").get(0)).extracting("filter", as(InstanceOfAssertFactories.ITERABLE)).containsExactly(ERROR, IGNORED, PASSED);
-        assertThat(config.getReporting().get("markdown").get(1).getConfiguration().isEnabled()).isTrue();
+        assertThat(config.getReporting().get("markdown").get(1).isEnabled()).isTrue();
     }
 
     @DisplayName("Should not load with missing reporters")

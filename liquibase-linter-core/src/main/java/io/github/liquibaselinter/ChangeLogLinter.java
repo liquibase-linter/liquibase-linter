@@ -140,7 +140,7 @@ public class ChangeLogLinter {
 
     private void reports() throws ChangeLogLintingException {
         config.getReporting().forEach((reportType, reporter) -> {
-            if (reporter.getConfiguration().isEnabled()) {
+            if (reporter.isEnabled()) {
                 reporter.processReport(ruleRunner.buildReport());
             }
         });

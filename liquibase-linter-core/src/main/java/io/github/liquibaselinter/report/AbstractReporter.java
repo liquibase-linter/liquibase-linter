@@ -29,8 +29,8 @@ public abstract class AbstractReporter implements Reporter {
     }
 
     @Override
-    public ReporterConfig getConfiguration() {
-        return config;
+    public boolean isEnabled() {
+        return config.isEnabled();
     }
 
     @Override
