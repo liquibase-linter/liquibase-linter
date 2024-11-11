@@ -1,5 +1,6 @@
 package io.github.liquibaselinter.config;
 
+import io.github.liquibaselinter.report.Reporter;
 import liquibase.exception.UnexpectedLiquibaseException;
 import liquibase.resource.ResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
@@ -87,8 +88,8 @@ class ConfigLoaderTest {
         assertThat(config.getRules().get("changelog-file-name")).extracting("enabled").containsExactly(true);
 
         assertThat(config.getReporting().asMap()).containsOnlyKeys("console", "markdown");
-        assertThat(config.getReporting().get("console")).extracting("configuration.enabled").containsExactly(false);
-        assertThat(config.getReporting().get("markdown")).extracting("configuration.enabled").containsExactly(true);
+        assertThat(config.getReporting().get("console")).extracting(Reporter::isEnabled).containsExactly(false);
+        assertThat(config.getReporting().get("markdown")).extracting(Reporter::isEnabled).containsExactly(true);
     }
 
     @DisplayName("Should override imported config")
@@ -102,7 +103,7 @@ class ConfigLoaderTest {
 
         Config config = configLoader.load(resourceAccessor);
         assertThat(config.getReporting().asMap()).containsOnlyKeys("console", "markdown");
-        assertThat(config.getReporting().get("console")).extracting("configuration.enabled").containsExactly(false);
+        assertThat(config.getReporting().get("console")).extracting(Reporter::isEnabled).containsExactly(false);
     }
 
     @DisplayName("Should throw io exception when imported config not found")

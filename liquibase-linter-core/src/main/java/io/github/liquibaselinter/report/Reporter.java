@@ -2,7 +2,7 @@ package io.github.liquibaselinter.report;
 
 public interface Reporter {
     void processReport(Report report);
-    ReporterConfig getConfiguration();
+    boolean isEnabled();
 
     interface Factory<R extends Reporter, C extends ReporterConfig> {
         boolean supports(String name);

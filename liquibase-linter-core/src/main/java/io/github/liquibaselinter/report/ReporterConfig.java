@@ -40,9 +40,14 @@ public class ReporterConfig {
         private String path;
         private Set<ReportItem.ReportItemType> filter = new LinkedHashSet<>(Arrays.asList(ERROR, IGNORED));
 
+        @SuppressWarnings("unchecked")
+        protected B self() {
+            return (B) this;
+        }
+
         public B withEnabled(boolean enabled) {
             this.enabled = enabled;
-            return (B) this;
+            return self();
         }
 
         public boolean isEnabled() {
@@ -51,7 +56,7 @@ public class ReporterConfig {
 
         public B withPath(String path) {
             this.path = path;
-            return (B) this;
+            return self();
         }
 
         public String getPath() {
@@ -61,7 +66,7 @@ public class ReporterConfig {
         @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
         public B withFilter(ReportItem.ReportItemType... filter) {
             this.filter = ImmutableSet.copyOf(filter);
-            return (B) this;
+            return self();
         }
 
         public Set<ReportItem.ReportItemType> getFilter() {
