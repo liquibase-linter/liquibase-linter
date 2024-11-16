@@ -10,8 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class PrimaryKeyNameRuleTest {
 
@@ -28,34 +27,34 @@ class PrimaryKeyNameRuleTest {
         @DisplayName("Primary key name must not be null")
         @Test
         void primaryKeyNameMustNotBeNull() {
-            assertTrue(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange(null)));
+            assertThat(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange(null))).isTrue();
         }
 
         @DisplayName("Primary key name must follow pattern basic")
         @Test
         void primaryKeyNameMustFollowPatternBasic() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
-            assertTrue(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK")));
+            assertThat(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isTrue();
             assertThat(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo("Primary key name 'INVALID_PK' is missing or does not follow pattern '^VALID_PK$'");
 
-            assertFalse(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("VALID_PK")));
+            assertThat(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("VALID_PK"))).isFalse();
         }
 
         @DisplayName("Primary key name must follow pattern dynamic value")
         @Test
         void primaryKeyNameMustFollowPatternDynamicValue() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^{{value}}_PK$").withDynamicValue("tableName").build());
-            assertTrue(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK")));
+            assertThat(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isTrue();
             assertThat(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo("Primary key name 'INVALID_PK' is missing or does not follow pattern '^TABLE_PK$'");
 
-            assertFalse(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("TABLE_PK")));
+            assertThat(primaryKeyNameRule.invalid(getAddPrimaryKeyConstraintChange("TABLE_PK"))).isFalse();
         }
 
         @DisplayName("Primary key name rule should support formatted error message with pattern arg")
         @Test
         void primaryKeyNameRuleShouldReturnFormattedErrorMessage() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK$").withErrorMessage("Primary key constraints %s must follow pattern '%s'").build());
-            assertEquals(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK")), "Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
+            assertThat(primaryKeyNameRule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo("Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
         }
 
         private AddPrimaryKeyChange getAddPrimaryKeyConstraintChange(String constraintName) {
@@ -100,15 +99,15 @@ class PrimaryKeyNameRuleTest {
         @Test
         void primaryKeyNameMustFollowPatternDynamicValue() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^{{value}}_PK$").withDynamicValue("tableName").build());
-            assertTrue(primaryKeyNameRule.invalid(createTableChange("INVALID_PK")));
-            assertFalse(primaryKeyNameRule.invalid(createTableChange("TABLE_PK")));
+            assertThat(primaryKeyNameRule.invalid(createTableChange("INVALID_PK"))).isTrue();
+            assertThat(primaryKeyNameRule.invalid(createTableChange("TABLE_PK"))).isFalse();
         }
 
         @DisplayName("Primary key name rule should support formatted error message with pattern arg")
         @Test
         void primaryKeyNameRuleShouldReturnFormattedErrorMessage() {
             primaryKeyNameRule.configure(RuleConfig.builder().withPattern("^VALID_PK$").withErrorMessage("Primary key constraints %s must follow pattern '%s'").build());
-            assertEquals(primaryKeyNameRule.getMessage(createTableChange("INVALID_PK")), "Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
+            assertThat(primaryKeyNameRule.getMessage(createTableChange("INVALID_PK"))).isEqualTo("Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
         }
 
         @Test

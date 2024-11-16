@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class IllegalChangeTypesRuleTest {
 
@@ -21,7 +20,7 @@ class IllegalChangeTypesRuleTest {
     void nullIllegalChangeTypeShouldBeValid() {
         ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().build());
-        assertFalse(rule.invalid(new LoadDataChange()));
+        assertThat(rule.invalid(new LoadDataChange())).isFalse();
     }
 
     @DisplayName("Empty Illegal change type should be valid")
@@ -29,7 +28,7 @@ class IllegalChangeTypesRuleTest {
     void emptyIllegalChangeTypeShouldBeValid() {
         ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().withValues(Collections.emptyList()).build());
-        assertFalse(rule.invalid(new LoadDataChange()));
+        assertThat(rule.invalid(new LoadDataChange())).isFalse();
     }
 
     @DisplayName("Mismatch Illegal change type should be valid")
@@ -37,7 +36,7 @@ class IllegalChangeTypesRuleTest {
     void mismatchIllegalChangeTypeShouldBeValid() {
         ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().withValues(Collections.singletonList("liquibase.change.core.AddColumnChange")).build());
-        assertFalse(rule.invalid(new LoadDataChange()));
+        assertThat(rule.invalid(new LoadDataChange())).isFalse();
     }
 
     @DisplayName("Illegal change type should be invalid")
@@ -45,7 +44,7 @@ class IllegalChangeTypesRuleTest {
     void illegalChangeTypeShouldBeInvalid() {
         ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().withValues(Collections.singletonList("liquibase.change.core.LoadDataChange")).build());
-        assertTrue(rule.invalid(new LoadDataChange()));
+        assertThat(rule.invalid(new LoadDataChange())).isTrue();
     }
 
     @DisplayName("Illegal change type from database change annotation name")
@@ -53,7 +52,7 @@ class IllegalChangeTypesRuleTest {
     void illegalChangeTypeFromDatabaseChangeAnnotationName() {
         ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().withValues(Collections.singletonList(LoadDataChange.class.getAnnotation(DatabaseChange.class).name())).build());
-        assertTrue(rule.invalid(new LoadDataChange()));
+        assertThat(rule.invalid(new LoadDataChange())).isTrue();
     }
 
 }

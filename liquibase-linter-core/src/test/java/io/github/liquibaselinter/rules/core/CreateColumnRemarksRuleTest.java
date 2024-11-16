@@ -7,8 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CreateColumnRemarksRuleTest {
 
@@ -22,19 +21,19 @@ class CreateColumnRemarksRuleTest {
     @DisplayName("Should not allow create column without remarks attribute")
     @Test
     void shouldNotAllowCreateColumnWithoutRemarks() {
-        assertTrue(createColumnRemarksRule.invalid(buildAddColumnChange(null)));
+        assertThat(createColumnRemarksRule.invalid(buildAddColumnChange(null))).isTrue();
     }
 
     @DisplayName("Should not allow create column with empty attribute")
     @Test
     void shouldNotAllowCreateColumnWithEmptyRemarks() {
-        assertTrue(createColumnRemarksRule.invalid(buildAddColumnChange("")));
+        assertThat(createColumnRemarksRule.invalid(buildAddColumnChange(""))).isTrue();
     }
 
     @DisplayName("Should allow create column with remarks attribute")
     @Test
     void shouldAllowCreateColumnWithRemarks() {
-        assertFalse(createColumnRemarksRule.invalid(buildAddColumnChange("Some remarks")));
+        assertThat(createColumnRemarksRule.invalid(buildAddColumnChange("Some remarks"))).isFalse();
     }
 
     private AddColumnChange buildAddColumnChange(String remarks) {

@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 class NoPreconditionsRuleTest {
@@ -23,7 +22,7 @@ class NoPreconditionsRuleTest {
         rule.configure(RuleConfig.builder().build());
         ChangeSet changeSet = new ChangeSet(mock(DatabaseChangeLog.class));
         changeSet.addChange(new InsertDataChange());
-        assertFalse(rule.invalid(changeSet));
+        assertThat(rule.invalid(changeSet)).isFalse();
     }
 
     @DisplayName("Should fail on preconditions in changeSet")
@@ -33,7 +32,7 @@ class NoPreconditionsRuleTest {
         rule.configure(RuleConfig.builder().build());
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getPreconditions().getNestedPreconditions()).thenReturn(Collections.singletonList(mock(Precondition.class)));
-        assertTrue(rule.invalid(changeSet));
+        assertThat(rule.invalid(changeSet)).isTrue();
     }
 
     @DisplayName("Should fail on preconditions in changeLog")
@@ -43,6 +42,6 @@ class NoPreconditionsRuleTest {
         rule.configure(RuleConfig.builder().build());
         DatabaseChangeLog changeLog = mock(DatabaseChangeLog.class, RETURNS_DEEP_STUBS);
         when(changeLog.getPreconditions().getNestedPreconditions()).thenReturn(Collections.singletonList(mock(Precondition.class)));
-        assertTrue(rule.invalid(changeLog));
+        assertThat(rule.invalid(changeLog)).isTrue();
     }
 }

@@ -6,8 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CreateTableRemarksRuleTest {
 
@@ -21,19 +20,19 @@ class CreateTableRemarksRuleTest {
     @DisplayName("Should not allow create table without remarks attribute")
     @Test
     void shouldNotAllowCreteTableWithoutRemarks() {
-        assertTrue(createTableRemarksRule.invalid(getCreateTableChange(null)));
+        assertThat(createTableRemarksRule.invalid(getCreateTableChange(null))).isTrue();
     }
 
     @DisplayName("Should not allow create table without remarks attribute")
     @Test
     void shouldNotAllowCreateTableWithEmptyRemarks() {
-        assertTrue(createTableRemarksRule.invalid(getCreateTableChange("")));
+        assertThat(createTableRemarksRule.invalid(getCreateTableChange(""))).isTrue();
     }
 
     @DisplayName("Should allow create table with remarks attribute")
     @Test
     void shouldAllowCreateTableWithRemarks() {
-        assertFalse(createTableRemarksRule.invalid(getCreateTableChange("REMARK")));
+        assertThat(createTableRemarksRule.invalid(getCreateTableChange("REMARK"))).isFalse();
     }
 
     private CreateTableChange getCreateTableChange(String remarks) {

@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 class ConfigLoaderTest {
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         System.clearProperty(LQLINT_CONFIG_PATH_PROPERTY);
     }
 

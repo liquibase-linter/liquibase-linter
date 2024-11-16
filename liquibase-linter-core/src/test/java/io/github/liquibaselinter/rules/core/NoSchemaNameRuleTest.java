@@ -6,8 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class NoSchemaNameRuleTest {
 
@@ -21,46 +20,46 @@ class NoSchemaNameRuleTest {
     @DisplayName("Schema name should be null")
     @Test
     void schemaNameShouldBeNull() {
-        assertTrue(noSchemaNameRule.invalid(getAddColumnChange("SCHEMA_NAME")));
-        assertTrue(noSchemaNameRule.invalid(getAddForeignKeyConstraintChange("SCHEMA_NAME", "SCHEMA_NAME")));
-        assertTrue(noSchemaNameRule.invalid(getAddPrimaryKeyConstraintChange("SCHEMA_NAME")));
-        assertTrue(noSchemaNameRule.invalid(getAddUniqueConstraintChange("SCHEMA_NAME")));
-        assertTrue(noSchemaNameRule.invalid(getCreateTableChange("SCHEMA_NAME")));
-        assertTrue(noSchemaNameRule.invalid(getMergeColumnChange("SCHEMA_NAME")));
-        assertTrue(noSchemaNameRule.invalid(getRenameColumnChange("SCHEMA_NAME")));
-        assertTrue(noSchemaNameRule.invalid(getRenameViewChange("SCHEMA_NAME")));
-        assertTrue(noSchemaNameRule.invalid(getCreateViewChange("SCHEMA_NAME")));
-        assertTrue(noSchemaNameRule.invalid(getCreateIndexChange("SCHEMA_NAME")));
+        assertThat(noSchemaNameRule.invalid(getAddColumnChange("SCHEMA_NAME"))).isTrue();
+        assertThat(noSchemaNameRule.invalid(getAddForeignKeyConstraintChange("SCHEMA_NAME", "SCHEMA_NAME"))).isTrue();
+        assertThat(noSchemaNameRule.invalid(getAddPrimaryKeyConstraintChange("SCHEMA_NAME"))).isTrue();
+        assertThat(noSchemaNameRule.invalid(getAddUniqueConstraintChange("SCHEMA_NAME"))).isTrue();
+        assertThat(noSchemaNameRule.invalid(getCreateTableChange("SCHEMA_NAME"))).isTrue();
+        assertThat(noSchemaNameRule.invalid(getMergeColumnChange("SCHEMA_NAME"))).isTrue();
+        assertThat(noSchemaNameRule.invalid(getRenameColumnChange("SCHEMA_NAME"))).isTrue();
+        assertThat(noSchemaNameRule.invalid(getRenameViewChange("SCHEMA_NAME"))).isTrue();
+        assertThat(noSchemaNameRule.invalid(getCreateViewChange("SCHEMA_NAME"))).isTrue();
+        assertThat(noSchemaNameRule.invalid(getCreateIndexChange("SCHEMA_NAME"))).isTrue();
     }
 
     @DisplayName("Schema name null should be valid")
     @Test
     void schemaNameNullShouldBeValid() {
-        assertFalse(noSchemaNameRule.invalid(getAddColumnChange(null)));
-        assertFalse(noSchemaNameRule.invalid(getAddForeignKeyConstraintChange(null, null)));
-        assertFalse(noSchemaNameRule.invalid(getAddPrimaryKeyConstraintChange(null)));
-        assertFalse(noSchemaNameRule.invalid(getAddUniqueConstraintChange(null)));
-        assertFalse(noSchemaNameRule.invalid(getCreateTableChange(null)));
-        assertFalse(noSchemaNameRule.invalid(getMergeColumnChange(null)));
-        assertFalse(noSchemaNameRule.invalid(getRenameColumnChange(null)));
-        assertFalse(noSchemaNameRule.invalid(getRenameViewChange(null)));
-        assertFalse(noSchemaNameRule.invalid(getCreateViewChange(null)));
-        assertFalse(noSchemaNameRule.invalid(getCreateIndexChange(null)));
+        assertThat(noSchemaNameRule.invalid(getAddColumnChange(null))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getAddForeignKeyConstraintChange(null, null))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getAddPrimaryKeyConstraintChange(null))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getAddUniqueConstraintChange(null))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getCreateTableChange(null))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getMergeColumnChange(null))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getRenameColumnChange(null))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getRenameViewChange(null))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getCreateViewChange(null))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getCreateIndexChange(null))).isFalse();
     }
 
     @DisplayName("Schema name empty should be valid")
     @Test
     void schemaNameEmptyShouldBeValid() {
-        assertFalse(noSchemaNameRule.invalid(getAddColumnChange("")));
-        assertFalse(noSchemaNameRule.invalid(getAddForeignKeyConstraintChange("", "")));
-        assertFalse(noSchemaNameRule.invalid(getAddPrimaryKeyConstraintChange("")));
-        assertFalse(noSchemaNameRule.invalid(getAddUniqueConstraintChange("")));
-        assertFalse(noSchemaNameRule.invalid(getCreateTableChange("")));
-        assertFalse(noSchemaNameRule.invalid(getMergeColumnChange("")));
-        assertFalse(noSchemaNameRule.invalid(getRenameColumnChange("")));
-        assertFalse(noSchemaNameRule.invalid(getRenameViewChange("")));
-        assertFalse(noSchemaNameRule.invalid(getCreateViewChange("")));
-        assertFalse(noSchemaNameRule.invalid(getCreateIndexChange("")));
+        assertThat(noSchemaNameRule.invalid(getAddColumnChange(""))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getAddForeignKeyConstraintChange("", ""))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getAddPrimaryKeyConstraintChange(""))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getAddUniqueConstraintChange(""))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getCreateTableChange(""))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getMergeColumnChange(""))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getRenameColumnChange(""))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getRenameViewChange(""))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getCreateViewChange(""))).isFalse();
+        assertThat(noSchemaNameRule.invalid(getCreateIndexChange(""))).isFalse();
     }
 
     private AddColumnChange getAddColumnChange(String schemaName) {

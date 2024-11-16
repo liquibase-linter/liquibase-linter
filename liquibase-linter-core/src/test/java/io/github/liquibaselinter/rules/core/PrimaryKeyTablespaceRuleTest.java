@@ -1,9 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.change.ColumnConfig;
@@ -24,7 +21,7 @@ class PrimaryKeyTablespaceRuleTest {
         @DisplayName("Primary key tablespace must not be null")
         @Test
         void primaryKeyNameMustNotBeNull() {
-            assertTrue(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace(null)));
+            assertThat(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace(null))).isTrue();
         }
 
         @DisplayName("Primary key tablespace must follow pattern basic")
@@ -32,27 +29,27 @@ class PrimaryKeyTablespaceRuleTest {
         void primaryKeyNameMustFollowPatternBasic() {
             primaryKeyTablespaceRule.configure(RuleConfig.builder().withPattern("^VALID_TABLESPACE$").build());
 
-            assertTrue(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace("INVALID_TABLESPACE")));
+            assertThat(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace("INVALID_TABLESPACE"))).isTrue();
             assertThat(primaryKeyTablespaceRule.getMessage(addPrimaryKeyWithTablespace("INVALID_TABLESPACE"))).isEqualTo("Tablespace 'INVALID_TABLESPACE' is empty or does not follow pattern '^VALID_TABLESPACE$'");
 
-            assertFalse(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace("VALID_TABLESPACE")));
+            assertThat(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace("VALID_TABLESPACE"))).isFalse();
         }
 
         @DisplayName("Primary key tablespace must follow pattern dynamic value")
         @Test
         void primaryKeyNameMustFollowPatternDynamicValue() {
             primaryKeyTablespaceRule.configure(RuleConfig.builder().withPattern("^{{value}}_PK$").withDynamicValue("tableName").build());
-            assertTrue(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace("INVALID_TABLESPACE")));
+            assertThat(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace("INVALID_TABLESPACE"))).isTrue();
             assertThat(primaryKeyTablespaceRule.getMessage(addPrimaryKeyWithTablespace("INVALID_TABLESPACE"))).isEqualTo("Tablespace 'INVALID_TABLESPACE' is empty or does not follow pattern '^TABLE_PK$'");
 
-            assertFalse(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace("TABLE_PK")));
+            assertThat(primaryKeyTablespaceRule.invalid(addPrimaryKeyWithTablespace("TABLE_PK"))).isFalse();
         }
 
         @DisplayName("Primary key tablespace rule should support formatted error message with pattern arg")
         @Test
         void primaryKeyNameRuleShouldReturnFormattedErrorMessage() {
             primaryKeyTablespaceRule.configure(RuleConfig.builder().withPattern("^VALID_TABLESPACE$").withErrorMessage("Primary key constraints %s must follow pattern '%s'").build());
-            assertEquals(primaryKeyTablespaceRule.getMessage(addPrimaryKeyWithTablespace("INVALID_TABLESPACE")), "Primary key constraints INVALID_TABLESPACE must follow pattern '^VALID_TABLESPACE$'");
+            assertThat(primaryKeyTablespaceRule.getMessage(addPrimaryKeyWithTablespace("INVALID_TABLESPACE"))).isEqualTo("Primary key constraints INVALID_TABLESPACE must follow pattern '^VALID_TABLESPACE$'");
         }
 
         private AddPrimaryKeyChange addPrimaryKeyWithTablespace(String tablespace) {
@@ -98,15 +95,15 @@ class PrimaryKeyTablespaceRuleTest {
         @Test
         void primaryKeyNameMustFollowPatternDynamicValue() {
             primaryKeyTablespaceRule.configure(RuleConfig.builder().withPattern("^{{value}}_PK$").withDynamicValue("tableName").build());
-            assertTrue(primaryKeyTablespaceRule.invalid(createTableChange("INVALID_TABLESPACE")));
-            assertFalse(primaryKeyTablespaceRule.invalid(createTableChange("TABLE_PK")));
+            assertThat(primaryKeyTablespaceRule.invalid(createTableChange("INVALID_TABLESPACE"))).isTrue();
+            assertThat(primaryKeyTablespaceRule.invalid(createTableChange("TABLE_PK"))).isFalse();
         }
 
         @DisplayName("Primary key tablespace rule should support formatted error message with pattern arg")
         @Test
         void primaryKeyNameRuleShouldReturnFormattedErrorMessage() {
             primaryKeyTablespaceRule.configure(RuleConfig.builder().withPattern("^VALID_TABLESPACE$").withErrorMessage("Primary key constraints %s must follow pattern '%s'").build());
-            assertEquals(primaryKeyTablespaceRule.getMessage(createTableChange("INVALID_TABLESPACE")), "Primary key constraints INVALID_TABLESPACE must follow pattern '^VALID_TABLESPACE$'");
+            assertThat(primaryKeyTablespaceRule.getMessage(createTableChange("INVALID_TABLESPACE"))).isEqualTo("Primary key constraints INVALID_TABLESPACE must follow pattern '^VALID_TABLESPACE$'");
         }
 
         @Test

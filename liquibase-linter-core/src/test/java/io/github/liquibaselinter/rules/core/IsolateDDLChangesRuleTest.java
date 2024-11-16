@@ -9,8 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(ChangeSetParameterResolver.class)
 class IsolateDDLChangesRuleTest {
@@ -20,14 +19,14 @@ class IsolateDDLChangesRuleTest {
     void shouldNotAllowMoreThanOneDDL(ChangeSet changeSet) {
         changeSet.addChange(new CreateTableChange());
         changeSet.addChange(new AddColumnChange());
-        assertTrue(new IsolateDDLChangesRule().invalid(changeSet));
+        assertThat(new IsolateDDLChangesRule().invalid(changeSet)).isTrue();
     }
 
     @DisplayName("Should allow one ddl change type in a change set")
     @Test
     void shouldAllowOneDDL(ChangeSet changeSet) {
         changeSet.addChange(new CreateTableChange());
-        assertFalse(new IsolateDDLChangesRule().invalid(changeSet));
+        assertThat(new IsolateDDLChangesRule().invalid(changeSet)).isFalse();
     }
 
 }

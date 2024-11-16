@@ -7,18 +7,17 @@ import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class ConditionHelperTest {
+class ConditionHelperTest {
 
     @Test
     void shouldMatchSimpleContext() {
         ChangeSet changeSet = Mockito.mock(ChangeSet.class);
         when(changeSet.getContexts()).thenReturn(new ContextExpression("foo"));
         RuleConfig ruleConfig = RuleConfig.builder().withCondition("matchesContext('foo')").build();
-        assertTrue(ConditionHelper.evaluateCondition(ruleConfig, changeSet));
+        assertThat(ConditionHelper.evaluateCondition(ruleConfig, changeSet)).isTrue();
     }
 
     @Test
@@ -26,7 +25,7 @@ public class ConditionHelperTest {
         ChangeSet changeSet = Mockito.mock(ChangeSet.class);
         when(changeSet.getContexts()).thenReturn(new ContextExpression("!foo"));
         RuleConfig ruleConfig = RuleConfig.builder().withCondition("matchesContext('foo')").build();
-        assertFalse(ConditionHelper.evaluateCondition(ruleConfig, changeSet));
+        assertThat(ConditionHelper.evaluateCondition(ruleConfig, changeSet)).isFalse();
     }
 
     @Test
@@ -34,14 +33,14 @@ public class ConditionHelperTest {
         ChangeSet changeSet = Mockito.mock(ChangeSet.class);
         when(changeSet.getContexts()).thenReturn(new ContextExpression("foo"));
         RuleConfig ruleConfig = RuleConfig.builder().withCondition("matchesContext('bar')").build();
-        assertFalse(ConditionHelper.evaluateCondition(ruleConfig, changeSet));
+        assertThat(ConditionHelper.evaluateCondition(ruleConfig, changeSet)).isFalse();
     }
 
     @Test
     void shouldNotMatchNoContext() {
         ChangeSet changeSet = Mockito.mock(ChangeSet.class);
         RuleConfig ruleConfig = RuleConfig.builder().withCondition("matchesContext('bar')").build();
-        assertFalse(ConditionHelper.evaluateCondition(ruleConfig, changeSet));
+        assertThat(ConditionHelper.evaluateCondition(ruleConfig, changeSet)).isFalse();
     }
 
     @Test
@@ -49,7 +48,7 @@ public class ConditionHelperTest {
         ChangeSet changeSet = Mockito.mock(ChangeSet.class);
         when(changeSet.getContexts()).thenReturn(new ContextExpression("foo and bar"));
         RuleConfig ruleConfig = RuleConfig.builder().withCondition("matchesContext('foo', 'bar')").build();
-        assertTrue(ConditionHelper.evaluateCondition(ruleConfig, changeSet));
+        assertThat(ConditionHelper.evaluateCondition(ruleConfig, changeSet)).isTrue();
     }
 
 }

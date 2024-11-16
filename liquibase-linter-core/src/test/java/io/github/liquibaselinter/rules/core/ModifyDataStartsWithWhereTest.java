@@ -8,8 +8,7 @@ import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(ChangeSetParameterResolver.class)
 class ModifyDataStartsWithWhereTest {
@@ -17,18 +16,18 @@ class ModifyDataStartsWithWhereTest {
     @Test
     void shouldNotAllowWhereConditionToStartWithWhereCaseInsensitive(ChangeSet changeSet) {
         ModifyDataStartsWithWhere modifyDataStartsWithWhere = new ModifyDataStartsWithWhere();
-        assertTrue(modifyDataStartsWithWhere.invalid(getUpdateDataChange(changeSet, "WHERE table = 'X'")));
-        assertTrue(modifyDataStartsWithWhere.invalid(getDeleteDataChange(changeSet, "WHERE table = 'X'")));
+        assertThat(modifyDataStartsWithWhere.invalid(getUpdateDataChange(changeSet, "WHERE table = 'X'"))).isTrue();
+        assertThat(modifyDataStartsWithWhere.invalid(getDeleteDataChange(changeSet, "WHERE table = 'X'"))).isTrue();
 
-        assertTrue(modifyDataStartsWithWhere.invalid(getUpdateDataChange(changeSet, "where table = 'X'")));
-        assertTrue(modifyDataStartsWithWhere.invalid(getDeleteDataChange(changeSet, "where table = 'X'")));
+        assertThat(modifyDataStartsWithWhere.invalid(getUpdateDataChange(changeSet, "where table = 'X'"))).isTrue();
+        assertThat(modifyDataStartsWithWhere.invalid(getDeleteDataChange(changeSet, "where table = 'X'"))).isTrue();
     }
 
     @Test
     void shouldBeValidOnNullWhereValue(ChangeSet changeSet) {
         ModifyDataStartsWithWhere modifyDataStartsWithWhere = new ModifyDataStartsWithWhere();
-        assertFalse(modifyDataStartsWithWhere.invalid(getUpdateDataChange(changeSet, null)));
-        assertFalse(modifyDataStartsWithWhere.invalid(getDeleteDataChange(changeSet, null)));
+        assertThat(modifyDataStartsWithWhere.invalid(getUpdateDataChange(changeSet, null))).isFalse();
+        assertThat(modifyDataStartsWithWhere.invalid(getDeleteDataChange(changeSet, null))).isFalse();
     }
 
     private UpdateDataChange getUpdateDataChange(ChangeSet changeSet, String where) {

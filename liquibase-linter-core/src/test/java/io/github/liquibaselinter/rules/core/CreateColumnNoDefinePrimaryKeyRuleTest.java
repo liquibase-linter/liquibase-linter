@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CreateColumnNoDefinePrimaryKeyRuleTest {
 
@@ -23,8 +23,8 @@ class CreateColumnNoDefinePrimaryKeyRuleTest {
     @Test
     void nullPrimaryKeyAttributeShouldBeValid() {
         ConstraintsConfig constraintsConfig = new ConstraintsConfig();
-        assertNull(constraintsConfig.isPrimaryKey());
-        assertFalse(createColumnNoDefinePrimaryKeyRule.invalid(buildAddColumnChange(null)));
+        assertThat(constraintsConfig.isPrimaryKey()).isNull();
+        assertThat(createColumnNoDefinePrimaryKeyRule.invalid(buildAddColumnChange(null))).isFalse();
     }
 
     @DisplayName("False primary key attribute should be valid")
@@ -32,8 +32,8 @@ class CreateColumnNoDefinePrimaryKeyRuleTest {
     void falsePrimaryKeyAttributeShouldBeValid() {
         ConstraintsConfig constraintsConfig = new ConstraintsConfig();
         constraintsConfig.setPrimaryKey(Boolean.FALSE);
-        assertFalse(constraintsConfig.isPrimaryKey());
-        assertFalse(createColumnNoDefinePrimaryKeyRule.invalid(buildAddColumnChange(Boolean.FALSE)));
+        assertThat(constraintsConfig.isPrimaryKey()).isFalse();
+        assertThat(createColumnNoDefinePrimaryKeyRule.invalid(buildAddColumnChange(Boolean.FALSE))).isFalse();
     }
 
     @DisplayName("True primary key attribute should be valid")
@@ -41,8 +41,8 @@ class CreateColumnNoDefinePrimaryKeyRuleTest {
     void truePrimaryKeyAttributeShouldBeInvalid() {
         ConstraintsConfig constraintsConfig = new ConstraintsConfig();
         constraintsConfig.setPrimaryKey(Boolean.TRUE);
-        assertTrue(constraintsConfig.isPrimaryKey());
-        assertTrue(createColumnNoDefinePrimaryKeyRule.invalid(buildAddColumnChange(Boolean.TRUE)));
+        assertThat(constraintsConfig.isPrimaryKey()).isTrue();
+        assertThat(createColumnNoDefinePrimaryKeyRule.invalid(buildAddColumnChange(Boolean.TRUE))).isTrue();
     }
 
     private AddColumnChange buildAddColumnChange(Boolean primaryKey) {
