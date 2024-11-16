@@ -41,5 +41,10 @@ class LintMojoIT {
                 "[ERROR] \tchangeSet '2'",
                 "[ERROR] \t\t'index-name': Index names must be the table name, suffixed with 'IX' and a two-digit number, e.g. FOO_IX01"
             );
+
+        assertThat(result)
+            .err()
+            .plain()
+            .isEmpty();
     }
 }
