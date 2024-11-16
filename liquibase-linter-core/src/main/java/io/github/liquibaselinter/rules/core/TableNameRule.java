@@ -8,7 +8,7 @@ import liquibase.change.core.CreateTableChange;
 import liquibase.change.core.RenameTableChange;
 
 @SuppressWarnings("rawtypes")
-@AutoService({ChangeRule.class})
+@AutoService(ChangeRule.class)
 public class TableNameRule extends AbstractLintRule implements ChangeRule<Change> {
     private static final String NAME = "table-name";
     private static final String MESSAGE = "Table name does not follow pattern";

@@ -8,7 +8,7 @@ import liquibase.change.core.AbstractModifyDataChange;
 import java.util.Locale;
 
 @SuppressWarnings("rawtypes")
-@AutoService({ChangeRule.class})
+@AutoService(ChangeRule.class)
 public class ModifyDataStartsWithWhere extends AbstractLintRule implements ChangeRule<AbstractModifyDataChange> {
     private static final String NAME = "modify-data-starts-with-where";
     private static final String MESSAGE = "Modify data where starts with where clause, that's probably a mistake";

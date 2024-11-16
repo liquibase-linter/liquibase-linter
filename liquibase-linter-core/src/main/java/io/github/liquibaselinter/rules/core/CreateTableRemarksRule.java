@@ -6,7 +6,7 @@ import io.github.liquibaselinter.rules.ChangeRule;
 import liquibase.change.core.CreateTableChange;
 
 @SuppressWarnings("rawtypes")
-@AutoService({ChangeRule.class})
+@AutoService(ChangeRule.class)
 public class CreateTableRemarksRule extends AbstractLintRule implements ChangeRule<CreateTableChange> {
     private static final String NAME = "create-table-remarks";
     private static final String MESSAGE = "Create table must contain remark attribute";

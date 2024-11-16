@@ -98,7 +98,7 @@ public class SchemaNameRules {
     }
 
     @SuppressWarnings("rawtypes")
-    @AutoService({ChangeRule.class})
+    @AutoService(ChangeRule.class)
     public static class SchemaNameRule extends AbstractLintRule implements ChangeRule<Change> {
 
         private static final String NAME = "schema-name";
@@ -132,7 +132,7 @@ public class SchemaNameRules {
     }
 
     @SuppressWarnings("rawtypes")
-    @AutoService({ChangeRule.class})
+    @AutoService(ChangeRule.class)
     public static class NoSchemaNameRule extends AbstractLintRule implements ChangeRule<Change> {
 
         private static final String NAME = "no-schema-name";

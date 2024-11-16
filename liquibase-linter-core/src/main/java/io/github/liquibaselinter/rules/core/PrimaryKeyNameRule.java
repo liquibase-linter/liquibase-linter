@@ -15,7 +15,7 @@ import liquibase.change.core.AddPrimaryKeyChange;
 import liquibase.change.core.CreateTableChange;
 
 @SuppressWarnings("rawtypes")
-@AutoService({ChangeRule.class})
+@AutoService(ChangeRule.class)
 public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule<Change> {
     private static final String NAME = "primary-key-name";
     private static final String MESSAGE = "Primary key name '%s' is missing or does not follow pattern '%s'";

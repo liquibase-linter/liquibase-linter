@@ -43,7 +43,7 @@ public class ObjectNameRules {
     }
 
     @SuppressWarnings("rawtypes")
-    @AutoService({ChangeRule.class})
+    @AutoService(ChangeRule.class)
     public static class ObjectNameRule extends AbstractLintRule implements ChangeRule<Change> {
         private static final String NAME = "object-name";
         private static final String MESSAGE = "Object name does not follow pattern";
@@ -76,7 +76,7 @@ public class ObjectNameRules {
     }
 
     @SuppressWarnings("rawtypes")
-    @AutoService({ChangeRule.class})
+    @AutoService(ChangeRule.class)
     public static class ObjectNameLengthRule extends AbstractLintRule implements ChangeRule<Change> {
         private static final String NAME = "object-name-length";
         private static final String MESSAGE = "Object name '%s' must be less than %d characters";

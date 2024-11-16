@@ -6,7 +6,7 @@ import io.github.liquibaselinter.rules.ChangeRule;
 import liquibase.change.core.CreateIndexChange;
 
 @SuppressWarnings("rawtypes")
-@AutoService({ChangeRule.class})
+@AutoService(ChangeRule.class)
 public class IndexNameRule extends AbstractLintRule implements ChangeRule<CreateIndexChange> {
     private static final String NAME = "index-name";
     private static final String MESSAGE = "Index name does not follow pattern";

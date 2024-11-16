@@ -12,7 +12,7 @@ import liquibase.change.core.CreateTableChange;
 import java.util.List;
 
 @SuppressWarnings("rawtypes")
-@AutoService({ChangeRule.class})
+@AutoService(ChangeRule.class)
 public class CreateColumnRemarksRule extends AbstractLintRule implements ChangeRule<Change> {
     private static final String NAME = "create-column-remarks";
     private static final String MESSAGE = "Add column must contain remarks";

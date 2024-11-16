@@ -8,7 +8,7 @@ import liquibase.change.core.AbstractModifyDataChange;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("rawtypes")
-@AutoService({ChangeRule.class})
+@AutoService(ChangeRule.class)
 public class ModifyDataEnforceWhere extends AbstractLintRule implements ChangeRule<AbstractModifyDataChange> {
     private static final String NAME = "modify-data-enforce-where";
     private static final String MESSAGE = "Modify data on table '%s' must have a where condition";
