@@ -4,7 +4,6 @@ import io.github.liquibaselinter.report.Reporter;
 import liquibase.exception.UnexpectedLiquibaseException;
 import liquibase.resource.ResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +13,6 @@ import java.io.InputStream;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_CLASSPATH;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_PATH_PROPERTY;
-import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_IMPLICIT_PATH;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -23,16 +21,9 @@ import static org.mockito.Mockito.when;
 
 class ConfigLoaderTest {
 
-    private ConfigLoader configLoader;
-
     @AfterAll
     public static void tearDown() {
         System.clearProperty(LQLINT_CONFIG_PATH_PROPERTY);
-    }
-
-    @BeforeEach
-    void setUp() {
-        configLoader = new ConfigLoader();
     }
 
     @DisplayName("Should load from system property is present")
@@ -43,9 +34,7 @@ class ConfigLoaderTest {
         System.setProperty(LQLINT_CONFIG_PATH_PROPERTY, customPath);
         when(resourceAccessor.openStream(null, customPath)).thenReturn(getInputStream());
         when(resourceAccessor.openStream(null, LQLINT_CONFIG)).thenReturn(getInputStream());
-        when(resourceAccessor.openStream(null, LQLINT_CONFIG_IMPLICIT_PATH))
-            .thenReturn(getInputStream(LQLINT_CONFIG_IMPLICIT_PATH));
-        Config config = configLoader.load(resourceAccessor);
+        Config config = ConfigLoader.load(resourceAccessor);
         assertThat(config).isNotNull();
         verify(resourceAccessor, times(0)).openStreams(null, LQLINT_CONFIG);
     }
@@ -57,7 +46,7 @@ class ConfigLoaderTest {
         when(resourceAccessor.openStreams(null, LQLINT_CONFIG)).thenReturn(null);
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
-            .isThrownBy(() -> configLoader.load(resourceAccessor))
+            .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
             .withMessageContaining("Failed to load lq lint config file");
     }
 
@@ -68,7 +57,7 @@ class ConfigLoaderTest {
         when(resourceAccessor.openStreams(null, LQLINT_CONFIG)).thenThrow(new IOException());
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
-            .isThrownBy(() -> configLoader.load(resourceAccessor))
+            .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
             .withMessageContaining("Failed to load lq lint config file");
     }
 
@@ -81,7 +70,7 @@ class ConfigLoaderTest {
         when(resourceAccessor.openStream(null, "lqlint-import-b.test.json"))
             .thenReturn(getInputStream("lqlint-import-b.test.json"));
 
-        Config config = configLoader.load(resourceAccessor);
+        Config config = ConfigLoader.load(resourceAccessor);
         assertThat(config.getRules().asMap()).containsOnlyKeys("isolate-ddl-changes", "no-preconditions", "changelog-file-name");
         assertThat(config.getRules().get("isolate-ddl-changes")).extracting("enabled").containsExactly(true);
         assertThat(config.getRules().get("no-preconditions")).extracting("enabled").containsExactly(false);
@@ -101,7 +90,7 @@ class ConfigLoaderTest {
         when(resourceAccessor.openStream(null, "lqlint-import-b.test.json"))
             .thenReturn(getInputStream("lqlint-import-b.test.json"));
 
-        Config config = configLoader.load(resourceAccessor);
+        Config config = ConfigLoader.load(resourceAccessor);
         assertThat(config.getReporting().asMap()).containsOnlyKeys("console", "markdown");
         assertThat(config.getReporting().get("console")).extracting(Reporter::isEnabled).containsExactly(false);
     }
@@ -112,7 +101,7 @@ class ConfigLoaderTest {
         ResourceAccessor resourceAccessor = mockResourceAccessor();
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
-            .isThrownBy(() -> configLoader.load(resourceAccessor))
+            .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
             .withMessageContaining("Failed to load imported lq lint config file");
     }
 
@@ -123,7 +112,7 @@ class ConfigLoaderTest {
         when(resourceAccessor.openStream(null, "lqlint-import-a.test.json")).thenThrow(new IOException());
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
-            .isThrownBy(() -> configLoader.load(resourceAccessor))
+            .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
             .withMessageContaining("Failed to load imported lq lint config file");
     }
 
@@ -131,8 +120,6 @@ class ConfigLoaderTest {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
         when(resourceAccessor.openStream(null, LQLINT_CONFIG_CLASSPATH))
             .thenReturn(getInputStream("lqlint-importing.test.json"));
-        when(resourceAccessor.openStream(null, LQLINT_CONFIG_IMPLICIT_PATH))
-            .thenReturn(getInputStream(LQLINT_CONFIG_IMPLICIT_PATH));
         return resourceAccessor;
     }
 
