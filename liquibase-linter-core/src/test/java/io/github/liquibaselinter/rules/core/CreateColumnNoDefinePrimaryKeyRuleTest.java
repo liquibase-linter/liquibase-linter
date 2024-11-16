@@ -1,6 +1,5 @@
 package io.github.liquibaselinter.rules.core;
 
-import io.github.liquibaselinter.rules.core.CreateColumnNoDefinePrimaryKeyRule;
 import liquibase.change.AddColumnConfig;
 import liquibase.change.ConstraintsConfig;
 import liquibase.change.core.AddColumnChange;

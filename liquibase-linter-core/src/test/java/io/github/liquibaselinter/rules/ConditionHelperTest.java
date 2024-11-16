@@ -1,6 +1,5 @@
 package io.github.liquibaselinter.rules;
 
-import io.github.liquibaselinter.rules.ConditionHelper;
 import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.ContextExpression;
 import liquibase.changelog.ChangeSet;

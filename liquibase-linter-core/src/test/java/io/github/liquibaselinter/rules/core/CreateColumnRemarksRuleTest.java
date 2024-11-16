@@ -1,6 +1,5 @@
 package io.github.liquibaselinter.rules.core;
 
-import io.github.liquibaselinter.rules.core.CreateColumnRemarksRule;
 import liquibase.change.AddColumnConfig;
 import liquibase.change.core.AddColumnChange;
 import org.junit.jupiter.api.BeforeEach;

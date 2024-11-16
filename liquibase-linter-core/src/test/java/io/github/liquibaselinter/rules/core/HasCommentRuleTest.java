@@ -1,6 +1,5 @@
 package io.github.liquibaselinter.rules.core;
 
-import io.github.liquibaselinter.rules.core.HasCommentRule;
 import liquibase.change.core.TagDatabaseChange;
 import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.DisplayName;

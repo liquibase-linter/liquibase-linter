@@ -1,6 +1,5 @@
 package io.github.liquibaselinter.rules.core;
 
-import io.github.liquibaselinter.rules.core.HasContextRule;
 import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

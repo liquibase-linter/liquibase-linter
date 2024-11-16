@@ -2,7 +2,6 @@ package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.config.RuleConfig;
-import io.github.liquibaselinter.rules.core.IllegalChangeTypesRule;
 import liquibase.change.Change;
 import liquibase.change.DatabaseChange;
 import liquibase.change.core.LoadDataChange;

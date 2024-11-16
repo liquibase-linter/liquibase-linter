@@ -1,7 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.config.RuleConfig;
-import io.github.liquibaselinter.rules.core.TableNameLengthRule;
 import liquibase.change.core.CreateTableChange;
 import liquibase.change.core.RenameTableChange;
 import org.junit.jupiter.api.BeforeEach;

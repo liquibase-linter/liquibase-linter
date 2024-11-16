@@ -1,7 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
-import io.github.liquibaselinter.rules.core.ModifyDataStartsWithWhere;
 import liquibase.change.core.DeleteDataChange;
 import liquibase.change.core.UpdateDataChange;
 import liquibase.changelog.ChangeSet;

@@ -1,7 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
-import io.github.liquibaselinter.rules.core.DropNotNullRequireColumnDataTypeRule;
 import liquibase.change.core.DropNotNullConstraintChange;
 import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.BeforeEach;

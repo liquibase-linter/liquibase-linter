@@ -1,7 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.config.RuleConfig;
-import io.github.liquibaselinter.rules.core.NoPreconditionsRule;
 import liquibase.change.core.InsertDataChange;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;

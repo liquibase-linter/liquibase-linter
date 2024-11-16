@@ -1,7 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
-import io.github.liquibaselinter.rules.core.IsolateDDLChangesRule;
 import liquibase.change.core.AddColumnChange;
 import liquibase.change.core.CreateTableChange;
 import liquibase.changelog.ChangeSet;

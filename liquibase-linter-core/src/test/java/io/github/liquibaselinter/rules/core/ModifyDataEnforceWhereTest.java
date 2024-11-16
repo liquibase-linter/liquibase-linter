@@ -2,7 +2,6 @@ package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
-import io.github.liquibaselinter.rules.core.ModifyDataEnforceWhere;
 import liquibase.change.core.DeleteDataChange;
 import liquibase.change.core.UpdateDataChange;
 import liquibase.changelog.ChangeSet;

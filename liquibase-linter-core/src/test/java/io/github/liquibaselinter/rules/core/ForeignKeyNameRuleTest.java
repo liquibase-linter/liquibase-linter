@@ -1,7 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.config.RuleConfig;
-import io.github.liquibaselinter.rules.core.ForeignKeyNameRule;
 import liquibase.change.core.AddForeignKeyConstraintChange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
