@@ -2,7 +2,6 @@ package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
-import io.github.liquibaselinter.rules.core.ModifyDataEnforceWhere;
 import liquibase.change.core.DeleteDataChange;
 import liquibase.change.core.UpdateDataChange;
 import liquibase.changelog.ChangeSet;
@@ -12,50 +11,48 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(ChangeSetParameterResolver.class)
 class ModifyDataEnforceWhereTest {
 
+    private final ModifyDataEnforceWhere rule = new ModifyDataEnforceWhere();
+
     @Test
     void shouldEnforceWhereConditionOnCertainTablesNullValue(ChangeSet changeSet) {
-        final ModifyDataEnforceWhere modifyDataEnforceWhere = new ModifyDataEnforceWhere();
-        modifyDataEnforceWhere.configure(RuleConfig.builder().withValues(Collections.singletonList("REQUIRES_WHERE")).build());
-        assertTrue(modifyDataEnforceWhere.invalid(getUpdateDataChange(changeSet, null)));
-        assertTrue(modifyDataEnforceWhere.invalid(getDeleteDataChange(changeSet, null)));
+        rule.configure(RuleConfig.builder().withValues(Collections.singletonList("REQUIRES_WHERE")).build());
+        assertThat(rule.invalid(getUpdateDataChange(changeSet, null))).isTrue();
+        assertThat(rule.invalid(getDeleteDataChange(changeSet, null))).isTrue();
     }
 
     @Test
     void shouldEnforceWhereConditionOnCertainTablesEmptyValue(ChangeSet changeSet) {
-        final ModifyDataEnforceWhere modifyDataEnforceWhere = new ModifyDataEnforceWhere();
-        modifyDataEnforceWhere.configure(RuleConfig.builder().withValues(Collections.singletonList("REQUIRES_WHERE")).build());
-        assertTrue(modifyDataEnforceWhere.invalid(getUpdateDataChange(changeSet, "")));
-        assertTrue(modifyDataEnforceWhere.invalid(getDeleteDataChange(changeSet, "")));
+        rule.configure(RuleConfig.builder().withValues(Collections.singletonList("REQUIRES_WHERE")).build());
+        assertThat(rule.invalid(getUpdateDataChange(changeSet, ""))).isTrue();
+        assertThat(rule.invalid(getDeleteDataChange(changeSet, ""))).isTrue();
     }
 
     @Test
     void shouldEnforcePresenceAndPattern(ChangeSet changeSet) {
-        ModifyDataEnforceWhere rule = new ModifyDataEnforceWhere();
         rule.configure(RuleConfig.builder()
             .withValues(Collections.singletonList("REQUIRES_WHERE"))
             .withPattern("^.*CODE =.*$")
             .build());
 
-        assertTrue(rule.invalid(getUpdateDataChange(changeSet, null)));
-        assertTrue(rule.invalid(getUpdateDataChange(changeSet, "sausages")));
-        assertFalse(rule.invalid(getUpdateDataChange(changeSet, "CODE = 'foo'")));
+        assertThat(rule.invalid(getUpdateDataChange(changeSet, null))).isTrue();
+        assertThat(rule.invalid(getUpdateDataChange(changeSet, "sausages"))).isTrue();
+        assertThat(rule.invalid(getUpdateDataChange(changeSet, "CODE = 'foo'"))).isFalse();
     }
 
     @DisplayName("Modify data change should support formatter error messages")
     @Test
     void foreignKeyNameRuleShouldReturnFormattedErrorMessage(ChangeSet changeSet) {
-        ModifyDataEnforceWhere rule = new ModifyDataEnforceWhere();
         rule.configure(RuleConfig.builder().build());
-        assertEquals(rule.getMessage(getUpdateDataChange(changeSet, null)), "Modify data on table 'REQUIRES_WHERE' must have a where condition");
-        assertEquals(rule.getMessage(getDeleteDataChange(changeSet, null)), "Modify data on table 'REQUIRES_WHERE' must have a where condition");
+        assertThat(rule.getMessage(getUpdateDataChange(changeSet, null))).isEqualTo("Modify data on table 'REQUIRES_WHERE' must have a where condition");
+        assertThat(rule.getMessage(getDeleteDataChange(changeSet, null))).isEqualTo("Modify data on table 'REQUIRES_WHERE' must have a where condition");
     }
 
-    private UpdateDataChange getUpdateDataChange(ChangeSet changeSet, String where) {
+    private static UpdateDataChange getUpdateDataChange(ChangeSet changeSet, String where) {
         UpdateDataChange updateDataChange = new UpdateDataChange();
         updateDataChange.setTableName("REQUIRES_WHERE");
         updateDataChange.setWhere(where);
@@ -63,7 +60,7 @@ class ModifyDataEnforceWhereTest {
         return updateDataChange;
     }
 
-    private DeleteDataChange getDeleteDataChange(ChangeSet changeSet, String where) {
+    private static DeleteDataChange getDeleteDataChange(ChangeSet changeSet, String where) {
         DeleteDataChange deleteDataChange = new DeleteDataChange();
         deleteDataChange.setTableName("REQUIRES_WHERE");
         deleteDataChange.setWhere(where);

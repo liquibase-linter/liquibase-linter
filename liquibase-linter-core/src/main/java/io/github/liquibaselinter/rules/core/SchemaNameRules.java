@@ -4,7 +4,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
-import liquibase.change.AbstractChange;
+import liquibase.change.Change;
 import liquibase.change.core.*;
 
 import java.util.Arrays;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 public class SchemaNameRules {
 
-    private static boolean doesSupport(AbstractChange change) {
+    private static boolean doesSupport(Change change) {
         return !getSchemaName(change).isEmpty();
     }
 
-    private static Collection<String> getSchemaName(AbstractChange change) {
+    private static Collection<String> getSchemaName(Change change) {
         if (change instanceof AbstractModifyDataChange) {
             return Collections.singletonList(((AbstractModifyDataChange) change).getSchemaName());
         } else if (change instanceof AddAutoIncrementChange) {
@@ -98,8 +98,8 @@ public class SchemaNameRules {
     }
 
     @SuppressWarnings("rawtypes")
-    @AutoService({ChangeRule.class})
-    public static class SchemaNameRule extends AbstractLintRule implements ChangeRule<AbstractChange> {
+    @AutoService(ChangeRule.class)
+    public static class SchemaNameRule extends AbstractLintRule implements ChangeRule<Change> {
 
         private static final String NAME = "schema-name";
         private static final String MESSAGE = "Schema name '%s' does not follow pattern '%s'";
@@ -109,22 +109,22 @@ public class SchemaNameRules {
         }
 
         @Override
-        public Class<AbstractChange> getChangeType() {
-            return AbstractChange.class;
+        public Class<Change> getChangeType() {
+            return Change.class;
         }
 
         @Override
-        public boolean supports(AbstractChange change) {
+        public boolean supports(Change change) {
             return doesSupport(change);
         }
 
         @Override
-        public boolean invalid(AbstractChange change) {
+        public boolean invalid(Change change) {
             return getSchemaName(change).stream().anyMatch(schemaName -> checkPattern(schemaName, change));
         }
 
         @Override
-        public String getMessage(AbstractChange change) {
+        public String getMessage(Change change) {
             String joined = getSchemaName(change).stream().filter(schemaName -> checkMandatoryPattern(schemaName, change)).collect(Collectors.joining(","));
             return formatMessage(joined, getConfig().getPatternString());
         }
@@ -132,8 +132,8 @@ public class SchemaNameRules {
     }
 
     @SuppressWarnings("rawtypes")
-    @AutoService({ChangeRule.class})
-    public static class NoSchemaNameRule extends AbstractLintRule implements ChangeRule<AbstractChange> {
+    @AutoService(ChangeRule.class)
+    public static class NoSchemaNameRule extends AbstractLintRule implements ChangeRule<Change> {
 
         private static final String NAME = "no-schema-name";
         private static final String MESSAGE = "Schema names are not allowed in this project";
@@ -143,12 +143,12 @@ public class SchemaNameRules {
         }
 
         @Override
-        public Class<AbstractChange> getChangeType() {
-            return AbstractChange.class;
+        public Class<Change> getChangeType() {
+            return Change.class;
         }
 
         @Override
-        public boolean invalid(AbstractChange change) {
+        public boolean invalid(Change change) {
             return getSchemaName(change).stream().anyMatch(this::checkBlank);
         }
     }

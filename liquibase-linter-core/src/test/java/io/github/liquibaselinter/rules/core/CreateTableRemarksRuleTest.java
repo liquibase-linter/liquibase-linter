@@ -1,39 +1,31 @@
 package io.github.liquibaselinter.rules.core;
 
-import io.github.liquibaselinter.rules.core.CreateTableRemarksRule;
 import liquibase.change.core.CreateTableChange;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CreateTableRemarksRuleTest {
 
-    private CreateTableRemarksRule createTableRemarksRule;
-
-    @BeforeEach
-    void setUp() {
-        createTableRemarksRule = new CreateTableRemarksRule();
-    }
+    private final CreateTableRemarksRule rule = new CreateTableRemarksRule();
 
     @DisplayName("Should not allow create table without remarks attribute")
     @Test
     void shouldNotAllowCreteTableWithoutRemarks() {
-        assertTrue(createTableRemarksRule.invalid(getCreateTableChange(null)));
+        assertThat(rule.invalid(getCreateTableChange(null))).isTrue();
     }
 
     @DisplayName("Should not allow create table without remarks attribute")
     @Test
     void shouldNotAllowCreateTableWithEmptyRemarks() {
-        assertTrue(createTableRemarksRule.invalid(getCreateTableChange("")));
+        assertThat(rule.invalid(getCreateTableChange(""))).isTrue();
     }
 
     @DisplayName("Should allow create table with remarks attribute")
     @Test
     void shouldAllowCreateTableWithRemarks() {
-        assertFalse(createTableRemarksRule.invalid(getCreateTableChange("REMARK")));
+        assertThat(rule.invalid(getCreateTableChange("REMARK"))).isFalse();
     }
 
     private CreateTableChange getCreateTableChange(String remarks) {

@@ -5,7 +5,6 @@ import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.resolvers.LiquibaseIntegrationTestResolver;
 import liquibase.Contexts;
 import liquibase.Liquibase;
-import liquibase.exception.ChangeLogParseException;
 import liquibase.exception.CommandExecutionException;
 import liquibase.parser.ChangeLogParserFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -59,7 +58,7 @@ abstract class LinterIntegrationTest {
         tests.add(new IntegrationTestConfig(displayName, changeLogFile, configFile, null));
     }
 
-    private static class IntegrationTestConfig {
+    private static final class IntegrationTestConfig {
         private final String displayName;
         private final String changeLogFile;
         private final String configFile;

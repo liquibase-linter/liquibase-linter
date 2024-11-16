@@ -1,40 +1,32 @@
 package io.github.liquibaselinter.rules.core;
 
-import io.github.liquibaselinter.rules.core.CreateColumnRemarksRule;
 import liquibase.change.AddColumnConfig;
 import liquibase.change.core.AddColumnChange;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CreateColumnRemarksRuleTest {
 
-    private CreateColumnRemarksRule createColumnRemarksRule;
-
-    @BeforeEach
-    void setUp() {
-        createColumnRemarksRule = new CreateColumnRemarksRule();
-    }
+    private final CreateColumnRemarksRule rule = new CreateColumnRemarksRule();
 
     @DisplayName("Should not allow create column without remarks attribute")
     @Test
     void shouldNotAllowCreateColumnWithoutRemarks() {
-        assertTrue(createColumnRemarksRule.invalid(buildAddColumnChange(null)));
+        assertThat(rule.invalid(buildAddColumnChange(null))).isTrue();
     }
 
     @DisplayName("Should not allow create column with empty attribute")
     @Test
     void shouldNotAllowCreateColumnWithEmptyRemarks() {
-        assertTrue(createColumnRemarksRule.invalid(buildAddColumnChange("")));
+        assertThat(rule.invalid(buildAddColumnChange(""))).isTrue();
     }
 
     @DisplayName("Should allow create column with remarks attribute")
     @Test
     void shouldAllowCreateColumnWithRemarks() {
-        assertFalse(createColumnRemarksRule.invalid(buildAddColumnChange("Some remarks")));
+        assertThat(rule.invalid(buildAddColumnChange("Some remarks"))).isFalse();
     }
 
     private AddColumnChange buildAddColumnChange(String remarks) {

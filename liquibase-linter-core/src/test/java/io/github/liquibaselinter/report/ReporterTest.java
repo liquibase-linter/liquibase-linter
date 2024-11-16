@@ -159,7 +159,7 @@ class ReporterTest {
         return new Report(new Config.Builder().withRules(ImmutableListMultimap.of()).build(), ImmutableList.of());
     }
 
-    private static class ReportingTestConfig {
+    private static final class ReportingTestConfig {
         final String reportType;
         final ReporterConfig config;
         final Report report;

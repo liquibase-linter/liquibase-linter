@@ -47,7 +47,7 @@ public class LiquibaseIntegrationTestResolver implements ParameterResolver {
         }
     }
 
-    private static class ConfigAwareResourceAccessor extends ClassLoaderResourceAccessor {
+    private static final class ConfigAwareResourceAccessor extends ClassLoaderResourceAccessor {
 
         private final String configPath;
 

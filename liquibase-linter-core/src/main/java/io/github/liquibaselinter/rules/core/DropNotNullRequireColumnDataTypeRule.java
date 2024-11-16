@@ -6,7 +6,7 @@ import io.github.liquibaselinter.rules.ChangeRule;
 import liquibase.change.core.DropNotNullConstraintChange;
 
 @SuppressWarnings("rawtypes")
-@AutoService({ChangeRule.class})
+@AutoService(ChangeRule.class)
 public class DropNotNullRequireColumnDataTypeRule extends AbstractLintRule implements ChangeRule<DropNotNullConstraintChange> {
     private static final String NAME = "drop-not-null-require-column-data-type";
     private static final String MESSAGE = "Drop not null constraint column data type attribute must be populated";

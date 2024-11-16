@@ -13,7 +13,8 @@ import java.io.InputStream;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_CLASSPATH;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_PATH_PROPERTY;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.when;
 class ConfigLoaderTest {
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         System.clearProperty(LQLINT_CONFIG_PATH_PROPERTY);
     }
 

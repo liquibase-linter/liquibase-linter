@@ -4,92 +4,86 @@ import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.core.ObjectNameRules.ObjectNameLengthRule;
 import liquibase.change.AddColumnConfig;
 import liquibase.change.core.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ObjectNameLengthRuleTest {
 
-    private ObjectNameLengthRule objectNameLengthRule;
-
-    @BeforeEach
-    void setUp() {
-        objectNameLengthRule = new ObjectNameLengthRule();
-    }
+    private final ObjectNameLengthRule rule = new ObjectNameLengthRule();
 
     @DisplayName("Object name must not exceed max length")
     @Test
     void objectNameMustNotExceedMaxLength() {
-        objectNameLengthRule.configure(RuleConfig.builder().withMaxLength(4).build());
-        assertTrue(objectNameLengthRule.invalid(getAddColumnChange("VALUE")));
-        assertTrue(objectNameLengthRule.invalid(getAddForeignKeyConstraintChange("VALUE")));
-        assertTrue(objectNameLengthRule.invalid(getAddPrimaryKeyConstraintChange("VALUE")));
-        assertTrue(objectNameLengthRule.invalid(getAddUniqueConstraintChange("VALUE")));
-        assertTrue(objectNameLengthRule.invalid(getCreateTableChange("VALUE")));
-        assertTrue(objectNameLengthRule.invalid(getMergeColumnChange("VALUE")));
-        assertTrue(objectNameLengthRule.invalid(getRenameColumnChange("VALUE")));
-        assertTrue(objectNameLengthRule.invalid(getRenameViewChange("VALUE")));
-        assertTrue(objectNameLengthRule.invalid(getCreateViewChange("VALUE")));
-        assertTrue(objectNameLengthRule.invalid(getCreateIndexChange("VALUE")));
+        rule.configure(RuleConfig.builder().withMaxLength(4).build());
+        assertThat(rule.invalid(getAddColumnChange("VALUE"))).isTrue();
+        assertThat(rule.invalid(getAddForeignKeyConstraintChange("VALUE"))).isTrue();
+        assertThat(rule.invalid(getAddPrimaryKeyConstraintChange("VALUE"))).isTrue();
+        assertThat(rule.invalid(getAddUniqueConstraintChange("VALUE"))).isTrue();
+        assertThat(rule.invalid(getCreateTableChange("VALUE"))).isTrue();
+        assertThat(rule.invalid(getMergeColumnChange("VALUE"))).isTrue();
+        assertThat(rule.invalid(getRenameColumnChange("VALUE"))).isTrue();
+        assertThat(rule.invalid(getRenameViewChange("VALUE"))).isTrue();
+        assertThat(rule.invalid(getCreateViewChange("VALUE"))).isTrue();
+        assertThat(rule.invalid(getCreateIndexChange("VALUE"))).isTrue();
     }
 
     @DisplayName("Object name can equal max length")
     @Test
     void tableLengthCanEqualMaxLength() {
-        objectNameLengthRule.configure(RuleConfig.builder().withMaxLength(5).build());
-        assertFalse(objectNameLengthRule.invalid(getAddColumnChange("VALUE")));
-        assertFalse(objectNameLengthRule.invalid(getAddForeignKeyConstraintChange("VALUE")));
-        assertFalse(objectNameLengthRule.invalid(getAddPrimaryKeyConstraintChange("VALUE")));
-        assertFalse(objectNameLengthRule.invalid(getAddUniqueConstraintChange("VALUE")));
-        assertFalse(objectNameLengthRule.invalid(getCreateTableChange("VALUE")));
-        assertFalse(objectNameLengthRule.invalid(getMergeColumnChange("VALUE")));
-        assertFalse(objectNameLengthRule.invalid(getRenameColumnChange("VALUE")));
-        assertFalse(objectNameLengthRule.invalid(getRenameViewChange("VALUE")));
-        assertFalse(objectNameLengthRule.invalid(getCreateViewChange("VALUE")));
-        assertFalse(objectNameLengthRule.invalid(getCreateIndexChange("VALUE")));
+        rule.configure(RuleConfig.builder().withMaxLength(5).build());
+        assertThat(rule.invalid(getAddColumnChange("VALUE"))).isFalse();
+        assertThat(rule.invalid(getAddForeignKeyConstraintChange("VALUE"))).isFalse();
+        assertThat(rule.invalid(getAddPrimaryKeyConstraintChange("VALUE"))).isFalse();
+        assertThat(rule.invalid(getAddUniqueConstraintChange("VALUE"))).isFalse();
+        assertThat(rule.invalid(getCreateTableChange("VALUE"))).isFalse();
+        assertThat(rule.invalid(getMergeColumnChange("VALUE"))).isFalse();
+        assertThat(rule.invalid(getRenameColumnChange("VALUE"))).isFalse();
+        assertThat(rule.invalid(getRenameViewChange("VALUE"))).isFalse();
+        assertThat(rule.invalid(getCreateViewChange("VALUE"))).isFalse();
+        assertThat(rule.invalid(getCreateIndexChange("VALUE"))).isFalse();
     }
 
     @DisplayName("Object name can be null")
     @Test
     void objectNameCanBeNull() {
-        objectNameLengthRule.configure(RuleConfig.builder().withMaxLength(4).build());
-        assertFalse(objectNameLengthRule.invalid(getAddColumnChange((String) null)));
-        assertFalse(objectNameLengthRule.invalid(getAddForeignKeyConstraintChange(null)));
-        assertFalse(objectNameLengthRule.invalid(getAddPrimaryKeyConstraintChange(null)));
-        assertFalse(objectNameLengthRule.invalid(getAddUniqueConstraintChange(null)));
-        assertFalse(objectNameLengthRule.invalid(getCreateTableChange(null)));
-        assertFalse(objectNameLengthRule.invalid(getMergeColumnChange(null)));
-        assertFalse(objectNameLengthRule.invalid(getRenameColumnChange(null)));
-        assertFalse(objectNameLengthRule.invalid(getRenameViewChange(null)));
-        assertFalse(objectNameLengthRule.invalid(getCreateViewChange(null)));
-        assertFalse(objectNameLengthRule.invalid(getCreateIndexChange(null)));
+        rule.configure(RuleConfig.builder().withMaxLength(4).build());
+        assertThat(rule.invalid(getAddColumnChange((String) null))).isFalse();
+        assertThat(rule.invalid(getAddForeignKeyConstraintChange(null))).isFalse();
+        assertThat(rule.invalid(getAddPrimaryKeyConstraintChange(null))).isFalse();
+        assertThat(rule.invalid(getAddUniqueConstraintChange(null))).isFalse();
+        assertThat(rule.invalid(getCreateTableChange(null))).isFalse();
+        assertThat(rule.invalid(getMergeColumnChange(null))).isFalse();
+        assertThat(rule.invalid(getRenameColumnChange(null))).isFalse();
+        assertThat(rule.invalid(getRenameViewChange(null))).isFalse();
+        assertThat(rule.invalid(getCreateViewChange(null))).isFalse();
+        assertThat(rule.invalid(getCreateIndexChange(null))).isFalse();
     }
 
     @DisplayName("Object name length rule should support formatted error message with length arg")
     @Test
     void objectNameLengthRuleShouldReturnFormattedErrorMessage() {
-        objectNameLengthRule.configure(RuleConfig.builder().withMaxLength(4).withErrorMessage("Object name '%s' must be less than %d characters").build());
+        rule.configure(RuleConfig.builder().withMaxLength(4).withErrorMessage("Object name '%s' must be less than %d characters").build());
 
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getAddColumnChange("VALUE")));
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getAddForeignKeyConstraintChange("VALUE")));
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getAddPrimaryKeyConstraintChange("VALUE")));
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getAddUniqueConstraintChange("VALUE")));
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getCreateTableChange("VALUE")));
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getMergeColumnChange("VALUE")));
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getRenameColumnChange("VALUE")));
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getRenameViewChange("VALUE")));
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getCreateViewChange("VALUE")));
-        assertEquals("Object name 'VALUE' must be less than 4 characters", objectNameLengthRule.getMessage(getCreateIndexChange("VALUE")));
+        assertThat(rule.getMessage(getAddColumnChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getAddForeignKeyConstraintChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getAddPrimaryKeyConstraintChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getAddUniqueConstraintChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getCreateTableChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getMergeColumnChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getRenameColumnChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getRenameViewChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getCreateViewChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getCreateIndexChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
     }
 
     @DisplayName("Object name length rule should support formatted error message with comma separated multiple errors")
     @Test
     void objectNameLengthRuleShouldReturnFormattedErrorMessageWithCommaSeparatedMultipleErrors() {
-        objectNameLengthRule.configure(RuleConfig.builder().withMaxLength(4).withErrorMessage("Object name '%s' must be less than %d characters").build());
+        rule.configure(RuleConfig.builder().withMaxLength(4).withErrorMessage("Object name '%s' must be less than %d characters").build());
 
-        assertEquals("Object name 'VALUE,VALUE2' must be less than 4 characters", objectNameLengthRule.getMessage(getAddColumnChange("VALUE", "VALUE2")));
+        assertThat(rule.getMessage(getAddColumnChange("VALUE", "VALUE2"))).isEqualTo("Object name 'VALUE,VALUE2' must be less than 4 characters");
 
     }
 

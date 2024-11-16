@@ -1,30 +1,24 @@
 package io.github.liquibaselinter.rules.core;
 
-import io.github.liquibaselinter.rules.core.CreateColumnNoDefinePrimaryKeyRule;
 import liquibase.change.AddColumnConfig;
 import liquibase.change.ConstraintsConfig;
 import liquibase.change.core.AddColumnChange;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CreateColumnNoDefinePrimaryKeyRuleTest {
 
-    private CreateColumnNoDefinePrimaryKeyRule createColumnNoDefinePrimaryKeyRule;
-
-    @BeforeEach
-    void setUp() {
-        createColumnNoDefinePrimaryKeyRule = new CreateColumnNoDefinePrimaryKeyRule();
-    }
+    private final CreateColumnNoDefinePrimaryKeyRule rule = new CreateColumnNoDefinePrimaryKeyRule();
 
     @DisplayName("Null primary key attribute should be valid")
     @Test
     void nullPrimaryKeyAttributeShouldBeValid() {
         ConstraintsConfig constraintsConfig = new ConstraintsConfig();
-        assertNull(constraintsConfig.isPrimaryKey());
-        assertFalse(createColumnNoDefinePrimaryKeyRule.invalid(buildAddColumnChange(null)));
+        assertThat(constraintsConfig.isPrimaryKey()).isNull();
+
+        assertThat(rule.invalid(buildAddColumnChange(null))).isFalse();
     }
 
     @DisplayName("False primary key attribute should be valid")
@@ -32,8 +26,8 @@ class CreateColumnNoDefinePrimaryKeyRuleTest {
     void falsePrimaryKeyAttributeShouldBeValid() {
         ConstraintsConfig constraintsConfig = new ConstraintsConfig();
         constraintsConfig.setPrimaryKey(Boolean.FALSE);
-        assertFalse(constraintsConfig.isPrimaryKey());
-        assertFalse(createColumnNoDefinePrimaryKeyRule.invalid(buildAddColumnChange(Boolean.FALSE)));
+
+        assertThat(rule.invalid(buildAddColumnChange(Boolean.FALSE))).isFalse();
     }
 
     @DisplayName("True primary key attribute should be valid")
@@ -41,11 +35,11 @@ class CreateColumnNoDefinePrimaryKeyRuleTest {
     void truePrimaryKeyAttributeShouldBeInvalid() {
         ConstraintsConfig constraintsConfig = new ConstraintsConfig();
         constraintsConfig.setPrimaryKey(Boolean.TRUE);
-        assertTrue(constraintsConfig.isPrimaryKey());
-        assertTrue(createColumnNoDefinePrimaryKeyRule.invalid(buildAddColumnChange(Boolean.TRUE)));
+        
+        assertThat(rule.invalid(buildAddColumnChange(Boolean.TRUE))).isTrue();
     }
 
-    private AddColumnChange buildAddColumnChange(Boolean primaryKey) {
+    private static AddColumnChange buildAddColumnChange(Boolean primaryKey) {
         AddColumnChange addColumnChange = new AddColumnChange();
         AddColumnConfig addColumnConfig = new AddColumnConfig();
         ConstraintsConfig constraints = new ConstraintsConfig();
