@@ -3,7 +3,6 @@ package io.github.liquibaselinter.report;
 import com.google.auto.service.AutoService;
 
 import java.io.PrintWriter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -111,19 +110,6 @@ public class TextReporter extends AbstractReporter {
 
     protected void printSummaryDisabledRules(PrintWriter output, Report report) {
         output.append("\tDISABLED: ").println(countDisabledRules(report));
-    }
-
-    protected static class EmptyLastComparator implements Comparator<String> {
-
-        @Override
-        public int compare(String o1, String o2) {
-            if (isEmpty(o1)) {
-                return isEmpty(o2) ? 0 : 1;
-            } else if (isEmpty(o2)) {
-                return -1;
-            }
-            return o1.compareTo(o2);
-        }
     }
 
     @SuppressWarnings("rawtypes")

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -94,6 +95,66 @@ public final class Config {
         return this.imports;
     }
 
+    /**
+     * Merge the current {@link Config} with another config.
+     * If the current config and the other config have both a rule or reporter config for the same name, both config are kept.
+     * @param otherConfig
+     * @return a combined {@link Config} of rules and reporters.
+     */
+    public Config mergeWith(Config otherConfig) {
+        final ListMultimap<String, RuleConfig> mergedRules = ArrayListMultimap.create();
+        final ListMultimap<String, Reporter> mergedReporting = ArrayListMultimap.create();
+        if (getRules() != null) {
+            mergedRules.putAll(getRules());
+        }
+        if (otherConfig.getRules() != null) {
+            mergedRules.putAll(otherConfig.getRules());
+        }
+        if (getReporting() != null) {
+            mergedReporting.putAll(getReporting());
+        }
+        if (otherConfig.getReporting() != null) {
+            mergedReporting.putAll(otherConfig.getReporting());
+        }
+        return new Config.Builder(this).withRules(mergedRules).withReporting(mergedReporting).withImports().build();
+    }
+
+    /**
+     * Combine the current {@link Config} with another config.
+     * If the current config and the other config have both a rule or reporter config for the same name, only the current one is kept.
+     * @param otherConfig
+     * @return a combined {@link Config} of rules and reporters.
+     */
+    public Config combineWith(Config otherConfig) {
+        final ListMultimap<String, RuleConfig> mergedRules = ArrayListMultimap.create();
+        final ListMultimap<String, Reporter> mergedReporting = ArrayListMultimap.create();
+        if (getRules() != null) {
+            mergedRules.putAll(getRules());
+        }
+        if (getReporting() != null) {
+            mergedReporting.putAll(getReporting());
+        }
+        combine(getRules(), otherConfig.getRules(), mergedRules);
+        combine(getReporting(), otherConfig.getReporting(), mergedReporting);
+        return new Config.Builder(this).withRules(mergedRules).withReporting(mergedReporting).withImports().build();
+    }
+
+    private static <T> void combine(ListMultimap<String, T> config,
+                                    ListMultimap<String, T> imported,
+                                    ListMultimap<String, T> combined) {
+        if (imported != null) {
+            imported.asMap().forEach((key, importedRulesList) -> {
+                // If the main config has a config of the same name, it overrides any imported config for the same
+                // name. But if not config of the same name exists in the main config, merge all the imported
+                // configs together. This could cause multiple configs of the same name from different imported
+                // files to end up in the final merged config.
+                if (config == null || !config.containsKey(key)) {
+                    combined.putAll(key, importedRulesList);
+                }
+            });
+        }
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Builder {
         private Pattern ignoreContextPattern;
@@ -124,7 +185,7 @@ public final class Config {
         }
 
         public Builder withIgnoreContextPattern(Pattern ignoreContextPattern) {
-            this.ignoreContextPattern = ignoreFilesPattern;
+            this.ignoreContextPattern = ignoreContextPattern;
             return this;
         }
 

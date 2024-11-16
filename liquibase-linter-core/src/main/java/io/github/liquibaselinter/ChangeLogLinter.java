@@ -29,10 +29,14 @@ public class ChangeLogLinter {
     private final RuleRunner ruleRunner;
     private final ResourceAccessor resourceAccessor;
 
-    public ChangeLogLinter(ResourceAccessor resourceAccessor) {
+    public ChangeLogLinter(ResourceAccessor resourceAccessor, Config config) {
         this.resourceAccessor = resourceAccessor;
-        this.config = new ConfigLoader().load(resourceAccessor);
-        this.ruleRunner = new RuleRunner(config);
+        this.config = config;
+        this.ruleRunner = new RuleRunner(this.config);
+    }
+
+    public ChangeLogLinter(ResourceAccessor resourceAccessor) {
+        this(resourceAccessor, ConfigLoader.load(resourceAccessor));
     }
 
     public void lintChangeLog(final DatabaseChangeLog databaseChangeLog) throws ChangeLogLintingException {

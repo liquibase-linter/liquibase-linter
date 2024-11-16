@@ -1,8 +1,18 @@
 package io.github.liquibaselinter.mavenplugin;
 
+import com.google.common.collect.ImmutableListMultimap;
 import io.github.liquibaselinter.ChangeLogLinter;
 import io.github.liquibaselinter.ChangeLogLintingException;
+import io.github.liquibaselinter.config.Config;
+import io.github.liquibaselinter.config.ConfigLoader;
+import io.github.liquibaselinter.report.ConsoleReporter;
+import io.github.liquibaselinter.report.Reporter;
+import io.github.liquibaselinter.report.ReporterConfig;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import liquibase.Liquibase;
+import liquibase.Scope;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.OfflineConnection;
@@ -28,8 +38,6 @@ import java.io.FileNotFoundException;
 )
 public class LintMojo extends AbstractMojo {
 
-    private static final String LQLINT_CONFIG_PATH = "lqlint.config.path";
-
     @Parameter(property = "changeLogFile", required = true)
     private String changeLogFile;
 
@@ -45,21 +53,47 @@ public class LintMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
-        System.setProperty(LQLINT_CONFIG_PATH, relativePathOf(configurationFile));
+        try (ResourceAccessor resourceAccessor = buildResourceAccessor()) {
+            Scope.child(setUpLiquibaseLogging(), () -> {
+                Liquibase liquibase = createLiquibase(relativePathOf(changeLogFile), resourceAccessor);
+                DatabaseChangeLog databaseChangeLog = liquibase.getDatabaseChangeLog();
 
-        ResourceAccessor resourceAccessor = buildResourceAccessor();
-
-        try (Liquibase liquibase = createLiquibase(relativePathOf(changeLogFile), resourceAccessor)) {
-            DatabaseChangeLog databaseChangeLog = liquibase.getDatabaseChangeLog();
-
-            new ChangeLogLinter(resourceAccessor).lintChangeLog(databaseChangeLog);
+                Config linterConfig = linterConfiguration(resourceAccessor, configurationFile);
+                new ChangeLogLinter(resourceAccessor, linterConfig).lintChangeLog(databaseChangeLog);
+            });
         } catch (ChangeLogLintingException lintingException) {
             throw new MojoFailureException(lintingException);
-        } catch (LiquibaseException exception) {
-            throw new MojoExecutionException(exception);
-        } finally {
-            System.clearProperty(LQLINT_CONFIG_PATH);
+        } catch (Exception e) {
+            throw new MojoExecutionException(e);
         }
+
+    }
+
+    private Map<String, Object> setUpLiquibaseLogging() {
+        Map<String, Object> scopeAttrs = new HashMap<>();
+        scopeAttrs.put(Scope.Attr.logService.name(), new LiquibaseMavenLogService(getLog()));
+        return scopeAttrs;
+    }
+
+    private Config linterConfiguration(ResourceAccessor resourceAccessor, String configurationFile1) throws MojoExecutionException {
+        Config linterConfig;
+        try {
+            Config userConfig = ConfigLoader.loadConfig(resourceAccessor, relativePathOf(configurationFile1));
+            if (userConfig == null) {
+                throw new MojoExecutionException("Unable to load lq-linter configuration at " + configurationFile1);
+            }
+            linterConfig = userConfig.mergeWith(defaultMavenLinterConfig());
+        } catch (IOException exception) {
+            throw new MojoExecutionException("ConfigurationFile " + configurationFile1 + " cannot be read", exception);
+        }
+        return linterConfig;
+    }
+
+    private Config defaultMavenLinterConfig() {
+        ImmutableListMultimap.Builder<String, Reporter> reportingConfigBuilder = new ImmutableListMultimap.Builder<>();
+        reportingConfigBuilder.put("mavenReporter", new MavenConsoleReporter(getLog()));
+        reportingConfigBuilder.put("console", new ConsoleReporter(ReporterConfig.builder().withEnabled(false).build()));
+        return new Config.Builder().withReporting(reportingConfigBuilder.build()).build();
     }
 
     private String relativePathOf(String changeLogFile) {

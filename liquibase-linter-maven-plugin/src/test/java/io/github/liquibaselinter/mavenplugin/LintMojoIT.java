@@ -35,6 +35,16 @@ class LintMojoIT {
         assertThat(result)
             .out()
             .plain()
-            .contains("	'index-name': Index names must be the table name, suffixed with 'IX' and a two-digit number, e.g. FOO_IX01");
+            .containsSequence(
+                "[ERROR] 1 violation(s) found",
+                "[ERROR] src/main/resources/config/liquibase/master.xml",
+                "[ERROR] \tchangeSet '2'",
+                "[ERROR] \t\t'index-name': Index names must be the table name, suffixed with 'IX' and a two-digit number, e.g. FOO_IX01"
+            );
+
+        assertThat(result)
+            .err()
+            .plain()
+            .isEmpty();
     }
 }
