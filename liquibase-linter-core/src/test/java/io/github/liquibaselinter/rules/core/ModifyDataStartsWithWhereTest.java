@@ -12,21 +12,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(ChangeSetParameterResolver.class)
 class ModifyDataStartsWithWhereTest {
 
+    private final ModifyDataStartsWithWhere rule = new ModifyDataStartsWithWhere();
+
     @Test
     void shouldNotAllowWhereConditionToStartWithWhereCaseInsensitive(ChangeSet changeSet) {
-        ModifyDataStartsWithWhere modifyDataStartsWithWhere = new ModifyDataStartsWithWhere();
-        assertThat(modifyDataStartsWithWhere.invalid(getUpdateDataChange(changeSet, "WHERE table = 'X'"))).isTrue();
-        assertThat(modifyDataStartsWithWhere.invalid(getDeleteDataChange(changeSet, "WHERE table = 'X'"))).isTrue();
+        assertThat(rule.invalid(getUpdateDataChange(changeSet, "WHERE table = 'X'"))).isTrue();
+        assertThat(rule.invalid(getDeleteDataChange(changeSet, "WHERE table = 'X'"))).isTrue();
 
-        assertThat(modifyDataStartsWithWhere.invalid(getUpdateDataChange(changeSet, "where table = 'X'"))).isTrue();
-        assertThat(modifyDataStartsWithWhere.invalid(getDeleteDataChange(changeSet, "where table = 'X'"))).isTrue();
+        assertThat(rule.invalid(getUpdateDataChange(changeSet, "where table = 'X'"))).isTrue();
+        assertThat(rule.invalid(getDeleteDataChange(changeSet, "where table = 'X'"))).isTrue();
     }
 
     @Test
     void shouldBeValidOnNullWhereValue(ChangeSet changeSet) {
-        ModifyDataStartsWithWhere modifyDataStartsWithWhere = new ModifyDataStartsWithWhere();
-        assertThat(modifyDataStartsWithWhere.invalid(getUpdateDataChange(changeSet, null))).isFalse();
-        assertThat(modifyDataStartsWithWhere.invalid(getDeleteDataChange(changeSet, null))).isFalse();
+        assertThat(rule.invalid(getUpdateDataChange(changeSet, null))).isFalse();
+        assertThat(rule.invalid(getDeleteDataChange(changeSet, null))).isFalse();
     }
 
     private UpdateDataChange getUpdateDataChange(ChangeSet changeSet, String where) {

@@ -14,43 +14,45 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class IllegalChangeTypesRuleTest {
 
+    private final ChangeRule<Change> rule = new IllegalChangeTypesRule();
+
     @DisplayName("Null Illegal change type should be valid")
     @Test
     void nullIllegalChangeTypeShouldBeValid() {
-        ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().build());
+
         assertThat(rule.invalid(new LoadDataChange())).isFalse();
     }
 
     @DisplayName("Empty Illegal change type should be valid")
     @Test
     void emptyIllegalChangeTypeShouldBeValid() {
-        ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().withValues(Collections.emptyList()).build());
+
         assertThat(rule.invalid(new LoadDataChange())).isFalse();
     }
 
     @DisplayName("Mismatch Illegal change type should be valid")
     @Test
     void mismatchIllegalChangeTypeShouldBeValid() {
-        ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().withValues(Collections.singletonList("liquibase.change.core.AddColumnChange")).build());
+
         assertThat(rule.invalid(new LoadDataChange())).isFalse();
     }
 
     @DisplayName("Illegal change type should be invalid")
     @Test
     void illegalChangeTypeShouldBeInvalid() {
-        ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().withValues(Collections.singletonList("liquibase.change.core.LoadDataChange")).build());
+
         assertThat(rule.invalid(new LoadDataChange())).isTrue();
     }
 
     @DisplayName("Illegal change type from database change annotation name")
     @Test
     void illegalChangeTypeFromDatabaseChangeAnnotationName() {
-        ChangeRule<Change> rule = new IllegalChangeTypesRule();
         rule.configure(RuleConfig.builder().withValues(Collections.singletonList(LoadDataChange.class.getAnnotation(DatabaseChange.class).name())).build());
+
         assertThat(rule.invalid(new LoadDataChange())).isTrue();
     }
 

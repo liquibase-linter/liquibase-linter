@@ -12,12 +12,15 @@ import static org.mockito.Mockito.*;
 
 class HasCommentRuleTest {
 
+    private final HasCommentRule rule = new HasCommentRule();
+
     @DisplayName("Should pass when a comment has been provided on the changeSet")
     @Test
     void shouldPassWithPopulatedComment() {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getComments()).thenReturn("Some comment");
-        assertThat(new HasCommentRule().invalid(changeSet)).isFalse();
+
+        assertThat(rule.invalid(changeSet)).isFalse();
     }
 
     @DisplayName("Should pass when changeSet contains only a tagDatabase change")
@@ -26,7 +29,8 @@ class HasCommentRuleTest {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getComments()).thenReturn(null);
         when(changeSet.getChanges()).thenReturn(Collections.singletonList(mock(TagDatabaseChange.class)));
-        assertThat(new HasCommentRule().invalid(changeSet)).isFalse();
+
+        assertThat(rule.invalid(changeSet)).isFalse();
     }
 
     @DisplayName("Should fail when a comment has not been provided on the changeSet")
@@ -34,7 +38,8 @@ class HasCommentRuleTest {
     void shouldFailWithNoComment() {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getComments()).thenReturn(null);
-        assertThat(new HasCommentRule().invalid(changeSet)).isTrue();
+
+        assertThat(rule.invalid(changeSet)).isTrue();
     }
 
     @DisplayName("Should fail when a comment is blank on the changeSet")
@@ -42,7 +47,8 @@ class HasCommentRuleTest {
     void shouldFailWithBlankComment() {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getComments()).thenReturn("");
-        assertThat(new HasCommentRule().invalid(changeSet)).isTrue();
+
+        assertThat(rule.invalid(changeSet)).isTrue();
     }
 
 }

@@ -4,7 +4,6 @@ import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.core.ObjectNameRules.ObjectNameRule;
 import liquibase.change.AddColumnConfig;
 import liquibase.change.core.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,52 +11,47 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ObjectNameRuleTest {
 
-    private ObjectNameRule objectNameRule;
-
-    @BeforeEach
-    void setUp() {
-        objectNameRule = new ObjectNameRule();
-    }
+    private final ObjectNameRule rule = new ObjectNameRule();
 
     @DisplayName("Object name must not be null")
     @Test
     void objectNameMustNotBeNull() {
-        objectNameRule.configure(RuleConfig.builder().withPattern("^(?!_)[A-Z_0-9]+(?<!_)$").build());
-        assertThat(objectNameRule.invalid(getAddColumnChange(new String[]{null}))).isTrue();
-        assertThat(objectNameRule.invalid(getAddForeignKeyConstraintChange(null))).isTrue();
-        assertThat(objectNameRule.invalid(getAddPrimaryKeyConstraintChange(null))).isTrue();
-        assertThat(objectNameRule.invalid(getAddUniqueConstraintChange(null))).isTrue();
-        assertThat(objectNameRule.invalid(getCreateTableChange(null))).isTrue();
-        assertThat(objectNameRule.invalid(getMergeColumnChange(null))).isTrue();
-        assertThat(objectNameRule.invalid(getRenameColumnChange(null))).isTrue();
-        assertThat(objectNameRule.invalid(getRenameViewChange(null))).isTrue();
-        assertThat(objectNameRule.invalid(getCreateViewChange(null))).isTrue();
-        assertThat(objectNameRule.invalid(getCreateIndexChange(null))).isTrue();
+        rule.configure(RuleConfig.builder().withPattern("^(?!_)[A-Z_0-9]+(?<!_)$").build());
+        assertThat(rule.invalid(getAddColumnChange(new String[]{null}))).isTrue();
+        assertThat(rule.invalid(getAddForeignKeyConstraintChange(null))).isTrue();
+        assertThat(rule.invalid(getAddPrimaryKeyConstraintChange(null))).isTrue();
+        assertThat(rule.invalid(getAddUniqueConstraintChange(null))).isTrue();
+        assertThat(rule.invalid(getCreateTableChange(null))).isTrue();
+        assertThat(rule.invalid(getMergeColumnChange(null))).isTrue();
+        assertThat(rule.invalid(getRenameColumnChange(null))).isTrue();
+        assertThat(rule.invalid(getRenameViewChange(null))).isTrue();
+        assertThat(rule.invalid(getCreateViewChange(null))).isTrue();
+        assertThat(rule.invalid(getCreateIndexChange(null))).isTrue();
     }
 
     @DisplayName("Object name length rule should support formatted error message with length arg")
     @Test
     void objectNameRuleShouldReturnFormattedErrorMessage() {
-        objectNameRule.configure(RuleConfig.builder().withPattern("^(?!_)[A-Z_0-9]+(?<!_)$").withErrorMessage("Object name '%s' must follow pattern '%s'").build());
+        rule.configure(RuleConfig.builder().withPattern("^(?!_)[A-Z_0-9]+(?<!_)$").withErrorMessage("Object name '%s' must follow pattern '%s'").build());
 
-        assertThat(objectNameRule.getMessage(getAddColumnChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
-        assertThat(objectNameRule.getMessage(getAddForeignKeyConstraintChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
-        assertThat(objectNameRule.getMessage(getAddPrimaryKeyConstraintChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
-        assertThat(objectNameRule.getMessage(getAddUniqueConstraintChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
-        assertThat(objectNameRule.getMessage(getCreateTableChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
-        assertThat(objectNameRule.getMessage(getMergeColumnChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
-        assertThat(objectNameRule.getMessage(getRenameColumnChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
-        assertThat(objectNameRule.getMessage(getRenameViewChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
-        assertThat(objectNameRule.getMessage(getCreateViewChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
-        assertThat(objectNameRule.getMessage(getCreateIndexChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getAddColumnChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getAddForeignKeyConstraintChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getAddPrimaryKeyConstraintChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getAddUniqueConstraintChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getCreateTableChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getMergeColumnChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getRenameColumnChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getRenameViewChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getCreateViewChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getCreateIndexChange("&VALUE"))).isEqualTo("Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
     }
 
     @DisplayName("Object name length rule should support formatted error message with comma separated multiple errors")
     @Test
     void objectNameRuleShouldReturnFormattedErrorMessageWithCommaSeparatedMultipleErrors() {
-        objectNameRule.configure(RuleConfig.builder().withPattern("^(?!_)[A-Z_0-9]+(?<!_)$").withErrorMessage("Object name '%s' must follow pattern '%s'").build());
+        rule.configure(RuleConfig.builder().withPattern("^(?!_)[A-Z_0-9]+(?<!_)$").withErrorMessage("Object name '%s' must follow pattern '%s'").build());
 
-        assertThat(objectNameRule.getMessage(getAddColumnChange("&VALUE", "&VALUE2"))).isEqualTo("Object name '&VALUE,&VALUE2' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+        assertThat(rule.getMessage(getAddColumnChange("&VALUE", "&VALUE2"))).isEqualTo("Object name '&VALUE,&VALUE2' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
 
     }
 
