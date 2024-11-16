@@ -1,7 +1,14 @@
 package io.github.liquibaselinter.mavenplugin;
 
+import com.google.common.collect.ImmutableListMultimap;
 import io.github.liquibaselinter.ChangeLogLinter;
 import io.github.liquibaselinter.ChangeLogLintingException;
+import io.github.liquibaselinter.config.Config;
+import io.github.liquibaselinter.config.ConfigLoader;
+import io.github.liquibaselinter.report.ConsoleReporter;
+import io.github.liquibaselinter.report.Reporter;
+import io.github.liquibaselinter.report.ReporterConfig;
+import java.io.IOException;
 import liquibase.Liquibase;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.database.DatabaseConnection;
@@ -28,8 +35,6 @@ import java.io.FileNotFoundException;
 )
 public class LintMojo extends AbstractMojo {
 
-    private static final String LQLINT_CONFIG_PATH = "lqlint.config.path";
-
     @Parameter(property = "changeLogFile", required = true)
     private String changeLogFile;
 
@@ -45,21 +50,35 @@ public class LintMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
 
-        System.setProperty(LQLINT_CONFIG_PATH, relativePathOf(configurationFile));
-
         ResourceAccessor resourceAccessor = buildResourceAccessor();
+
+        Config linterConfig;
+        try {
+            Config userConfig = ConfigLoader.loadConfig(resourceAccessor, relativePathOf(configurationFile));
+            if (userConfig == null) {
+                throw new MojoExecutionException("Unable to load lq-linter configuration at " + configurationFile);
+            }
+            linterConfig = userConfig.mergeWith(linterMavenConfig());
+        } catch (IOException exception) {
+            throw new MojoExecutionException("ConfigurationFile " + configurationFile + " cannot be read", exception);
+        }
 
         try (Liquibase liquibase = createLiquibase(relativePathOf(changeLogFile), resourceAccessor)) {
             DatabaseChangeLog databaseChangeLog = liquibase.getDatabaseChangeLog();
 
-            new ChangeLogLinter(resourceAccessor).lintChangeLog(databaseChangeLog);
+            new ChangeLogLinter(resourceAccessor, linterConfig).lintChangeLog(databaseChangeLog);
         } catch (ChangeLogLintingException lintingException) {
             throw new MojoFailureException(lintingException);
         } catch (LiquibaseException exception) {
             throw new MojoExecutionException(exception);
-        } finally {
-            System.clearProperty(LQLINT_CONFIG_PATH);
         }
+    }
+
+    private Config linterMavenConfig() {
+        ImmutableListMultimap.Builder<String, Reporter> reportingConfigBuilder = new ImmutableListMultimap.Builder<>();
+        reportingConfigBuilder.put("mavenReporter", new MavenConsoleReporter(getLog()));
+        reportingConfigBuilder.put("console", new ConsoleReporter(ReporterConfig.builder().withEnabled(false).build()));
+        return new Config.Builder().withReporting(reportingConfigBuilder.build()).build();
     }
 
     private String relativePathOf(String changeLogFile) {
