@@ -5,7 +5,6 @@ import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.resolvers.LiquibaseIntegrationTestResolver;
 import liquibase.Contexts;
 import liquibase.Liquibase;
-import liquibase.exception.ChangeLogParseException;
 import liquibase.exception.CommandExecutionException;
 import liquibase.parser.ChangeLogParserFactory;
 import org.junit.jupiter.api.AfterEach;

@@ -124,7 +124,7 @@ class ConfigTest {
 
     @DisplayName("Should create read-only config with builder")
     @Test
-    void shouldCreateReadOnlyConfigWithBuilder() throws IOException {
+    void shouldCreateReadOnlyConfigWithBuilder() {
         Config config = new Config.Builder().withIgnoreContextPattern("abc").withIgnoreFilesPattern("def")
             .withRules(ImmutableListMultimap.of("rule-name", RuleConfig.enabled()))
             .withFailFast(true).withEnableAfter("after").withImports("a", "b").build();
@@ -142,7 +142,7 @@ class ConfigTest {
 
     @DisplayName("Should copy existing config with builder")
     @Test
-    void shouldCopyConfigWithBuilder() throws IOException {
+    void shouldCopyConfigWithBuilder() {
         Config config = new Config.Builder().withIgnoreContextPattern("abc").withIgnoreFilesPattern("def")
             .withRules(ImmutableListMultimap.of("rule-name", RuleConfig.enabled()))
             .withFailFast(true).withEnableAfter("after").withImports("a", "b").build();
