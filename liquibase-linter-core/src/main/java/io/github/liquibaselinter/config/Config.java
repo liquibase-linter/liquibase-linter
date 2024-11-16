@@ -124,7 +124,7 @@ public final class Config {
         }
 
         public Builder withIgnoreContextPattern(Pattern ignoreContextPattern) {
-            this.ignoreContextPattern = ignoreFilesPattern;
+            this.ignoreContextPattern = ignoreContextPattern;
             return this;
         }
 
