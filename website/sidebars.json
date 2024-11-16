@@ -38,6 +38,7 @@
                   "rules/primary-key-tablespace",
                   "rules/schema-name",
                   "rules/separate-ddl-context",
+                  "rules/sequence-name",
                   "rules/table-name",
                   "rules/table-name-length",
                   "rules/unique-constraint-name",
