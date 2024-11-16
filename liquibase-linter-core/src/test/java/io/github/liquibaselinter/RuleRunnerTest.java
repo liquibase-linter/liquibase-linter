@@ -62,9 +62,8 @@ class RuleRunnerTest {
     void shouldThrowForErrorsWhenFailFastOn() {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule(null, true);
 
-        assertThatExceptionOfType(ChangeLogLintingException.class).isThrownBy(() -> {
-            ruleRunner.checkChange(mockInvalidChange(null, "TBL_TABLE"));
-        }).withMessageContaining("Table name does not follow pattern");
+        assertThatExceptionOfType(ChangeLogLintingException.class).isThrownBy(() ->
+            ruleRunner.checkChange(mockInvalidChange(null, "TBL_TABLE"))).withMessageContaining("Table name does not follow pattern");
     }
 
     @DisplayName("Should report rule violation as ignored when ignored via comment and fail-fast is on")

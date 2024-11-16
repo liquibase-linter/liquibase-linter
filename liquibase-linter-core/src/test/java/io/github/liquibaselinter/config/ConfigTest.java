@@ -197,9 +197,8 @@ class ConfigTest {
             "    \"other\": false\n" +
             "  }\n" +
             "}";
-        assertThatExceptionOfType(JsonMappingException.class).isThrownBy(() -> {
-            OBJECT_MAPPER.readValue(configJson, Config.class);
-        }).withMessageContaining("No lq lint reporter named 'other'");
+        assertThatExceptionOfType(JsonMappingException.class).isThrownBy(() ->
+            OBJECT_MAPPER.readValue(configJson, Config.class)).withMessageContaining("No lq lint reporter named 'other'");
     }
 
 }
