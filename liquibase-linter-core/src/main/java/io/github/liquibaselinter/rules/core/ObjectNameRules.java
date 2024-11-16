@@ -3,7 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
-import liquibase.change.AbstractChange;
+import liquibase.change.Change;
 import liquibase.change.ColumnConfig;
 import liquibase.change.core.*;
 
@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 
 public class ObjectNameRules {
 
-    private static boolean doesSupport(AbstractChange change) {
+    private static boolean doesSupport(Change change) {
         return !getObjectNames(change).isEmpty();
     }
 
-    private static Collection<String> getObjectNames(AbstractChange change) {
+    private static Collection<String> getObjectNames(Change change) {
         if (change instanceof AddColumnChange) {
             return ((AddColumnChange) change).getColumns().stream().map(ColumnConfig::getName).collect(Collectors.toList());
         } else if (change instanceof AddForeignKeyConstraintChange) {
@@ -44,7 +44,7 @@ public class ObjectNameRules {
 
     @SuppressWarnings("rawtypes")
     @AutoService({ChangeRule.class})
-    public static class ObjectNameRule extends AbstractLintRule implements ChangeRule<AbstractChange> {
+    public static class ObjectNameRule extends AbstractLintRule implements ChangeRule<Change> {
         private static final String NAME = "object-name";
         private static final String MESSAGE = "Object name does not follow pattern";
 
@@ -53,22 +53,22 @@ public class ObjectNameRules {
         }
 
         @Override
-        public Class<AbstractChange> getChangeType() {
-            return AbstractChange.class;
+        public Class<Change> getChangeType() {
+            return Change.class;
         }
 
         @Override
-        public boolean supports(AbstractChange change) {
+        public boolean supports(Change change) {
             return doesSupport(change);
         }
 
         @Override
-        public boolean invalid(AbstractChange change) {
+        public boolean invalid(Change change) {
             return getObjectNames(change).stream().anyMatch(objectName -> checkMandatoryPattern(objectName, change));
         }
 
         @Override
-        public String getMessage(AbstractChange change) {
+        public String getMessage(Change change) {
             String joined = getObjectNames(change).stream().filter(objectName -> checkMandatoryPattern(objectName, change)).collect(Collectors.joining(","));
             return formatMessage(joined, getConfig().getPatternString());
         }
@@ -77,7 +77,7 @@ public class ObjectNameRules {
 
     @SuppressWarnings("rawtypes")
     @AutoService({ChangeRule.class})
-    public static class ObjectNameLengthRule extends AbstractLintRule implements ChangeRule<AbstractChange> {
+    public static class ObjectNameLengthRule extends AbstractLintRule implements ChangeRule<Change> {
         private static final String NAME = "object-name-length";
         private static final String MESSAGE = "Object name '%s' must be less than %d characters";
 
@@ -86,22 +86,22 @@ public class ObjectNameRules {
         }
 
         @Override
-        public Class<AbstractChange> getChangeType() {
-            return AbstractChange.class;
+        public Class<Change> getChangeType() {
+            return Change.class;
         }
 
         @Override
-        public boolean supports(AbstractChange change) {
+        public boolean supports(Change change) {
             return doesSupport(change);
         }
 
         @Override
-        public boolean invalid(AbstractChange change) {
+        public boolean invalid(Change change) {
             return getObjectNames(change).stream().anyMatch(this::checkMaxLength);
         }
 
         @Override
-        public String getMessage(AbstractChange change) {
+        public String getMessage(Change change) {
             String joined = getObjectNames(change).stream().filter(this::checkMaxLength).collect(Collectors.joining(","));
             return formatMessage(joined, getConfig().getMaxLength());
 

@@ -3,7 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
-import liquibase.change.AbstractChange;
+import liquibase.change.Change;
 import liquibase.change.ChangeWithColumns;
 import liquibase.change.ColumnConfig;
 import liquibase.change.ConstraintsConfig;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @SuppressWarnings("rawtypes")
 @AutoService({ChangeRule.class})
-public class CreateColumnNullableConstraintRule extends AbstractLintRule implements ChangeRule<AbstractChange> {
+public class CreateColumnNullableConstraintRule extends AbstractLintRule implements ChangeRule<Change> {
     private static final String NAME = "create-column-nullable-constraint";
     private static final String MESSAGE = "Add column must specify nullable constraint";
 
@@ -23,17 +23,17 @@ public class CreateColumnNullableConstraintRule extends AbstractLintRule impleme
     }
 
     @Override
-    public Class<AbstractChange> getChangeType() {
-        return AbstractChange.class;
+    public Class<Change> getChangeType() {
+        return Change.class;
     }
 
     @Override
-    public boolean supports(AbstractChange change) {
+    public boolean supports(Change change) {
         return change instanceof CreateTableChange || change instanceof AddColumnChange;
     }
 
     @Override
-    public boolean invalid(AbstractChange change) {
+    public boolean invalid(Change change) {
         ChangeWithColumns changeWithColumns = (ChangeWithColumns) change;
         for (ColumnConfig column : (List<ColumnConfig>) changeWithColumns.getColumns()) {
             final ConstraintsConfig constraints = column.getConstraints();
