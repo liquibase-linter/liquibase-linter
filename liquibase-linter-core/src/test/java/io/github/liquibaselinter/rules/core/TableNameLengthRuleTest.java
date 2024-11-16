@@ -1,10 +1,17 @@
 package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.config.RuleConfig;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import liquibase.change.Change;
 import liquibase.change.core.CreateTableChange;
 import liquibase.change.core.RenameTableChange;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,46 +20,68 @@ class TableNameLengthRuleTest {
     private final TableNameLengthRule rule = new TableNameLengthRule();
 
     @DisplayName("Table name must not exceed max length")
-    @Test
-    void tableNameMustNotExceedMaxLength() {
+    @ParameterizedTest(name = "With {0}")
+    @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
+    void tableNameMustNotExceedMaxLength(String changeName, Function<String, Change> changeFromTableName) {
+        Change change = changeFromTableName.apply("TABLE");
         rule.configure(RuleConfig.builder().withMaxLength(4).build());
-        assertThat(rule.invalid(getCreateTableChange("TABLE"))).isTrue();
-        assertThat(rule.invalid(getRenameTableChange("TABLE"))).isTrue();
+
+        assertThat(rule.invalid(change)).isTrue();
     }
 
     @DisplayName("Table name can equal max length")
-    @Test
-    void tableLengthCanEqualMaxLength() {
+    @ParameterizedTest(name = "With {0}")
+    @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
+    void tableLengthCanEqualMaxLength(String changeName, Function<String, Change> changeFromTableName) {
+        Change change = changeFromTableName.apply("TABLE");
         rule.configure(RuleConfig.builder().withMaxLength(5).build());
-        assertThat(rule.invalid(getCreateTableChange("TABLE"))).isFalse();
-        assertThat(rule.invalid(getRenameTableChange("TABLE"))).isFalse();
+
+        assertThat(rule.invalid(change)).isFalse();
     }
 
     @DisplayName("Table name can be null")
-    @Test
-    void tableNameCanBeNull() {
+    @ParameterizedTest(name = "With {0}")
+    @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
+    void tableNameCanBeNull(String changeName, Function<String, Change> changeFromTableName) {
+        Change change = changeFromTableName.apply(null);
         rule.configure(RuleConfig.builder().withMaxLength(4).build());
-        assertThat(rule.invalid(getCreateTableChange(null))).isFalse();
-        assertThat(rule.invalid(getRenameTableChange(null))).isFalse();
+
+        assertThat(rule.invalid(change)).isFalse();
     }
 
     @DisplayName("Table name length rule should support formatted error message with length arg")
-    @Test
-    void tableNameLengthRuleShouldReturnFormattedErrorMessage() {
+    @ParameterizedTest(name = "With {0}")
+    @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
+    void tableNameLengthRuleShouldReturnFormattedErrorMessage(String changeName, Function<String, Change> changeFromTableName) {
+        Change change = changeFromTableName.apply("TABLE_LONG");
         rule.configure(RuleConfig.builder().withMaxLength(5).withErrorMessage("Table '%s' name must not be longer than %d").build());
-        assertThat(rule.getMessage(getCreateTableChange("TABLE_LONG"))).isEqualTo("Table 'TABLE_LONG' name must not be longer than 5");
-        assertThat(rule.getMessage(getRenameTableChange("TABLE_LONG"))).isEqualTo("Table 'TABLE_LONG' name must not be longer than 5");
+
+        assertThat(rule.getMessage(change)).isEqualTo("Table 'TABLE_LONG' name must not be longer than 5");
     }
 
-    private CreateTableChange getCreateTableChange(String tableName) {
-        CreateTableChange createTableChange = new CreateTableChange();
-        createTableChange.setTableName(tableName);
-        return createTableChange;
-    }
+    private static class ChangeFromTableNameArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(
+                Arguments.of("CreateTableChange", createTableChangeFactory()),
+                Arguments.of("RenameTableChange", renameTableChangeFactory())
+            );
+        }
 
-    private RenameTableChange getRenameTableChange(String tableName) {
-        RenameTableChange renameTableChange = new RenameTableChange();
-        renameTableChange.setNewTableName(tableName);
-        return renameTableChange;
+        private Function<String, Change> createTableChangeFactory() {
+            return tableName -> {
+                CreateTableChange createTableChange = new CreateTableChange();
+                createTableChange.setTableName(tableName);
+                return createTableChange;
+            };
+        }
+
+        private Function<String, Change> renameTableChangeFactory() {
+            return tableName -> {
+                RenameTableChange renameTableChange = new RenameTableChange();
+                renameTableChange.setNewTableName(tableName);
+                return renameTableChange;
+            };
+        }
     }
 }
