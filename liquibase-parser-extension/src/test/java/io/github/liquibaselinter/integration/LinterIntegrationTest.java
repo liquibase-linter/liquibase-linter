@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 abstract class LinterIntegrationTest {
@@ -39,7 +40,7 @@ abstract class LinterIntegrationTest {
                     .isInstanceOf(ChangeLogLintingException.class)
                     .withMessageContaining(running.getMessage());
             } else {
-                liquibase.update(contexts, nullWriter);
+                assertThatCode(() -> liquibase.update(contexts, nullWriter)).doesNotThrowAnyException();
             }
         };
         return DynamicTest.stream(tests.iterator(), IntegrationTestConfig::getDisplayName, testExecutor);

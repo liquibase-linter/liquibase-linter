@@ -1,0 +1,10 @@
+{
+    "fail-fast": true,
+    "rules": {
+        "sequence-name": {
+            "enabled": true,
+            "pattern": "^(?!SEQ)[A-Z_]+(?<!_)$",
+            "errorMessage": "Sequence '%s' name must be uppercase, use '_' separation and not start with SEQ"
+        }
+    }
+}
