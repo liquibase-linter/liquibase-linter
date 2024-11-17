@@ -116,7 +116,7 @@ You can also disable an individual rule while leaving all others on, if that's a
 </changeSet>
 ```
 
-### Importing other configuration
+## Importing other configuration
 
 The Liquibase Linter configuration can import configuration from other configuration files.
 ```json
