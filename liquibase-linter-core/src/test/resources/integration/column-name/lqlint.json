@@ -1,0 +1,10 @@
+{
+  "fail-fast": true,
+  "rules": {
+    "column-name": {
+      "enabled": true,
+      "pattern": "^[a-z_]+$",
+      "errorMessage": "Column name '%s' should be lower cased"
+    }
+  }
+}

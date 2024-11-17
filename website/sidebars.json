@@ -15,6 +15,7 @@
           "rules/changelog-file-name",
           "rules/changeset-author",
           "rules/changeset-id",
+          "rules/column-name",
           "rules/file-not-included",
           "rules/foreign-key-name",
           "rules/has-comment",
