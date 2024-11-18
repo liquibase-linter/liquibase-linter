@@ -11,6 +11,7 @@ This rule will fail if the given regex does not match against the name when crea
 ## Options
 
 - `pattern` - (regex, as string) regular expression that the name of any created or renamed column must adhere to
+- `invertMatch` - (boolean) if true, the regex will be inverted, so that the rule will fail if the name matches the pattern
 
 ## Example Usage
 
@@ -18,7 +19,18 @@ This rule will fail if the given regex does not match against the name when crea
 {
     "rules": {
         "column-name": {
-            "pattern": "^(?!id$)",
+            "pattern": "^col_[a-z_]+"
+        }
+    }
+}
+``` 
+
+```json
+{
+    "rules": {
+        "column-name": {
+            "pattern": "^id$",
+            "invertMatch": true,
             "errorMessage": "Column name 'id' is forbidden"
         }
     }
