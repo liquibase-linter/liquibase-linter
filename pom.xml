@@ -4,7 +4,7 @@
 
     <groupId>io.github.liquibase-linter</groupId>
     <artifactId>liquibase-linter</artifactId>
-    <version>0.6.1-SNAPSHOT</version>
+    <version>0.7.0</version>
     <packaging>pom</packaging>
 
     <name>Liquibase Linter</name>
@@ -52,7 +52,7 @@
     <scm>
         <connection>scm:git:https://github.com/liquibase-linter/liquibase-linter.git</connection>
         <url>https://github.com/liquibase-linter/liquibase-linter</url>
-        <tag>HEAD</tag>
+        <tag>0.7.0</tag>
     </scm>
 
     <distributionManagement>
