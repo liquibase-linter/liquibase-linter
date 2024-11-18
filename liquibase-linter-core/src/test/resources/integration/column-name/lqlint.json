@@ -1,0 +1,11 @@
+{
+    "fail-fast": true,
+    "rules": {
+        "column-name": {
+            "enabled": true,
+            "pattern": "^id$",
+            "invertMatch": true,
+            "errorMessage": "Column name '%s' is forbidden"
+        }
+    }
+}
