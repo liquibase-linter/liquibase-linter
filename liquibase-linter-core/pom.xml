@@ -22,6 +22,7 @@
     <guava.version>33.5.0-jre</guava.version>
     <spring.version>5.3.39</spring.version>
     <commons-io.version>2.20.0</commons-io.version>
+    <cucumber.version>7.29.0</cucumber.version>
   </properties>
 
   <dependencies>
@@ -97,6 +98,23 @@
     <dependency>
       <groupId>com.approvaltests</groupId>
       <artifactId>approvaltests</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-junit-platform-engine</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-suite</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -1,9 +1,0 @@
-{
-  "fail-fast": true,
-  "rules": {
-    "changelog-file-name": {
-      "enabled": true,
-      "pattern": "^[^ ]+$"
-    }
-  }
-}
