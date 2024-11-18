@@ -16,6 +16,7 @@ public final class RuleConfig {
     private final boolean enabled;
     private final String condition;
     private final String patternString;
+    private final boolean invertMatch;
     private final String dynamicValue;
     private final List<String> values;
     private final Integer maxLength;
@@ -30,6 +31,7 @@ public final class RuleConfig {
         this.errorMessage = builder.errorMessage;
         this.condition = builder.condition;
         this.patternString = builder.pattern;
+        this.invertMatch = builder.invertMatch;
         this.dynamicValue = builder.dynamicValue;
         this.values = builder.values;
         this.maxLength = builder.maxLength;
@@ -70,6 +72,10 @@ public final class RuleConfig {
 
     public String getPatternString() {
         return patternString;
+    }
+
+    public boolean isInvertMatch() {
+        return invertMatch;
     }
 
     public Optional<Expression> getConditionalExpression() {
@@ -123,6 +129,7 @@ public final class RuleConfig {
         private String errorMessage;
         private String condition;
         private String pattern;
+        private boolean invertMatch;
         private String dynamicValue;
         private List<String> values;
         private Integer maxLength;
@@ -145,6 +152,11 @@ public final class RuleConfig {
 
         public RuleConfigBuilder withPattern(String pattern) {
             this.pattern = pattern;
+            return this;
+        }
+
+        public RuleConfigBuilder withInvertMatch(boolean invertMatch) {
+            this.invertMatch = invertMatch;
             return this;
         }
 

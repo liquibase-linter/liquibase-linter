@@ -13,6 +13,13 @@ public class PatternChecker {
     }
 
     public boolean check(String value, Object subject) {
+        if (ruleConfig.isInvertMatch()) {
+            return !matchesRuleConfigPattern(value, subject);
+        }
+        return matchesRuleConfigPattern(value, subject);
+    }
+
+    private boolean matchesRuleConfigPattern(String value, Object subject) {
         if (value == null || value.isEmpty()) {
             return false;
         }
