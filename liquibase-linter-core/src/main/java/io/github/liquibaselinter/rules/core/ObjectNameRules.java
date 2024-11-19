@@ -53,11 +53,6 @@ public class ObjectNameRules {
         }
 
         @Override
-        public Class<Change> getChangeType() {
-            return Change.class;
-        }
-
-        @Override
         public boolean supports(Change change) {
             return doesSupport(change);
         }
@@ -83,11 +78,6 @@ public class ObjectNameRules {
 
         public ObjectNameLengthRule() {
             super(NAME, MESSAGE);
-        }
-
-        @Override
-        public Class<Change> getChangeType() {
-            return Change.class;
         }
 
         @Override

@@ -18,8 +18,8 @@ public class NoRawSqlRule extends AbstractLintRule implements ChangeRule<Change>
     }
 
     @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
+    public boolean supports(Change change) {
+        return true;
     }
 
     @Override

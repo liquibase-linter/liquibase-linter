@@ -3,6 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
+import liquibase.change.Change;
 import liquibase.change.core.AddUniqueConstraintChange;
 
 @SuppressWarnings("rawtypes")
@@ -16,8 +17,8 @@ public class UniqueConstraintNameRule extends AbstractLintRule implements Change
     }
 
     @Override
-    public Class<AddUniqueConstraintChange> getChangeType() {
-        return AddUniqueConstraintChange.class;
+    public boolean supports(Change change) {
+        return change instanceof AddUniqueConstraintChange;
     }
 
     @Override

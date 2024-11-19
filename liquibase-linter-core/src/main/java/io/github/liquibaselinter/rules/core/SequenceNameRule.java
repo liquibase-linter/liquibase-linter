@@ -18,11 +18,6 @@ public class SequenceNameRule extends AbstractLintRule implements ChangeRule<Cha
     }
 
     @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
-    }
-
-    @Override
     public boolean supports(Change change) {
         return change instanceof CreateSequenceChange || change instanceof RenameSequenceChange;
     }

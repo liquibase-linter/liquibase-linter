@@ -18,11 +18,6 @@ public class TableNameLengthRule extends AbstractLintRule implements ChangeRule<
     }
 
     @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
-    }
-
-    @Override
     public boolean supports(Change change) {
         return change instanceof CreateTableChange || change instanceof RenameTableChange;
     }

@@ -109,11 +109,6 @@ public class SchemaNameRules {
         }
 
         @Override
-        public Class<Change> getChangeType() {
-            return Change.class;
-        }
-
-        @Override
         public boolean supports(Change change) {
             return doesSupport(change);
         }
@@ -143,8 +138,8 @@ public class SchemaNameRules {
         }
 
         @Override
-        public Class<Change> getChangeType() {
-            return Change.class;
+        public boolean supports(Change change) {
+            return true;
         }
 
         @Override

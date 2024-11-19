@@ -3,6 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
+import liquibase.change.Change;
 import liquibase.change.core.AbstractModifyDataChange;
 
 import java.util.regex.Pattern;
@@ -18,8 +19,8 @@ public class ModifyDataEnforceWhere extends AbstractLintRule implements ChangeRu
     }
 
     @Override
-    public Class<AbstractModifyDataChange> getChangeType() {
-        return AbstractModifyDataChange.class;
+    public boolean supports(Change change) {
+        return change instanceof AbstractModifyDataChange;
     }
 
     @Override

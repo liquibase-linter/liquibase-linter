@@ -17,8 +17,8 @@ public class IllegalChangeTypesRule extends AbstractLintRule implements ChangeRu
     }
 
     @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
+    public boolean supports(Change change) {
+        return true;
     }
 
     @Override

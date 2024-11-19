@@ -57,7 +57,7 @@ class RuleRunner {
         final DatabaseChangeLog changeLog = changeSet.getChangeLog();
 
         for (ChangeRule changeRule : changeRules) {
-            if (changeRule.getChangeType().isAssignableFrom(change.getClass()) && changeRule.supports(change)) {
+            if (changeRule.supports(change)) {
                 final List<RuleConfig> configs = config.forRule(changeRule.getName());
                 final String ruleName = changeRule.getName();
 

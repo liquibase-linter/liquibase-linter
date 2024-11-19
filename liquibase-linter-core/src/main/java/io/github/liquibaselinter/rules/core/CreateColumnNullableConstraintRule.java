@@ -23,11 +23,6 @@ public class CreateColumnNullableConstraintRule extends AbstractLintRule impleme
     }
 
     @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
-    }
-
-    @Override
     public boolean supports(Change change) {
         return change instanceof CreateTableChange || change instanceof AddColumnChange;
     }

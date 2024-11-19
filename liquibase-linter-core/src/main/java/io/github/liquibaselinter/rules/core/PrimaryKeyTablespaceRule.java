@@ -25,11 +25,6 @@ public class PrimaryKeyTablespaceRule extends AbstractLintRule implements Change
     }
 
     @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
-    }
-
-    @Override
     public boolean supports(Change change) {
         if (change.getClass().isAssignableFrom(AddPrimaryKeyChange.class)) {
             return true;

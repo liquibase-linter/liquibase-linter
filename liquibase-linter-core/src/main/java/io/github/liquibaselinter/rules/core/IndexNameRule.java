@@ -3,6 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
+import liquibase.change.Change;
 import liquibase.change.core.CreateIndexChange;
 
 @SuppressWarnings("rawtypes")
@@ -16,8 +17,8 @@ public class IndexNameRule extends AbstractLintRule implements ChangeRule<Create
     }
 
     @Override
-    public Class<CreateIndexChange> getChangeType() {
-        return CreateIndexChange.class;
+    public boolean supports(Change change) {
+        return change instanceof CreateIndexChange;
     }
 
     @Override

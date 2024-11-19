@@ -3,6 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
+import liquibase.change.Change;
 import liquibase.change.core.DropNotNullConstraintChange;
 
 @SuppressWarnings("rawtypes")
@@ -16,8 +17,8 @@ public class DropNotNullRequireColumnDataTypeRule extends AbstractLintRule imple
     }
 
     @Override
-    public Class<DropNotNullConstraintChange> getChangeType() {
-        return DropNotNullConstraintChange.class;
+    public boolean supports(Change change) {
+        return change instanceof DropNotNullConstraintChange;
     }
 
     @Override

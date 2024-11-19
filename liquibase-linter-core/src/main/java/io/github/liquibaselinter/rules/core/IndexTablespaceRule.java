@@ -3,6 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
+import liquibase.change.Change;
 import liquibase.change.core.CreateIndexChange;
 
 @SuppressWarnings("rawtypes")
@@ -16,10 +17,9 @@ public class IndexTablespaceRule extends AbstractLintRule implements ChangeRule<
     }
 
     @Override
-    public Class<CreateIndexChange> getChangeType() {
-        return CreateIndexChange.class;
+    public boolean supports(Change change) {
+        return change instanceof CreateIndexChange;
     }
-
     @Override
     public boolean invalid(CreateIndexChange change) {
         return checkMandatoryPattern(change.getTablespace(), change);
