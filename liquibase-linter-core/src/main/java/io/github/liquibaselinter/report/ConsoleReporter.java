@@ -84,7 +84,7 @@ public class ConsoleReporter extends TextReporter {
     }
 
     protected void uninstallAnsi() {
-        AnsiConsole.systemInstall();
+        AnsiConsole.systemUninstall();
     }
 
     @SuppressWarnings("rawtypes")
