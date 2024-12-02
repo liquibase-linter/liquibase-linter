@@ -1,0 +1,7 @@
+{
+    "fail-fast": true,
+    "enable-after": "enable-after/root-enable-after/has-comment-fail-1.xml",
+    "rules": {
+        "has-comment": true
+    }
+}
