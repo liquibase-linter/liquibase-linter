@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,6 +31,9 @@ public class ChangeLogLinter {
     private final ResourceAccessor resourceAccessor;
 
     public ChangeLogLinter(ResourceAccessor resourceAccessor, Config config) {
+        Objects.requireNonNull(resourceAccessor, "ResourceAccessor must not be null");
+        Objects.requireNonNull(config, "Configuration must not be null");
+
         this.resourceAccessor = resourceAccessor;
         this.config = config;
         this.ruleRunner = new RuleRunner(this.config);

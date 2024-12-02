@@ -1,0 +1,7 @@
+{
+    "fail-fast": true,
+    "import": [
+        "import-nested/lqlint-chars.json",
+        "import-nested/lqlint-prefix.json"
+    ]
+}

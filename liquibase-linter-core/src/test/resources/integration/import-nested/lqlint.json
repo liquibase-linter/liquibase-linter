@@ -1,0 +1,6 @@
+{
+    "fail-fast": true,
+    "import": [
+        "import-nested/lqlint-nested.json"
+    ]
+}
