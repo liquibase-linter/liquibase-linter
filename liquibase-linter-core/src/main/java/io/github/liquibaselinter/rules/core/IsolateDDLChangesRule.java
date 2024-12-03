@@ -6,7 +6,6 @@ import io.github.liquibaselinter.rules.ChangeSetRule;
 import io.github.liquibaselinter.rules.Changes;
 import liquibase.changelog.ChangeSet;
 
-@SuppressWarnings("rawtypes")
 @AutoService({ChangeSetRule.class})
 public class IsolateDDLChangesRule extends AbstractLintRule implements ChangeSetRule {
     private static final String NAME = "isolate-ddl-changes";

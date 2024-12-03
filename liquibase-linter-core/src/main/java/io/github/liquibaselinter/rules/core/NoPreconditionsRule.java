@@ -8,7 +8,6 @@ import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.precondition.core.PreconditionContainer;
 
-@SuppressWarnings("rawtypes")
 @AutoService({ChangeLogRule.class, ChangeSetRule.class})
 public class NoPreconditionsRule extends AbstractLintRule implements ChangeSetRule, ChangeLogRule {
     private static final String NAME = "no-preconditions";

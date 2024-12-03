@@ -5,7 +5,6 @@ import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeSetRule;
 import liquibase.changelog.ChangeSet;
 
-@SuppressWarnings("rawtypes")
 @AutoService({ChangeSetRule.class})
 public class HasContextRule extends AbstractLintRule implements ChangeSetRule {
     private static final String NAME = "has-context";

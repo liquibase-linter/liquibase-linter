@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class IllegalChangeTypesRuleTest {
 
-    private final ChangeRule<Change> rule = new IllegalChangeTypesRule();
+    private final ChangeRule rule = new IllegalChangeTypesRule();
 
     @DisplayName("Null Illegal change type should be valid")
     @Test

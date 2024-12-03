@@ -5,7 +5,6 @@ import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeLogRule;
 import liquibase.changelog.DatabaseChangeLog;
 
-@SuppressWarnings("rawtypes")
 @AutoService({ChangeLogRule.class})
 public class ChangeLogFileNameRule extends AbstractLintRule implements ChangeLogRule {
     private static final String NAME = "changelog-file-name";

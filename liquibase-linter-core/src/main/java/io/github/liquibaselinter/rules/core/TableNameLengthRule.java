@@ -7,19 +7,13 @@ import liquibase.change.Change;
 import liquibase.change.core.CreateTableChange;
 import liquibase.change.core.RenameTableChange;
 
-@SuppressWarnings("rawtypes")
 @AutoService(ChangeRule.class)
-public class TableNameLengthRule extends AbstractLintRule implements ChangeRule<Change> {
+public class TableNameLengthRule extends AbstractLintRule implements ChangeRule {
     private static final String NAME = "table-name-length";
     private static final String MESSAGE = "Table '%s' name must not be longer than %d";
 
     public TableNameLengthRule() {
         super(NAME, MESSAGE);
-    }
-
-    @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
     }
 
     @Override

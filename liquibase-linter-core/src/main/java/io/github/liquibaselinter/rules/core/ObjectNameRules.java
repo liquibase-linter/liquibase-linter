@@ -42,19 +42,13 @@ public class ObjectNameRules {
         return Collections.emptyList();
     }
 
-    @SuppressWarnings("rawtypes")
     @AutoService(ChangeRule.class)
-    public static class ObjectNameRule extends AbstractLintRule implements ChangeRule<Change> {
+    public static class ObjectNameRule extends AbstractLintRule implements ChangeRule {
         private static final String NAME = "object-name";
         private static final String MESSAGE = "Object name does not follow pattern";
 
         public ObjectNameRule() {
             super(NAME, MESSAGE);
-        }
-
-        @Override
-        public Class<Change> getChangeType() {
-            return Change.class;
         }
 
         @Override
@@ -75,19 +69,13 @@ public class ObjectNameRules {
 
     }
 
-    @SuppressWarnings("rawtypes")
     @AutoService(ChangeRule.class)
-    public static class ObjectNameLengthRule extends AbstractLintRule implements ChangeRule<Change> {
+    public static class ObjectNameLengthRule extends AbstractLintRule implements ChangeRule {
         private static final String NAME = "object-name-length";
         private static final String MESSAGE = "Object name '%s' must be less than %d characters";
 
         public ObjectNameLengthRule() {
             super(NAME, MESSAGE);
-        }
-
-        @Override
-        public Class<Change> getChangeType() {
-            return Change.class;
         }
 
         @Override

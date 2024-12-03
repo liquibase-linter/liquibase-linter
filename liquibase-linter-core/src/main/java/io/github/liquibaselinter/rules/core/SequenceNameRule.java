@@ -7,19 +7,13 @@ import liquibase.change.Change;
 import liquibase.change.core.CreateSequenceChange;
 import liquibase.change.core.RenameSequenceChange;
 
-@SuppressWarnings("rawtypes")
 @AutoService(ChangeRule.class)
-public class SequenceNameRule extends AbstractLintRule implements ChangeRule<Change> {
+public class SequenceNameRule extends AbstractLintRule implements ChangeRule {
     private static final String NAME = "sequence-name";
     private static final String MESSAGE = "Sequence name '%s' does not follow pattern '%s'";
 
     public SequenceNameRule() {
         super(NAME, MESSAGE);
-    }
-
-    @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
     }
 
     @Override

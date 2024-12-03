@@ -97,20 +97,14 @@ public class SchemaNameRules {
         return Collections.emptyList();
     }
 
-    @SuppressWarnings("rawtypes")
     @AutoService(ChangeRule.class)
-    public static class SchemaNameRule extends AbstractLintRule implements ChangeRule<Change> {
+    public static class SchemaNameRule extends AbstractLintRule implements ChangeRule {
 
         private static final String NAME = "schema-name";
         private static final String MESSAGE = "Schema name '%s' does not follow pattern '%s'";
 
         public SchemaNameRule() {
             super(NAME, MESSAGE);
-        }
-
-        @Override
-        public Class<Change> getChangeType() {
-            return Change.class;
         }
 
         @Override
@@ -131,9 +125,8 @@ public class SchemaNameRules {
 
     }
 
-    @SuppressWarnings("rawtypes")
     @AutoService(ChangeRule.class)
-    public static class NoSchemaNameRule extends AbstractLintRule implements ChangeRule<Change> {
+    public static class NoSchemaNameRule extends AbstractLintRule implements ChangeRule {
 
         private static final String NAME = "no-schema-name";
         private static final String MESSAGE = "Schema names are not allowed in this project";
@@ -143,8 +136,8 @@ public class SchemaNameRules {
         }
 
         @Override
-        public Class<Change> getChangeType() {
-            return Change.class;
+        public boolean supports(Change change) {
+            return true;
         }
 
         @Override
