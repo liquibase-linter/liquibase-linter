@@ -1,26 +1,41 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeLogRule;
+import io.github.liquibaselinter.rules.LintRuleChecker;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.changelog.DatabaseChangeLog;
 
+import java.util.Collection;
+import java.util.Collections;
+
 @AutoService({ChangeLogRule.class})
-public class ChangeLogFileNameRule extends AbstractLintRule implements ChangeLogRule {
+public class ChangeLogFileNameRule implements ChangeLogRule {
     private static final String NAME = "changelog-file-name";
     private static final String MESSAGE = "ChangeLog filename '%s' must follow pattern '%s'";
 
-    public ChangeLogFileNameRule() {
-        super(NAME, MESSAGE);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public boolean invalid(DatabaseChangeLog changeLog) {
-        return checkMandatoryPattern(changeLog.getPhysicalFilePath(), changeLog);
+    public Collection<RuleViolation> check(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
+        if (isInvalid(changeLog, ruleConfig)) {
+            return Collections.singleton(new RuleViolation(getMessage(changeLog, ruleConfig)));
+        }
+        return Collections.emptyList();
     }
 
-    @Override
-    public String getMessage(DatabaseChangeLog changeLog) {
-        return formatMessage(changeLog.getPhysicalFilePath(), getConfig().getPatternString());
+    private boolean isInvalid(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
+        LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
+        return ruleChecker.checkMandatoryPattern(changeLog.getPhysicalFilePath(), changeLog);
+    }
+
+    private String getMessage(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
+        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(MESSAGE, ruleConfig);
+        return messageGenerator.formatMessage(changeLog.getPhysicalFilePath(), ruleConfig.getPatternString());
     }
 }

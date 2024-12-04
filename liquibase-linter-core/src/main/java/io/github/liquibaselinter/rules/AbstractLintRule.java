@@ -6,6 +6,7 @@ import io.github.liquibaselinter.rules.checker.PatternChecker;
 import java.util.Arrays;
 import java.util.Optional;
 
+@Deprecated
 public abstract class AbstractLintRule implements LintRule {
     private final String name;
     private final String message;
@@ -22,7 +23,6 @@ public abstract class AbstractLintRule implements LintRule {
         return name;
     }
 
-    @Override
     public void configure(RuleConfig ruleConfig) {
         this.ruleConfig = ruleConfig;
         if (ruleConfig.hasPattern()) {
@@ -64,7 +64,6 @@ public abstract class AbstractLintRule implements LintRule {
         return value != null && value.length() > getConfig().getMaxLength();
     }
 
-    @Override
     public String getMessage() {
         return getMessageTemplate();
     }

@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
 public final class RuleConfig {
 
+    public static final RuleConfig EMPTY = builder().build();
+
     private static final String DYNAMIC_VALUE = "{{value}}";
 
     private final boolean enabled;

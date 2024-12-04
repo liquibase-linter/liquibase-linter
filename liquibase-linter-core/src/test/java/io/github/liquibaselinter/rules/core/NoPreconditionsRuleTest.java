@@ -1,6 +1,7 @@
 package io.github.liquibaselinter.rules.core;
 
 import io.github.liquibaselinter.config.RuleConfig;
+import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.change.core.InsertDataChange;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
@@ -40,10 +41,11 @@ class NoPreconditionsRuleTest {
     @DisplayName("Should fail on preconditions in changeLog")
     @Test
     void shouldFailWhenPreconditionsInChangeLog() {
-        rule.configure(RuleConfig.builder().build());
         DatabaseChangeLog changeLog = mock(DatabaseChangeLog.class, RETURNS_DEEP_STUBS);
         when(changeLog.getPreconditions().getNestedPreconditions()).thenReturn(Collections.singletonList(mock(Precondition.class)));
 
-        assertThat(rule.invalid(changeLog)).isTrue();
+        assertThat(rule.check(changeLog, RuleConfig.EMPTY))
+            .extracting(RuleViolation::message)
+            .containsExactly("Preconditions are not allowed in this project");
     }
 }

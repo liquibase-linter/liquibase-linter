@@ -1,11 +1,10 @@
 package io.github.liquibaselinter.rules;
 
+import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.changelog.DatabaseChangeLog;
 
-public interface ChangeLogRule extends LintRule {
-    boolean invalid(DatabaseChangeLog changeLog);
+import java.util.Collection;
 
-    default String getMessage(DatabaseChangeLog changeLog) {
-        return getMessage();
-    }
+public interface ChangeLogRule extends LintRule {
+    Collection<RuleViolation> check(DatabaseChangeLog changeLog, RuleConfig ruleConfig);
 }
