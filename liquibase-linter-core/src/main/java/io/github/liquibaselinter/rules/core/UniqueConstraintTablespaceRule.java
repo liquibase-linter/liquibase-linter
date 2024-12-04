@@ -3,11 +3,11 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
+import liquibase.change.Change;
 import liquibase.change.core.AddUniqueConstraintChange;
 
-@SuppressWarnings("rawtypes")
 @AutoService(ChangeRule.class)
-public class UniqueConstraintTablespaceRule extends AbstractLintRule implements ChangeRule<AddUniqueConstraintChange> {
+public class UniqueConstraintTablespaceRule extends AbstractLintRule implements ChangeRule {
     private static final String NAME = "unique-constraint-tablespace";
     private static final String MESSAGE = "Tablespace '%s' of unique constraint '%s' is empty or does not follow pattern '%s'";
 
@@ -16,18 +16,20 @@ public class UniqueConstraintTablespaceRule extends AbstractLintRule implements 
     }
 
     @Override
-    public Class<AddUniqueConstraintChange> getChangeType() {
-        return AddUniqueConstraintChange.class;
+    public boolean supports(Change change) {
+        return change instanceof AddUniqueConstraintChange;
     }
 
     @Override
-    public boolean invalid(AddUniqueConstraintChange change) {
-        return checkMandatoryPattern(change.getTablespace(), change);
+    public boolean invalid(Change change) {
+        AddUniqueConstraintChange addUniqueConstraintChange = (AddUniqueConstraintChange) change;
+        return checkMandatoryPattern(addUniqueConstraintChange.getTablespace(), change);
     }
 
     @Override
-    public String getMessage(AddUniqueConstraintChange change) {
-        return formatMessage(change.getTablespace(), change.getConstraintName(), getPatternForMessage(change));
+    public String getMessage(Change change) {
+        AddUniqueConstraintChange addUniqueConstraintChange = (AddUniqueConstraintChange) change;
+        return formatMessage(addUniqueConstraintChange.getTablespace(), addUniqueConstraintChange.getConstraintName(), getPatternForMessage(change));
     }
 
 }

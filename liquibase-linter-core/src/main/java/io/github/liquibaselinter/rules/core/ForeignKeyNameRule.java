@@ -3,11 +3,11 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
+import liquibase.change.Change;
 import liquibase.change.core.AddForeignKeyConstraintChange;
 
-@SuppressWarnings("rawtypes")
 @AutoService(ChangeRule.class)
-public class ForeignKeyNameRule extends AbstractLintRule implements ChangeRule<AddForeignKeyConstraintChange> {
+public class ForeignKeyNameRule extends AbstractLintRule implements ChangeRule {
     private static final String NAME = "foreign-key-name";
     private static final String MESSAGE = "Foreign key name is missing or does not follow pattern";
 
@@ -16,18 +16,20 @@ public class ForeignKeyNameRule extends AbstractLintRule implements ChangeRule<A
     }
 
     @Override
-    public Class<AddForeignKeyConstraintChange> getChangeType() {
-        return AddForeignKeyConstraintChange.class;
+    public boolean supports(Change change) {
+        return change instanceof AddForeignKeyConstraintChange;
     }
 
     @Override
-    public boolean invalid(AddForeignKeyConstraintChange change) {
-        final String constraintName = change.getConstraintName();
-        return checkMandatoryPattern(constraintName, change);
+    public boolean invalid(Change change) {
+        AddForeignKeyConstraintChange addForeignKeyConstraintChange = (AddForeignKeyConstraintChange) change;
+        final String constraintName = addForeignKeyConstraintChange.getConstraintName();
+        return checkMandatoryPattern(constraintName, addForeignKeyConstraintChange);
     }
 
     @Override
-    public String getMessage(AddForeignKeyConstraintChange change) {
-        return formatMessage(change.getConstraintName(), ruleConfig.getPatternString());
+    public String getMessage(Change change) {
+        AddForeignKeyConstraintChange addForeignKeyConstraintChange = (AddForeignKeyConstraintChange) change;
+        return formatMessage(addForeignKeyConstraintChange.getConstraintName(), ruleConfig.getPatternString());
     }
 }

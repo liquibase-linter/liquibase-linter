@@ -6,9 +6,8 @@ import io.github.liquibaselinter.rules.ChangeRule;
 import liquibase.change.Change;
 import liquibase.change.DatabaseChange;
 
-@SuppressWarnings("rawtypes")
 @AutoService(ChangeRule.class)
-public class IllegalChangeTypesRule extends AbstractLintRule implements ChangeRule<Change> {
+public class IllegalChangeTypesRule extends AbstractLintRule implements ChangeRule {
     private static final String NAME = "illegal-change-types";
     private static final String MESSAGE = "Change type '%s' is not allowed in this project";
 
@@ -17,8 +16,8 @@ public class IllegalChangeTypesRule extends AbstractLintRule implements ChangeRu
     }
 
     @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
+    public boolean supports(Change change) {
+        return true;
     }
 
     @Override

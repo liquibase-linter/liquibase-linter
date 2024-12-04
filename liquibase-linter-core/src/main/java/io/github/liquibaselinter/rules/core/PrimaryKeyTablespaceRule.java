@@ -14,19 +14,13 @@ import liquibase.change.ConstraintsConfig;
 import liquibase.change.core.AddPrimaryKeyChange;
 import liquibase.change.core.CreateTableChange;
 
-@SuppressWarnings("rawtypes")
 @AutoService(ChangeRule.class)
-public class PrimaryKeyTablespaceRule extends AbstractLintRule implements ChangeRule<Change> {
+public class PrimaryKeyTablespaceRule extends AbstractLintRule implements ChangeRule {
     private static final String NAME = "primary-key-tablespace";
     private static final String MESSAGE = "Tablespace '%s' is empty or does not follow pattern '%s'";
 
     public PrimaryKeyTablespaceRule() {
         super(NAME, MESSAGE);
-    }
-
-    @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
     }
 
     @Override

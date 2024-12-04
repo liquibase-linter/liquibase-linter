@@ -6,7 +6,6 @@ import io.github.liquibaselinter.rules.ChangeSetRule;
 import liquibase.change.core.TagDatabaseChange;
 import liquibase.changelog.ChangeSet;
 
-@SuppressWarnings("rawtypes")
 @AutoService({ChangeSetRule.class})
 public class HasCommentRule extends AbstractLintRule implements ChangeSetRule {
     private static final String NAME = "has-comment";

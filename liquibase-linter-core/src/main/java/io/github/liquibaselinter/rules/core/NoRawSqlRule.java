@@ -7,9 +7,8 @@ import liquibase.change.Change;
 import liquibase.change.core.RawSQLChange;
 import liquibase.change.core.SQLFileChange;
 
-@SuppressWarnings("rawtypes")
 @AutoService(ChangeRule.class)
-public class NoRawSqlRule extends AbstractLintRule implements ChangeRule<Change> {
+public class NoRawSqlRule extends AbstractLintRule implements ChangeRule {
     private static final String NAME = "no-raw-sql";
     private static final String MESSAGE = "Raw sql change types are not allowed, use appropriate Liquibase change types";
 
@@ -18,8 +17,8 @@ public class NoRawSqlRule extends AbstractLintRule implements ChangeRule<Change>
     }
 
     @Override
-    public Class<Change> getChangeType() {
-        return Change.class;
+    public boolean supports(Change change) {
+        return true;
     }
 
     @Override

@@ -3,11 +3,11 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
+import liquibase.change.Change;
 import liquibase.change.core.CreateTableChange;
 
-@SuppressWarnings("rawtypes")
 @AutoService(ChangeRule.class)
-public class CreateTableRemarksRule extends AbstractLintRule implements ChangeRule<CreateTableChange> {
+public class CreateTableRemarksRule extends AbstractLintRule implements ChangeRule {
     private static final String NAME = "create-table-remarks";
     private static final String MESSAGE = "Create table must contain remark attribute";
 
@@ -16,13 +16,13 @@ public class CreateTableRemarksRule extends AbstractLintRule implements ChangeRu
     }
 
     @Override
-    public Class<CreateTableChange> getChangeType() {
-        return CreateTableChange.class;
-    }
-
-    @Override
-    public boolean invalid(CreateTableChange createTableChange) {
+    public boolean invalid(Change change) {
+        CreateTableChange createTableChange = (CreateTableChange) change;
         return checkNotBlank(createTableChange.getRemarks());
     }
 
+    @Override
+    public boolean supports(Change change) {
+        return change instanceof CreateTableChange;
+    }
 }

@@ -2,16 +2,13 @@ package io.github.liquibaselinter.rules;
 
 import liquibase.change.Change;
 
-public interface ChangeRule<T extends Change> extends LintRule {
-    Class<T> getChangeType();
+public interface ChangeRule extends LintRule {
 
-    default boolean supports(T change) {
-        return true;
-    }
+    boolean supports(Change change);
 
-    boolean invalid(T change);
+    boolean invalid(Change change);
 
-    default String getMessage(T change) {
+    default String getMessage(Change change) {
         return getMessage();
     }
 }
