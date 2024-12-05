@@ -25,6 +25,12 @@ class LintMojoIT {
 
     @MavenTest
     @MavenGoal("test")
+    void detect_lint_issue_with_configuration_using_jsonc(MavenExecutionResult result) {
+        assertThatLintIssueIsDetectedAndReported(result);
+    }
+
+    @MavenTest
+    @MavenGoal("test")
     void detect_lint_issue_with_default_configuration_file(MavenExecutionResult result) {
         assertThatLintIssueIsDetectedAndReported(result);
     }

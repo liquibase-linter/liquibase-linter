@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableListMultimap;
 import io.github.liquibaselinter.report.Reporter;
+import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,13 +14,12 @@ import java.io.IOException;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.IGNORED;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.PASSED;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class ConfigTest {
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @DisplayName("Should support valid config object")
     @Test
@@ -33,7 +33,9 @@ class ConfigTest {
             "    }\n" +
             "  }\n" +
             "}";
-        Config config = OBJECT_MAPPER.readValue(configJson, Config.class);
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
         assertThat(config.getRules().size()).isEqualTo(1);
         assertThat(config.getRules().get("schema-name")).extracting("enabled").containsExactly(true);
     }
@@ -46,8 +48,9 @@ class ConfigTest {
             "    \"isolate-ddl-changes\": \"foo\"\n" +
             "  }\n" +
             "}";
+
         assertThatExceptionOfType(JsonMappingException.class)
-            .isThrownBy(() -> OBJECT_MAPPER.readValue(configJson, Config.class))
+            .isThrownBy(() -> Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8)))
             .withMessageContaining("instance of `io.github.liquibaselinter.config.RuleConfig$RuleConfigBuilder`");
     }
 
@@ -59,7 +62,8 @@ class ConfigTest {
             "    \"isolate-ddl-changes\": true\n" +
             "  }\n" +
             "}";
-        Config config = OBJECT_MAPPER.readValue(configJson, Config.class);
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
 
         assertThat(config.getRules().size()).isEqualTo(1);
         assertThat(config.getRules().get("isolate-ddl-changes")).extracting("enabled").containsExactly(true);
@@ -82,7 +86,9 @@ class ConfigTest {
             "        ]\n" +
             "    }\n" +
             "}\n";
-        Config config = OBJECT_MAPPER.readValue(configJson, Config.class);
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
         assertThat(config.getRules().size()).isEqualTo(2);
     }
 
@@ -94,7 +100,9 @@ class ConfigTest {
             "    \"isolate-ddl-changes\": null\n" +
             "  }\n" +
             "}";
-        Config config = OBJECT_MAPPER.readValue(configJson, Config.class);
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
         assertThat(config.getRules().size()).isEqualTo(1);
         assertThat(config.getRules().get("isolate-ddl-changes")).extracting("enabled").containsExactly(false);
     }
@@ -105,7 +113,9 @@ class ConfigTest {
         String configJson = "{\n" +
             "  \"import\": \"imported.json\"\n" +
             "}";
-        Config config = OBJECT_MAPPER.readValue(configJson, Config.class);
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
         assertThat(config.getImports()).containsExactly("imported.json");
     }
 
@@ -118,7 +128,9 @@ class ConfigTest {
             "    \"second.json\"\n" +
             "  ]\n" +
             "}";
-        Config config = OBJECT_MAPPER.readValue(configJson, Config.class);
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
         assertThat(config.getImports()).containsExactly("first.json", "second.json");
     }
 
@@ -146,6 +158,7 @@ class ConfigTest {
         Config config = new Config.Builder().withIgnoreContextPattern("abc").withIgnoreFilesPattern("def")
             .withRules(ImmutableListMultimap.of("rule-name", RuleConfig.enabled()))
             .withFailFast(true).withEnableAfter("after").withImports("a", "b").build();
+
         Config copy = new Config.Builder(config).build();
 
         assertThat(config).usingRecursiveComparison().isEqualTo(copy);
@@ -176,7 +189,9 @@ class ConfigTest {
             "    ]\n" +
             "  }\n" +
             "}";
-        Config config = OBJECT_MAPPER.readValue(configJson, Config.class);
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
         assertThat(config.getReporting().asMap()).containsOnlyKeys("text", "console", "markdown");
 
         assertThat(config.getReporting().get("text")).extracting("path").containsExactly("path/to/report.txt");
@@ -197,8 +212,39 @@ class ConfigTest {
             "    \"other\": false\n" +
             "  }\n" +
             "}";
+
         assertThatExceptionOfType(JsonMappingException.class).isThrownBy(() ->
-            OBJECT_MAPPER.readValue(configJson, Config.class)).withMessageContaining("No lq lint reporter named 'other'");
+            Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8))).withMessageContaining("No lq lint reporter named 'other'");
+    }
+
+    @DisplayName("Should support having comments in configuration")
+    @Test
+    void shouldSupportComments() throws IOException {
+        String configJson = "{\n" +
+            "  // Some comment \n" +
+            "  /* Some comment */" +
+            "  \"rules\": {\n" +
+            "    \"isolate-ddl-changes\": true\n" +
+            "  }\n" +
+            "}";
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
+        assertThat(config.getRules().size()).isEqualTo(1);
+    }
+
+    @DisplayName("Should support having trailing commas in configuration")
+    @Test
+    void shouldSupportTrailingCommas() throws IOException {
+        String configJson = "{\n" +
+            "  \"rules\": {\n" +
+            "    \"isolate-ddl-changes\": true,\n" +
+            "  },\n" +
+            "}";
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
+        assertThat(config.getRules().size()).isEqualTo(1);
     }
 
 }

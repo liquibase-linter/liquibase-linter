@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -27,7 +29,9 @@ import java.util.stream.Collectors;
 
 @JsonDeserialize(builder = Config.Builder.class)
 public final class Config {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+        .enable(Feature.ALLOW_COMMENTS)
+        .enable(JsonReadFeature.ALLOW_TRAILING_COMMA.mappedFeature());
     private static final TypeReference<Map<String, Object>> VALUE_TYPE_REF = new TypeReference<Map<String, Object>>() {
     };
 
@@ -56,7 +60,7 @@ public final class Config {
     }
 
     public static Config fromInputStream(final InputStream inputStream) throws IOException {
-        return new ObjectMapper().readValue(inputStream, Config.class);
+        return OBJECT_MAPPER.readValue(inputStream, Config.class);
     }
 
     public Pattern getIgnoreContextPattern() {
