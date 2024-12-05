@@ -16,7 +16,7 @@
                 <version>@project.version@</version>
                 <configuration>
                     <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
-                    <configurationFile>src/test/resources/liquibase-linter/lqlint.json</configurationFile>
+                    <configurationFile>src/test/resources/liquibase-linter/lqlint.jsonc</configurationFile>
                 </configuration>
                 <executions>
                     <execution>
