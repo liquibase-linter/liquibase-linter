@@ -1,5 +1,7 @@
 package io.github.liquibaselinter.rules.core;
 
+import io.github.liquibaselinter.config.RuleConfig;
+import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,7 @@ class HasContextRuleTest {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getContexts().isEmpty()).thenReturn(false);
 
-        assertThat(rule.invalid(changeSet)).isFalse();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY)).isEmpty();
     }
 
     @DisplayName("Should fail when a context has not been provided on the changeSet")
@@ -26,6 +28,8 @@ class HasContextRuleTest {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getContexts().isEmpty()).thenReturn(true);
 
-        assertThat(rule.invalid(changeSet)).isTrue();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY))
+            .extracting(RuleViolation::message)
+            .containsExactly("Should have at least one context on the change set");
     }
 }

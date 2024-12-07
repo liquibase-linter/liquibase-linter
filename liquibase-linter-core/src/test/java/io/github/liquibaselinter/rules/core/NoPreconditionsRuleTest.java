@@ -21,21 +21,21 @@ class NoPreconditionsRuleTest {
     @DisplayName("Should pass if no preconditions")
     @Test
     void shouldPassIfNoPreconditions() {
-        rule.configure(RuleConfig.builder().build());
         ChangeSet changeSet = new ChangeSet(mock(DatabaseChangeLog.class));
         changeSet.addChange(new InsertDataChange());
 
-        assertThat(rule.invalid(changeSet)).isFalse();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY)).isEmpty();
     }
 
     @DisplayName("Should fail on preconditions in changeSet")
     @Test
     void shouldFailWhenPreconditionsInChangeSet() {
-        rule.configure(RuleConfig.builder().build());
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getPreconditions().getNestedPreconditions()).thenReturn(Collections.singletonList(mock(Precondition.class)));
 
-        assertThat(rule.invalid(changeSet)).isTrue();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY))
+            .extracting(RuleViolation::message)
+            .containsExactly("Preconditions are not allowed in this project");
     }
 
     @DisplayName("Should fail on preconditions in changeLog")

@@ -3,6 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.liquibaselinter.config.RuleConfig;
+import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 import org.junit.jupiter.api.DisplayName;
@@ -20,20 +21,23 @@ class ChangetSetIdRuleTest {
     @Test
     @DisplayName("ChangeSet author must follow pattern")
     void changeSetIdMustFollowPattern() {
-        rule.configure(RuleConfig.builder().withPattern("^\\d{8}_[a-z_]+$").build());
+        RuleConfig ruleConfig = RuleConfig.builder().withPattern("^\\d{8}_[a-z_]+$").build();
 
-        assertThat(rule.invalid(changeSetWithId("create_table_foo"))).isTrue();
-        assertThat(rule.getMessage(changeSetWithId("create_table_foo"))).isEqualTo("ChangeSet id 'create_table_foo' does not follow pattern '^\\d{8}_[a-z_]+$'");
+        assertThat(rule.check(changeSetWithId("create_table_foo"), ruleConfig))
+            .extracting(RuleViolation::message)
+            .containsExactly("ChangeSet id 'create_table_foo' does not follow pattern '^\\d{8}_[a-z_]+$'");
 
-        assertThat(rule.invalid(changeSetWithId("20240509_create_table_foo"))).isFalse();
+        assertThat(rule.check(changeSetWithId("20240509_create_table_foo"), ruleConfig)).isEmpty();
     }
 
     @DisplayName("Should support formatted error message with pattern arg")
     @Test
     void changeSetIdRuleShouldReturnFormattedErrorMessage() {
-        rule.configure(RuleConfig.builder().withPattern("^\\d$").withErrorMessage("The changeset id '%s' must follow pattern '%s'").build());
+        RuleConfig ruleConfig = RuleConfig.builder().withPattern("^\\d$").withErrorMessage("The changeset id '%s' must follow pattern '%s'").build();
 
-        assertThat(rule.getMessage(changeSetWithId("DDD-001"))).isEqualTo("The changeset id 'DDD-001' must follow pattern '^\\d$'");
+        assertThat(rule.check(changeSetWithId("DDD-001"), ruleConfig))
+            .extracting(RuleViolation::message)
+            .containsExactly("The changeset id 'DDD-001' must follow pattern '^\\d$'");
     }
 
     private ChangeSet changeSetWithId(String id) {

@@ -19,7 +19,7 @@ class UniqueConstraintTablespaceRuleTest {
     @Test
     @DisplayName("Tablespace should not be empty")
     void indexTablespaceShouldNotBeEmpty() {
-        rule.configure(RuleConfig.builder().build());
+        rule.configure(RuleConfig.EMPTY);
 
         assertThat(rule.invalid(createUniqueConstraintWithTablespace(null))).isTrue();
         assertThat(rule.getMessage(createUniqueConstraintWithTablespace(null))).isEqualTo("Tablespace '' of unique constraint 'uniq_constraint_foo' is empty or does not follow pattern ''");

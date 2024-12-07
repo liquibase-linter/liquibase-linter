@@ -19,7 +19,7 @@ class IndexTablespaceRuleTest {
     @Test
     @DisplayName("Tablespace should not be empty")
     void indexTablespaceShouldNotBeEmpty() {
-        rule.configure(RuleConfig.builder().build());
+        rule.configure(RuleConfig.EMPTY);
 
         assertThat(rule.invalid(createIndexWithTablespace(null))).isTrue();
         assertThat(rule.getMessage(createIndexWithTablespace(null))).isEqualTo("Tablespace '' of index 'idx_foo' is empty or does not follow pattern ''");

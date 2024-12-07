@@ -86,13 +86,12 @@ class RuleRunner {
             final List<RuleConfig> configs = config.forRule(ruleName);
             for (RuleConfig ruleConfig : configs) {
                 if (isEnabled(ruleConfig) && ConditionHelper.evaluateCondition(ruleConfig, changeSet)) {
-                    changeSetRule.configure(ruleConfig);
-                    final String message = changeSetRule.getMessage(changeSet);
-
-                    if (changeSetRule.invalid(changeSet)) {
-                        handleViolation(changeLog, changeSet, ruleName, message);
-                    } else {
-                        reportItems.add(ReportItem.passed(changeLog, changeSet, ruleName, message));
+                    Collection<RuleViolation> violations = changeSetRule.check(changeSet, ruleConfig);
+                    for (RuleViolation violation : violations) {
+                        handleViolation(changeLog, changeSet, ruleName, violation.message());
+                    }
+                    if (violations.isEmpty()) {
+                        reportItems.add(ReportItem.passed(changeLog, changeSet, ruleName, ""));
                     }
                 }
             }

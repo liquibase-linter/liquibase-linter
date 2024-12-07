@@ -19,7 +19,7 @@ class IllegalChangeTypesRuleTest {
     @DisplayName("Null Illegal change type should be valid")
     @Test
     void nullIllegalChangeTypeShouldBeValid() {
-        rule.configure(RuleConfig.builder().build());
+        rule.configure(RuleConfig.EMPTY);
 
         assertThat(rule.invalid(new LoadDataChange())).isFalse();
     }

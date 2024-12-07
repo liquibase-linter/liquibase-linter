@@ -1,5 +1,7 @@
 package io.github.liquibaselinter.rules.core;
 
+import io.github.liquibaselinter.config.RuleConfig;
+import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.change.core.TagDatabaseChange;
 import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +22,7 @@ class HasCommentRuleTest {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getComments()).thenReturn("Some comment");
 
-        assertThat(rule.invalid(changeSet)).isFalse();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY)).isEmpty();
     }
 
     @DisplayName("Should pass when changeSet contains only a tagDatabase change")
@@ -30,7 +32,7 @@ class HasCommentRuleTest {
         when(changeSet.getComments()).thenReturn(null);
         when(changeSet.getChanges()).thenReturn(Collections.singletonList(mock(TagDatabaseChange.class)));
 
-        assertThat(rule.invalid(changeSet)).isFalse();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY)).isEmpty();
     }
 
     @DisplayName("Should fail when a comment has not been provided on the changeSet")
@@ -39,7 +41,9 @@ class HasCommentRuleTest {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getComments()).thenReturn(null);
 
-        assertThat(rule.invalid(changeSet)).isTrue();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY))
+            .extracting(RuleViolation::message)
+            .containsExactly("Change set must have a comment");
     }
 
     @DisplayName("Should fail when a comment is blank on the changeSet")
@@ -48,7 +52,9 @@ class HasCommentRuleTest {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
         when(changeSet.getComments()).thenReturn("");
 
-        assertThat(rule.invalid(changeSet)).isTrue();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY))
+            .extracting(RuleViolation::message)
+            .containsExactly("Change set must have a comment");
     }
 
 }
