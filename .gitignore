@@ -1,11 +1,7 @@
-.idea/*
-**/target/*
-**/.gradle/*
+.idea/
+target/
 *.iml
 pom.xml.versionsBackup
-.svn/*
-**/.mvm/*
-**/node_modules/*
+node_modules/
 databasechangelog.csv
 databasechangelog.csv.new
-examples/gradle/build
