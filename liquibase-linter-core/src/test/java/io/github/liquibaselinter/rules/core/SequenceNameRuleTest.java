@@ -41,7 +41,9 @@ class SequenceNameRuleTest {
         rule.configure(RuleConfig.builder().withPattern("^(?!SEQ)[A-Z_]+(?<!_)$").build());
 
         assertThat(rule.invalid(changeFromSequenceName.apply("SEQ_INVALID"))).isTrue();
-        assertThat(rule.getMessage(changeFromSequenceName.apply("SEQ_INVALID"))).isEqualTo("Sequence name 'SEQ_INVALID' does not follow pattern '^(?!SEQ)[A-Z_]+(?<!_)$'");
+        assertThat(rule.getMessage(changeFromSequenceName.apply("SEQ_INVALID"))).isEqualTo(
+            "Sequence name 'SEQ_INVALID' does not follow pattern '^(?!SEQ)[A-Z_]+(?<!_)$'"
+        );
 
         assertThat(rule.invalid(changeFromSequenceName.apply("VALID"))).isFalse();
     }
@@ -49,14 +51,25 @@ class SequenceNameRuleTest {
     @DisplayName("Sequence name rule should support formatted error message with pattern arg")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromSequenceNameArgumentsProvider.class)
-    void sequenceNameNameRuleShouldReturnFormattedErrorMessage(String changeName, Function<String, Change> changeFromSequenceName) {
+    void sequenceNameNameRuleShouldReturnFormattedErrorMessage(
+        String changeName,
+        Function<String, Change> changeFromSequenceName
+    ) {
         Change change = changeFromSequenceName.apply("SEQ_INVALID");
-        rule.configure(RuleConfig.builder().withPattern("^(?!SEQ)[A-Z_]+(?<!_)$").withErrorMessage("Sequence name '%s' must follow pattern '%s'").build());
+        rule.configure(
+            RuleConfig.builder()
+                .withPattern("^(?!SEQ)[A-Z_]+(?<!_)$")
+                .withErrorMessage("Sequence name '%s' must follow pattern '%s'")
+                .build()
+        );
 
-        assertThat(rule.getMessage(change)).isEqualTo("Sequence name 'SEQ_INVALID' must follow pattern '^(?!SEQ)[A-Z_]+(?<!_)$'");
+        assertThat(rule.getMessage(change)).isEqualTo(
+            "Sequence name 'SEQ_INVALID' must follow pattern '^(?!SEQ)[A-Z_]+(?<!_)$'"
+        );
     }
 
     private static class ChangeFromSequenceNameArgumentsProvider implements ArgumentsProvider {
+
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(

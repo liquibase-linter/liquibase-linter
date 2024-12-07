@@ -1,13 +1,13 @@
 package io.github.liquibaselinter.rules;
 
-import liquibase.change.Change;
-import liquibase.change.core.*;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import liquibase.change.Change;
+import liquibase.change.core.*;
 
 public final class Changes {
+
     private static final List<Class<? extends Change>> DDL_CHANGE_TYPES = Collections.unmodifiableList(
         Arrays.asList(
             DropViewChange.class,
@@ -52,8 +52,7 @@ public final class Changes {
         )
     );
 
-    private Changes() {
-    }
+    private Changes() {}
 
     public static boolean isDDL(Change change) {
         return DDL_CHANGE_TYPES.contains(change.getClass());

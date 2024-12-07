@@ -1,13 +1,13 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
 import liquibase.change.core.DeleteDataChange;
 import liquibase.change.core.UpdateDataChange;
 import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(ChangeSetParameterResolver.class)
 class ModifyDataStartsWithWhereTest {
@@ -44,5 +44,4 @@ class ModifyDataStartsWithWhereTest {
         deleteDataChange.setChangeSet(changeSet);
         return deleteDataChange;
     }
-
 }

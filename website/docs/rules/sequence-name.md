@@ -16,13 +16,13 @@ This rule will fail if the given regex does not match against the name when crea
 
 ```json
 {
-    "rules": {
-        "sequence-name": {
-            "pattern": "^(?!seq).*$",
-            "errorMessage": "Don't prefix sequence names with 'seq'"
-        }
+  "rules": {
+    "sequence-name": {
+      "pattern": "^(?!seq).*$",
+      "errorMessage": "Don't prefix sequence names with 'seq'"
     }
+  }
 }
-``` 
+```
 
 (The above example just ensures that the `seq` prefix convention is not used.)

@@ -6,15 +6,15 @@ import io.github.liquibaselinter.rules.ChangeSetRule;
 import io.github.liquibaselinter.rules.Changes;
 import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
+import java.util.Collection;
+import java.util.Collections;
 import liquibase.ContextExpression;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 
-import java.util.Collection;
-import java.util.Collections;
-
-@AutoService({ChangeSetRule.class})
+@AutoService({ ChangeSetRule.class })
 public class SeparateDDLChangesRule implements ChangeSetRule {
+
     private static final String NAME = "separate-ddl-context";
     private static final String DEFAULT_MESSAGE = "Should have a ddl changes under ddl contexts";
 

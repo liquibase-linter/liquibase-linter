@@ -1,32 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.liquibase-linter</groupId>
-    <artifactId>liquibase-linter-maven-plugin-test</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+  <groupId>io.github.liquibase-linter</groupId>
+  <artifactId>liquibase-linter-maven-plugin-test</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>io.github.liquibase-linter</groupId>
-                <artifactId>liquibase-linter-maven-plugin</artifactId>
-                <version>@project.version@</version>
-                <configuration>
-                    <changeLogFile>${project.basedir}src/main/resources/config/liquibase/master.xml</changeLogFile>
-                    <configurationFile>${project.basedir}/src/test/resources/liquibase-linter/lqlint.json</configurationFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default</id>
-                        <goals>
-                            <goal>lint</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.liquibase-linter</groupId>
+        <artifactId>liquibase-linter-maven-plugin</artifactId>
+        <version>@project.version@</version>
+        <configuration>
+          <changeLogFile>${project.basedir}src/main/resources/config/liquibase/master.xml</changeLogFile>
+          <configurationFile>${project.basedir}/src/test/resources/liquibase-linter/lqlint.json</configurationFile>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>lint</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

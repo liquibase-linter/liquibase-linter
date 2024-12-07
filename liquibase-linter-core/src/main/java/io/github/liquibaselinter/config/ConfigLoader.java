@@ -1,21 +1,20 @@
 package io.github.liquibaselinter.config;
 
+import static java.lang.System.getProperty;
+import static java.util.stream.Collectors.toList;
+
 import com.google.common.collect.ImmutableListMultimap;
 import io.github.liquibaselinter.report.ConsoleReporter;
 import io.github.liquibaselinter.report.Reporter;
 import io.github.liquibaselinter.report.ReporterConfig;
-import java.util.Collections;
-import liquibase.exception.UnexpectedLiquibaseException;
-import liquibase.resource.ResourceAccessor;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import static java.lang.System.getProperty;
-import static java.util.stream.Collectors.toList;
+import liquibase.exception.UnexpectedLiquibaseException;
+import liquibase.resource.ResourceAccessor;
 
 public final class ConfigLoader {
 
@@ -23,11 +22,16 @@ public final class ConfigLoader {
     public static final String LQLINT_CONFIG_CLASSPATH = "lqlint.json";
     public static final String LQLINT_CONFIG_PATH_PROPERTY = "lqlint.config.path";
 
-    private ConfigLoader() {
-    }
+    private ConfigLoader() {}
 
     public static Config load(ResourceAccessor resourceAccessor) {
-        List<String> configPaths = Stream.of(getProperty(LQLINT_CONFIG_PATH_PROPERTY), LQLINT_CONFIG, LQLINT_CONFIG_CLASSPATH).filter(Objects::nonNull).collect(toList());
+        List<String> configPaths = Stream.of(
+            getProperty(LQLINT_CONFIG_PATH_PROPERTY),
+            LQLINT_CONFIG,
+            LQLINT_CONFIG_CLASSPATH
+        )
+            .filter(Objects::nonNull)
+            .collect(toList());
         try {
             for (String configPath : configPaths) {
                 final Config config = loadConfig(resourceAccessor, configPath);
@@ -48,7 +52,7 @@ public final class ConfigLoader {
     }
 
     public static Config loadConfig(ResourceAccessor resourceAccessor, String path) throws IOException {
-        try(InputStream stream = resourceAccessor.openStream(null, path)) {
+        try (InputStream stream = resourceAccessor.openStream(null, path)) {
             if (stream != null) {
                 final Config config = Config.fromInputStream(stream);
                 if (config != null) {

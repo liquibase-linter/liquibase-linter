@@ -1,5 +1,7 @@
 package io.github.liquibaselinter;
 
+import static java.util.stream.Collectors.toList;
+
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.Report;
@@ -9,11 +11,6 @@ import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.rules.ChangeSetRule;
 import io.github.liquibaselinter.rules.ConditionHelper;
 import io.github.liquibaselinter.rules.RuleViolation;
-import liquibase.change.Change;
-import liquibase.changelog.ChangeSet;
-import liquibase.changelog.DatabaseChangeLog;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,8 +20,10 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.stream.StreamSupport;
-
-import static java.util.stream.Collectors.toList;
+import liquibase.change.Change;
+import liquibase.changelog.ChangeSet;
+import liquibase.changelog.DatabaseChangeLog;
+import org.apache.commons.lang3.StringUtils;
 
 class RuleRunner {
 
@@ -116,7 +115,8 @@ class RuleRunner {
         }
     }
 
-    private void handleViolation(DatabaseChangeLog databaseChangeLog, ChangeSet changeSet, String rule, String message) throws ChangeLogLintingException {
+    private void handleViolation(DatabaseChangeLog databaseChangeLog, ChangeSet changeSet, String rule, String message)
+        throws ChangeLogLintingException {
         if (isIgnored(rule, changeSet)) {
             reportItems.add(ReportItem.ignored(databaseChangeLog, changeSet, rule, message));
         } else if (config.isFailFast()) {
@@ -140,7 +140,9 @@ class RuleRunner {
     }
 
     private boolean isEnabled(RuleConfig ruleConfig) {
-        return ruleConfig.isEnabled()
-            && (StringUtils.isEmpty(ruleConfig.getEnableAfter()) || filesParsed.contains(ruleConfig.getEnableAfter()));
+        return (
+            ruleConfig.isEnabled() &&
+            (StringUtils.isEmpty(ruleConfig.getEnableAfter()) || filesParsed.contains(ruleConfig.getEnableAfter()))
+        );
     }
 }

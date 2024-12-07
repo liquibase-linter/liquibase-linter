@@ -6,11 +6,12 @@ While Liquibase Linter has some good core reporters, you may have a use case tha
 wouldn't make sense as a core reporter.
 
 Fortunately it's trivial to implement custom reporters and apply them in your own project; you just need to write a
-Java class implementing the reporting interface and do a little configuration. 
+Java class implementing the reporting interface and do a little configuration.
 
 ## Writing the reporter
 
 There are a few interfaces to implement when writing a custom reporter in Java:
+
 - [Reporter](https://github.com/liquibase-linter/liquibase-linter/blob/main/src/main/java/io/github/liquibaselinter/report/Reporter.java) is the actual interface that your reporter must implement
 - [Reporter.Factory](https://github.com/liquibase-linter/liquibase-linter/blob/main/src/main/java/io/github/liquibaselinter/report/Reporter.java) is the piece which ties the reporter into the `lqlint.json` configuration.
 
@@ -22,40 +23,42 @@ exist as inner classes to the main `Reporter` implementation.
 ```java
 package com.fake.fancyapp.liquibase;
 
+import java.io.PrintWriter;
+import java.util.List;
 import report.io.github.liquibaselinter.AbstractReporter;
 import report.io.github.liquibaselinter.Report;
-import report.io.github.liquibaselinter.ReporterConfig;
 import report.io.github.liquibaselinter.ReportItem;
-
-import java.util.List;
-import java.io.PrintWriter;
+import report.io.github.liquibaselinter.ReporterConfig;
 
 public class CustomReporter extends AbstractReporter {
-    private static final String NAME = "custom-reporter";
 
-    public CustomReporter(ReporterConfig config) {
-        super(config, "ext"); // reports will have a `.ext` file extension
-    }
+  private static final String NAME = "custom-reporter";
 
-    @Override
-    protected void printReport(PrintWriter output, Report report, List<ReportItem> items) {
-        // The 'items' have already been filtered.
-        // All that is left to do is produce the output.
-        // Alternatively, extend an existing core reporter and override methods.
-    }
+  public CustomReporter(ReporterConfig config) {
+    super(config, "ext"); // reports will have a `.ext` file extension
+  }
 
-    public static class Factory extends AbstractReporter.Factory<CustomReporter> {
-        public Factory() {
-            super(NAME);
-        }
+  @Override
+  protected void printReport(PrintWriter output, Report report, List<ReportItem> items) {
+    // The 'items' have already been filtered.
+    // All that is left to do is produce the output.
+    // Alternatively, extend an existing core reporter and override methods.
+  }
+
+  public static class Factory extends AbstractReporter.Factory<CustomReporter> {
+
+    public Factory() {
+      super(NAME);
     }
+  }
 }
+
 ```
 
 Some notes about how we've done this:
 
 - Extend the `AbstractReporter` class, which saves us from creating a lot of boilerplate ourselves.
-- Create `Factory`. This links the `CustomReporter` to the Liquibase Linter configuration.  
+- Create `Factory`. This links the `CustomReporter` to the Liquibase Linter configuration.
 
 All the core reporters are implemented in this way as well, so if you're not sure how best to hook something up you
 might try looking in the source at
@@ -67,7 +70,7 @@ that do something similar
 The class above should go into a new Maven project that depends on both `liquibase-linter` and `liquibase`.
 
 The fact that the class exists isn't quite enough on its own; we need to tell Liquibase Linter that it's there. For this
-we are using the [Service Provider Interface](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html) pattern - 
+we are using the [Service Provider Interface](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html) pattern -
 this is natively supported in Java and for use cases like this is preferable to powerful-but-heavy classpath scanning
 approaches like that used by Spring.
 
@@ -87,25 +90,21 @@ So for our example custom reporting project `wcg-liquibase-linter` we would have
 
 ```xml
 <plugin>
-    <groupId>org.liquibase</groupId>
-    <artifactId>liquibase-maven-plugin</artifactId>
-    <configuration>
-        ...
-    </configuration>
-    <dependencies>
-        <dependency>
-            <groupId>io.github.liquibase-linter</groupId>
-            <artifactId>liquibase-parser-extension</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fake.fancyapp</groupId>
-            <artifactId>liquibase-reporters</artifactId>
-            <version>0.1.0</version>
-        </dependency>
-    </dependencies>
-    <executions>
-        ...
-    </executions>
+  <groupId>org.liquibase</groupId>
+  <artifactId>liquibase-maven-plugin</artifactId>
+  <configuration>...</configuration>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.liquibase-linter</groupId>
+      <artifactId>liquibase-parser-extension</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fake.fancyapp</groupId>
+      <artifactId>liquibase-reporters</artifactId>
+      <version>0.1.0</version>
+    </dependency>
+  </dependencies>
+  <executions>...</executions>
 </plugin>
 ```
 
@@ -122,59 +121,63 @@ adding in the `Config` class to the generic type declaration. Add `@JsonDeserial
 package com.fake.fancyapp.liquibase;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.io.PrintWriter;
+import java.util.List;
 import report.io.github.liquibaselinter.AbstractReporter;
 import report.io.github.liquibaselinter.Report;
-import report.io.github.liquibaselinter.ReporterConfig;
 import report.io.github.liquibaselinter.ReportItem;
-
-import java.util.List;
-import java.io.PrintWriter;
+import report.io.github.liquibaselinter.ReporterConfig;
 
 public class CustomReporter extends AbstractReporter {
-    private static final String NAME = "custom-reporter";
+
+  private static final String NAME = "custom-reporter";
+
+  final String customConfigOption;
+
+  protected CustomReporter(CustomReporter.Config config) {
+    super(config);
+    this.customConfigOption = config.customConfigOption;
+  }
+
+  @Override
+  protected void printReport(PrintWriter output, Report report, List<ReportItem> items) {
+    // The 'items' have already been filtered.
+    // All that is left to do is produce the output.
+    // Alternatively, extend an existing core reporter and override methods.
+  }
+
+  public static class Factory extends AbstractReporter.BaseFactory<CustomReporter, Config> {
+
+    public Factory() {
+      super(NAME);
+    }
+  }
+
+  @JsonDeserialize(builder = Builder.class)
+  public static class Config extends ReporterConfig {
 
     final String customConfigOption;
 
-    protected CustomReporter(CustomReporter.Config config) {
-        super(config);
-        this.customConfigOption = config.customConfigOption;
+    public Config(Builder builder) {
+      super(builder);
+      customConfigOption = builder.customConfigOption;
+    }
+  }
+
+  public static class Builder extends ReporterConfig.BaseBuilder<Builder> {
+
+    String customConfigOption;
+
+    public Builder withCustomConfigOption(String customConfigOption) {
+      this.customConfigOption = customConfigOption;
+      return this;
     }
 
     @Override
-    protected void printReport(PrintWriter output, Report report, List<ReportItem> items) {
-        // The 'items' have already been filtered.
-        // All that is left to do is produce the output.
-        // Alternatively, extend an existing core reporter and override methods.
+    public Config build() {
+      return new Config(this);
     }
-
-    public static class Factory extends AbstractReporter.BaseFactory<CustomReporter, Config> {
-        public Factory() {
-            super(NAME);
-        }
-    }
-
-    @JsonDeserialize(builder = Builder.class)
-    public static class Config extends ReporterConfig {
-        final String customConfigOption;
-
-        public Config(Builder builder) {
-            super(builder);
-            customConfigOption = builder.customConfigOption;
-        }
-    }
-
-    public static class Builder extends ReporterConfig.BaseBuilder<Builder> {
-        String customConfigOption;
-
-        public Builder withCustomConfigOption(String customConfigOption) {
-            this.customConfigOption = customConfigOption;
-            return this;
-        }
-
-        @Override
-        public Config build() {
-            return new Config(this);
-        }
-    }
+  }
 }
+
 ```

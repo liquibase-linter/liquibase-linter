@@ -33,7 +33,10 @@ class ChangetSetIdRuleTest {
     @DisplayName("Should support formatted error message with pattern arg")
     @Test
     void changeSetIdRuleShouldReturnFormattedErrorMessage() {
-        RuleConfig ruleConfig = RuleConfig.builder().withPattern("^\\d$").withErrorMessage("The changeset id '%s' must follow pattern '%s'").build();
+        RuleConfig ruleConfig = RuleConfig.builder()
+            .withPattern("^\\d$")
+            .withErrorMessage("The changeset id '%s' must follow pattern '%s'")
+            .build();
 
         assertThat(rule.check(changeSetWithId("DDD-001"), ruleConfig))
             .extracting(RuleViolation::message)

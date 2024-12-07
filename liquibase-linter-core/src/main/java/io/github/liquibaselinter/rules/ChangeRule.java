@@ -4,7 +4,6 @@ import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.change.Change;
 
 public interface ChangeRule extends LintRule {
-
     void configure(RuleConfig ruleConfig);
 
     String getMessage();

@@ -1,11 +1,11 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.github.liquibaselinter.rules.core.SchemaNameRules.NoSchemaNameRule;
 import liquibase.change.core.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class NoSchemaNameRuleTest {
 
@@ -62,7 +62,10 @@ class NoSchemaNameRuleTest {
         return addColumnChange;
     }
 
-    private AddForeignKeyConstraintChange getAddForeignKeyConstraintChange(String baseSchemaName, String referenceSchemaName) {
+    private AddForeignKeyConstraintChange getAddForeignKeyConstraintChange(
+        String baseSchemaName,
+        String referenceSchemaName
+    ) {
         AddForeignKeyConstraintChange addForeignKeyConstraintChange = new AddForeignKeyConstraintChange();
         addForeignKeyConstraintChange.setBaseTableSchemaName(baseSchemaName);
         addForeignKeyConstraintChange.setReferencedTableSchemaName(referenceSchemaName);

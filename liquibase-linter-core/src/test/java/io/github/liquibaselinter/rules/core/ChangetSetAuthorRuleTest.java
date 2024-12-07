@@ -33,7 +33,10 @@ class ChangetSetAuthorRuleTest {
     @DisplayName("Should support formatted error message with pattern arg")
     @Test
     void changeSetAuthorRuleShouldReturnFormattedErrorMessage() {
-        RuleConfig ruleConfig = RuleConfig.builder().withPattern("^John$").withErrorMessage("The author '%s' must follow pattern '%s'").build();
+        RuleConfig ruleConfig = RuleConfig.builder()
+            .withPattern("^John$")
+            .withErrorMessage("The author '%s' must follow pattern '%s'")
+            .build();
 
         assertThat(rule.check(changeSetWithAuthor("Jane"), ruleConfig))
             .extracting(RuleViolation::message)

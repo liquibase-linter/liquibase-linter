@@ -1,5 +1,7 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
 import liquibase.change.core.DropNotNullConstraintChange;
 import liquibase.changelog.ChangeSet;
@@ -7,9 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@ExtendWith({ChangeSetParameterResolver.class})
+@ExtendWith({ ChangeSetParameterResolver.class })
 class DropNotNullRequireColumnDataTypeRuleTest {
 
     private final DropNotNullRequireColumnDataTypeRule rule = new DropNotNullRequireColumnDataTypeRule();
@@ -38,5 +38,4 @@ class DropNotNullRequireColumnDataTypeRuleTest {
         change.setChangeSet(changeSet);
         return change;
     }
-
 }

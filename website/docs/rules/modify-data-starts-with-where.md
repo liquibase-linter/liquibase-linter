@@ -8,7 +8,7 @@ This mistake can be common with people newer to Liquibase, or where a Liquibase 
 
 ```xml
 <delete tableName="FOO">
-    <where>WHERE BAR IS NOT NULL</where>
+  <where>WHERE BAR IS NOT NULL</where>
 </delete>
 ```
 

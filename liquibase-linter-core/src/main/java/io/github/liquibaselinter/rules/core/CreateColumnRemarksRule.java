@@ -11,6 +11,7 @@ import liquibase.change.core.CreateTableChange;
 
 @AutoService(ChangeRule.class)
 public class CreateColumnRemarksRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "create-column-remarks";
     private static final String MESSAGE = "Add column must contain remarks";
 
@@ -33,5 +34,4 @@ public class CreateColumnRemarksRule extends AbstractLintRule implements ChangeR
         }
         return false;
     }
-
 }

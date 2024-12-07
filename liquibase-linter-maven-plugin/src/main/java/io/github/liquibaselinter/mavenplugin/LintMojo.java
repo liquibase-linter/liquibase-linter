@@ -8,9 +8,11 @@ import io.github.liquibaselinter.config.ConfigLoader;
 import io.github.liquibaselinter.report.ConsoleReporter;
 import io.github.liquibaselinter.report.Reporter;
 import io.github.liquibaselinter.report.ReporterConfig;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 import liquibase.Liquibase;
 import liquibase.Scope;
 import liquibase.changelog.DatabaseChangeLog;
@@ -29,9 +31,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-
-import javax.inject.Inject;
-import java.io.FileNotFoundException;
 
 @Mojo(
     name = "lint",
@@ -55,7 +54,6 @@ public class LintMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
-
         try (ResourceAccessor resourceAccessor = buildResourceAccessor()) {
             Scope.child(setUpLiquibaseLogging(), () -> {
                 Liquibase liquibase = createLiquibase(relativePathOf(changeLogFile), resourceAccessor);
@@ -69,7 +67,6 @@ public class LintMojo extends AbstractMojo {
         } catch (Exception e) {
             throw new MojoExecutionException(e);
         }
-
     }
 
     private Map<String, Object> setUpLiquibaseLogging() {
@@ -78,7 +75,8 @@ public class LintMojo extends AbstractMojo {
         return scopeAttrs;
     }
 
-    private Config linterConfiguration(ResourceAccessor resourceAccessor, String configurationFile1) throws MojoExecutionException {
+    private Config linterConfiguration(ResourceAccessor resourceAccessor, String configurationFile1)
+        throws MojoExecutionException {
         Config linterConfig;
         try {
             Config userConfig = ConfigLoader.loadConfig(resourceAccessor, relativePathOf(configurationFile1));
@@ -114,7 +112,8 @@ public class LintMojo extends AbstractMojo {
         }
     }
 
-    private static Liquibase createLiquibase(String changeLogFile, ResourceAccessor resourceAccessor) throws LiquibaseException {
+    private static Liquibase createLiquibase(String changeLogFile, ResourceAccessor resourceAccessor)
+        throws LiquibaseException {
         try (DatabaseConnection connection = new OfflineConnection("offline:h2", resourceAccessor)) {
             return new Liquibase(changeLogFile, resourceAccessor, connection);
         }

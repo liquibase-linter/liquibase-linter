@@ -1,10 +1,8 @@
 {
-    "fail-fast": true,
-    "rules": {
-        "file-not-included": {
-            "values": [
-                "file-not-included/to-include/"
-            ]
-        }
+  "fail-fast": true,
+  "rules": {
+    "file-not-included": {
+      "values": ["file-not-included/to-include/"]
     }
+  }
 }

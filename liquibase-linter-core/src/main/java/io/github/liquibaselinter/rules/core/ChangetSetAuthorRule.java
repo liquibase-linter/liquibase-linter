@@ -6,13 +6,13 @@ import io.github.liquibaselinter.rules.ChangeSetRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
 import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
-import liquibase.changelog.ChangeSet;
-
 import java.util.Collection;
 import java.util.Collections;
+import liquibase.changelog.ChangeSet;
 
 @AutoService(ChangeSetRule.class)
 public class ChangetSetAuthorRule implements ChangeSetRule {
+
     private static final String NAME = "changeset-author";
     private static final String DEFAULT_MESSAGE = "ChangeSet author '%s' does not follow pattern '%s'";
 
