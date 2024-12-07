@@ -1,30 +1,43 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeSetRule;
+import io.github.liquibaselinter.rules.LintRuleChecker;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.ContextExpression;
 import liquibase.changelog.ChangeSet;
 
-@AutoService({ChangeSetRule.class})
-public class ValidContextRule extends AbstractLintRule implements ChangeSetRule {
-    private static final String NAME = "valid-context";
-    private static final String MESSAGE = "Context does not follow pattern";
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
-    public ValidContextRule() {
-        super(NAME, MESSAGE);
+@AutoService({ChangeSetRule.class})
+public class ValidContextRule implements ChangeSetRule {
+    private static final String NAME = "valid-context";
+    private static final String DEFAULT_MESSAGE = "Context does not follow pattern";
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public boolean invalid(ChangeSet changeSet) {
+    public Collection<RuleViolation> check(ChangeSet changeSet, RuleConfig ruleConfig) {
         ContextExpression contextExpression = changeSet.getContexts();
         if (contextExpression != null) {
-            for (String context : contextExpression.getContexts()) {
-                if (checkPattern(context, changeSet)) {
-                    return true;
-                }
-            }
+            LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
+            return contextExpression.getContexts()
+                .stream()
+                .filter(context -> ruleChecker.checkPattern(context, changeSet))
+                .map(context -> new RuleViolation(getMessage(ruleConfig)))
+                .collect(Collectors.toList());
         }
-        return false;
+        return Collections.emptyList();
+    }
+
+    private String getMessage(RuleConfig ruleConfig) {
+        return new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig).getMessage();
     }
 }

@@ -2,7 +2,10 @@ package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
-import io.github.liquibaselinter.rules.*;
+import io.github.liquibaselinter.rules.ChangeLogRule;
+import io.github.liquibaselinter.rules.ChangeSetRule;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.precondition.core.PreconditionContainer;
@@ -11,26 +14,31 @@ import java.util.Collection;
 import java.util.Collections;
 
 @AutoService({ChangeLogRule.class, ChangeSetRule.class})
-public class NoPreconditionsRule extends AbstractLintRule implements ChangeSetRule, ChangeLogRule {
+public class NoPreconditionsRule implements ChangeSetRule, ChangeLogRule {
     private static final String NAME = "no-preconditions";
-    private static final String MESSAGE = "Preconditions are not allowed in this project";
+    private static final String DEFAULT_MESSAGE = "Preconditions are not allowed in this project";
 
-    public NoPreconditionsRule() {
-        super(NAME, MESSAGE);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
     public Collection<RuleViolation> check(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
-        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(MESSAGE, ruleConfig);
         if (isInvalid(changeLog)) {
+            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
             return Collections.singleton(new RuleViolation(messageGenerator.getMessage()));
         }
         return Collections.emptyList();
     }
 
     @Override
-    public boolean invalid(ChangeSet changeSet) {
-        return changeSet.getPreconditions() != null && !changeSet.getPreconditions().getNestedPreconditions().isEmpty();
+    public Collection<RuleViolation> check(ChangeSet changeSet, RuleConfig ruleConfig) {
+        if (changeSet.getPreconditions() != null && !changeSet.getPreconditions().getNestedPreconditions().isEmpty())   {
+            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return Collections.singleton(new RuleViolation(messageGenerator.getMessage()));
+        }
+        return Collections.emptyList();
     }
 
     public boolean isInvalid(DatabaseChangeLog changeLog) {

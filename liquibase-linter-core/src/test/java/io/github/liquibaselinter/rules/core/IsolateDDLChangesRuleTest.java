@@ -1,6 +1,8 @@
 package io.github.liquibaselinter.rules.core;
 
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
+import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.change.core.AddColumnChange;
 import liquibase.change.core.CreateTableChange;
 import liquibase.changelog.ChangeSet;
@@ -21,13 +23,15 @@ class IsolateDDLChangesRuleTest {
         changeSet.addChange(new CreateTableChange());
         changeSet.addChange(new AddColumnChange());
 
-        assertThat(rule.invalid(changeSet)).isTrue();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY))
+            .extracting(RuleViolation::message)
+            .containsExactly("Should only have a single ddl change per change set");
     }
 
     @DisplayName("Should allow one ddl change type in a change set")
     @Test
     void shouldAllowOneDDL(ChangeSet changeSet) {
-        assertThat(rule.invalid(changeSet)).isFalse();
+        assertThat(rule.check(changeSet, RuleConfig.EMPTY)).isEmpty();
     }
 
 }
