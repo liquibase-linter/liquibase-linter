@@ -23,12 +23,12 @@ A basic usage:
 
 ```json
 {
-    "rules": {
-        "modify-data-enforce-where": {
-            "values": ["SETTINGS"],
-            "errorMessage": "Updates and deletes to settings table must have a where condition"
-        }
+  "rules": {
+    "modify-data-enforce-where": {
+      "values": ["SETTINGS"],
+      "errorMessage": "Updates and deletes to settings table must have a where condition"
     }
+  }
 }
 ```
 
@@ -36,12 +36,12 @@ With the addition of a pattern:
 
 ```json
 {
-    "rules": {
-        "modify-data-enforce-where": {
-            "values": ["SETTINGS"],
-            "pattern": "^.*GROUP =.*$",
-            "errorMessage": "Updates and deletes to settings table must have a where condition that references group column"
-        }
+  "rules": {
+    "modify-data-enforce-where": {
+      "values": ["SETTINGS"],
+      "pattern": "^.*GROUP =.*$",
+      "errorMessage": "Updates and deletes to settings table must have a where condition that references group column"
     }
+  }
 }
 ```

@@ -3,13 +3,12 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
-import liquibase.change.Change;
-import liquibase.change.ColumnConfig;
-import liquibase.change.core.*;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
+import liquibase.change.Change;
+import liquibase.change.ColumnConfig;
+import liquibase.change.core.*;
 
 public class ObjectNameRules {
 
@@ -19,7 +18,10 @@ public class ObjectNameRules {
 
     private static Collection<String> getObjectNames(Change change) {
         if (change instanceof AddColumnChange) {
-            return ((AddColumnChange) change).getColumns().stream().map(ColumnConfig::getName).collect(Collectors.toList());
+            return ((AddColumnChange) change).getColumns()
+                .stream()
+                .map(ColumnConfig::getName)
+                .collect(Collectors.toList());
         } else if (change instanceof AddForeignKeyConstraintChange) {
             return Collections.singletonList(((AddForeignKeyConstraintChange) change).getConstraintName());
         } else if (change instanceof AddPrimaryKeyChange) {
@@ -27,7 +29,10 @@ public class ObjectNameRules {
         } else if (change instanceof AddUniqueConstraintChange) {
             return Collections.singletonList(((AddUniqueConstraintChange) change).getConstraintName());
         } else if (change instanceof CreateTableChange) {
-            return ((CreateTableChange) change).getColumns().stream().map(ColumnConfig::getName).collect(Collectors.toList());
+            return ((CreateTableChange) change).getColumns()
+                .stream()
+                .map(ColumnConfig::getName)
+                .collect(Collectors.toList());
         } else if (change instanceof MergeColumnChange) {
             return Collections.singletonList(((MergeColumnChange) change).getFinalColumnName());
         } else if (change instanceof RenameColumnChange) {
@@ -44,6 +49,7 @@ public class ObjectNameRules {
 
     @AutoService(ChangeRule.class)
     public static class ObjectNameRule extends AbstractLintRule implements ChangeRule {
+
         private static final String NAME = "object-name";
         private static final String MESSAGE = "Object name does not follow pattern";
 
@@ -63,14 +69,17 @@ public class ObjectNameRules {
 
         @Override
         public String getMessage(Change change) {
-            String joined = getObjectNames(change).stream().filter(objectName -> checkMandatoryPattern(objectName, change)).collect(Collectors.joining(","));
+            String joined = getObjectNames(change)
+                .stream()
+                .filter(objectName -> checkMandatoryPattern(objectName, change))
+                .collect(Collectors.joining(","));
             return formatMessage(joined, getConfig().getPatternString());
         }
-
     }
 
     @AutoService(ChangeRule.class)
     public static class ObjectNameLengthRule extends AbstractLintRule implements ChangeRule {
+
         private static final String NAME = "object-name-length";
         private static final String MESSAGE = "Object name '%s' must be less than %d characters";
 
@@ -90,9 +99,11 @@ public class ObjectNameRules {
 
         @Override
         public String getMessage(Change change) {
-            String joined = getObjectNames(change).stream().filter(this::checkMaxLength).collect(Collectors.joining(","));
+            String joined = getObjectNames(change)
+                .stream()
+                .filter(this::checkMaxLength)
+                .collect(Collectors.joining(","));
             return formatMessage(joined, getConfig().getMaxLength());
-
         }
     }
 }

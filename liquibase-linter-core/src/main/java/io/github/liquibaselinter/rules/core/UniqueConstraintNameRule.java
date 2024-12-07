@@ -8,6 +8,7 @@ import liquibase.change.core.AddUniqueConstraintChange;
 
 @AutoService(ChangeRule.class)
 public class UniqueConstraintNameRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "unique-constraint-name";
     private static final String MESSAGE = "Unique constraint name does not follow pattern";
 
@@ -31,5 +32,4 @@ public class UniqueConstraintNameRule extends AbstractLintRule implements Change
         AddUniqueConstraintChange addUniqueConstraintChange = (AddUniqueConstraintChange) change;
         return formatMessage(addUniqueConstraintChange.getConstraintName(), getConfig().getPatternString());
     }
-
 }

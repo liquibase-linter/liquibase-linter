@@ -3,6 +3,7 @@ package io.github.liquibaselinter.rules;
 import java.util.StringJoiner;
 
 public class RuleViolation {
+
     private final String message;
 
     public RuleViolation(String message) {

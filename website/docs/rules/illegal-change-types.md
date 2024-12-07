@@ -18,11 +18,11 @@ To prevent `loadData` changes being used:
 
 ```json
 {
-    "rules": {
-        "illegal-change-types": {
-            "values": ["loadData"]
-        }
+  "rules": {
+    "illegal-change-types": {
+      "values": ["loadData"]
     }
+  }
 }
 ```
 
@@ -30,10 +30,10 @@ This is exactly equivalent to the above, but using the class name:
 
 ```json
 {
-    "rules": {
-        "illegal-change-types": {
-            "values": ["liquibase.change.core.LoadDataChange"]
-        }
+  "rules": {
+    "illegal-change-types": {
+      "values": ["liquibase.change.core.LoadDataChange"]
     }
+  }
 }
 ```

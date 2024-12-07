@@ -8,9 +8,9 @@ When defining a [column](https://www.liquibase.org/documentation/column.html), i
 
 ```xml
 <addColumn tableName="FOO">
-    <column name="BAR" type="${nvarchar}(50)">
-        <constraints primaryKey="true"/>    
-    </column>
+  <column name="BAR" type="${nvarchar}(50)">
+    <constraints primaryKey="true" />
+  </column>
 </addColumn>
 ```
 

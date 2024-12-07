@@ -25,7 +25,11 @@ class MavenConsoleReporter implements Reporter {
 
     @Override
     public void processReport(Report report) {
-        Set<ReportItem> errors = report.getItems().stream().filter(reportItem -> reportItem.getType() == ReportItem.ReportItemType.ERROR).collect(Collectors.toSet());
+        Set<ReportItem> errors = report
+            .getItems()
+            .stream()
+            .filter(reportItem -> reportItem.getType() == ReportItem.ReportItemType.ERROR)
+            .collect(Collectors.toSet());
         if (errors.isEmpty()) {
             log.info("No violation found");
             return;
@@ -35,8 +39,12 @@ class MavenConsoleReporter implements Reporter {
     }
 
     private void printByChangeLogFile(Collection<ReportItem> items) {
-        items.stream().collect(groupingBy(item -> ofNullable(item.getFilePath()).map(String::trim).orElse("")))
-            .entrySet().stream().sorted(Map.Entry.comparingByKey(new EmptyLastComparator()))
+        items
+            .stream()
+            .collect(groupingBy(item -> ofNullable(item.getFilePath()).map(String::trim).orElse("")))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByKey(new EmptyLastComparator()))
             .forEach(entry -> printChangeLogFile(entry.getKey(), entry.getValue()));
     }
 
@@ -54,8 +62,12 @@ class MavenConsoleReporter implements Reporter {
     }
 
     private void printByChangeSet(List<ReportItem> items) {
-        items.stream().collect(groupingBy(item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse("")))
-            .entrySet().stream().sorted(Map.Entry.comparingByKey())
+        items
+            .stream()
+            .collect(groupingBy(item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse("")))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByKey())
             .forEach(entry -> printChangeSet(entry.getKey(), entry.getValue()));
     }
 

@@ -1,10 +1,10 @@
 {
-    "fail-fast": true,
-    "import": "import-override/lqlint-imported.json",
-    "rules": {
-        "object-name": {
-            "pattern": "^[A-Z0-9]+$",
-            "errorMessage": "Object name '%s' name must be uppercase or numeric characters only"
-        }
+  "fail-fast": true,
+  "import": "import-override/lqlint-imported.json",
+  "rules": {
+    "object-name": {
+      "pattern": "^[A-Z0-9]+$",
+      "errorMessage": "Object name '%s' name must be uppercase or numeric characters only"
     }
+  }
 }

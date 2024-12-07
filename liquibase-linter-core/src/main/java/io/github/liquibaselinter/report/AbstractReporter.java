@@ -1,11 +1,11 @@
 package io.github.liquibaselinter.report;
 
+import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
+import static io.github.liquibaselinter.report.ReportItem.ReportItemType.IGNORED;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.collect.ImmutableSet;
 import io.github.liquibaselinter.report.ReporterConfig.BaseBuilder;
-import liquibase.exception.UnexpectedLiquibaseException;
-import org.springframework.core.GenericTypeResolver;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
-import static io.github.liquibaselinter.report.ReportItem.ReportItemType.IGNORED;
+import liquibase.exception.UnexpectedLiquibaseException;
+import org.springframework.core.GenericTypeResolver;
 
 public abstract class AbstractReporter implements Reporter {
+
     private final ReporterConfig config;
     private final String path;
     private final Set<ReportItem.ReportItemType> filter;
@@ -25,7 +25,9 @@ public abstract class AbstractReporter implements Reporter {
     protected AbstractReporter(ReporterConfig config, String defaultPathExtension) {
         this.config = config;
         this.path = Optional.ofNullable(config.getPath()).orElse("./target/lqlint-report." + defaultPathExtension);
-        this.filter = Optional.ofNullable(config.getFilter()).map(ImmutableSet::copyOf).orElse(ImmutableSet.of(ERROR, IGNORED));
+        this.filter = Optional.ofNullable(config.getFilter())
+            .map(ImmutableSet::copyOf)
+            .orElse(ImmutableSet.of(ERROR, IGNORED));
     }
 
     @Override
@@ -35,7 +37,9 @@ public abstract class AbstractReporter implements Reporter {
 
     @Override
     public void processReport(Report report) {
-        final List<ReportItem> filteredItems = report.getItems().stream()
+        final List<ReportItem> filteredItems = report
+            .getItems()
+            .stream()
             .filter(item -> filter.contains(item.getType()))
             .collect(Collectors.toList());
         process(report, filteredItems);
@@ -56,7 +60,9 @@ public abstract class AbstractReporter implements Reporter {
         return report.getConfig().getRules().values().stream().filter(rule -> !rule.isEnabled()).count();
     }
 
-    public abstract static class BaseFactory<R extends Reporter, C extends ReporterConfig> implements Reporter.Factory<R, C> {
+    public abstract static class BaseFactory<R extends Reporter, C extends ReporterConfig>
+        implements Reporter.Factory<R, C> {
+
         private final String name;
         private final Class<? extends R> reporterClass;
         private final Class<? extends C> configClass;
@@ -64,7 +70,10 @@ public abstract class AbstractReporter implements Reporter {
 
         protected BaseFactory(final String name) {
             this.name = name;
-            final Class<?>[] factoryTypes = GenericTypeResolver.resolveTypeArguments(getClass(), Reporter.Factory.class);
+            final Class<?>[] factoryTypes = GenericTypeResolver.resolveTypeArguments(
+                getClass(),
+                Reporter.Factory.class
+            );
             reporterClass = (Class<? extends R>) factoryTypes[0];
             configClass = (Class<? extends C>) factoryTypes[1];
             configBuilderClass = Optional.ofNullable(configClass.getAnnotation(JsonDeserialize.class))

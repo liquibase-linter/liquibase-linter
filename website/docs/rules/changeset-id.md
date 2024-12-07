@@ -16,11 +16,11 @@ The `changeset-id` will fail if the given regex does not match against the `id` 
 
 ```json
 {
-    "rules": {
-        "changeset-id": {
-            "enabled": true,
-            "pattern": "^\\d{8}_[a-z_]+$"
-        }
+  "rules": {
+    "changeset-id": {
+      "enabled": true,
+      "pattern": "^\\d{8}_[a-z_]+$"
     }
+  }
 }
 ```

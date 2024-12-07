@@ -1,12 +1,12 @@
 {
-    "rules": {
-        "changelog-file-name": {
-            "enabled": true,
-            "pattern": "^[^ ]+$"
-        },
-        "no-preconditions": true
+  "rules": {
+    "changelog-file-name": {
+      "enabled": true,
+      "pattern": "^[^ ]+$"
     },
-    "reporting": {
-        "markdown": true
-    }
+    "no-preconditions": true
+  },
+  "reporting": {
+    "markdown": true
+  }
 }

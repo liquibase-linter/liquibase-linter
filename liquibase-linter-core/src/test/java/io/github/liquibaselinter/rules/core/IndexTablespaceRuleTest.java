@@ -22,7 +22,9 @@ class IndexTablespaceRuleTest {
         rule.configure(RuleConfig.EMPTY);
 
         assertThat(rule.invalid(createIndexWithTablespace(null))).isTrue();
-        assertThat(rule.getMessage(createIndexWithTablespace(null))).isEqualTo("Tablespace '' of index 'idx_foo' is empty or does not follow pattern ''");
+        assertThat(rule.getMessage(createIndexWithTablespace(null))).isEqualTo(
+            "Tablespace '' of index 'idx_foo' is empty or does not follow pattern ''"
+        );
     }
 
     @Test
@@ -31,7 +33,9 @@ class IndexTablespaceRuleTest {
         rule.configure(RuleConfig.builder().withPattern("^TAB_IDX_[A-Z_]+$").build());
 
         assertThat(rule.invalid(createIndexWithTablespace("INDEXES"))).isTrue();
-        assertThat(rule.getMessage(createIndexWithTablespace("INDEXES"))).isEqualTo("Tablespace 'INDEXES' of index 'idx_foo' is empty or does not follow pattern '^TAB_IDX_[A-Z_]+$'");
+        assertThat(rule.getMessage(createIndexWithTablespace("INDEXES"))).isEqualTo(
+            "Tablespace 'INDEXES' of index 'idx_foo' is empty or does not follow pattern '^TAB_IDX_[A-Z_]+$'"
+        );
 
         assertThat(rule.invalid(createIndexWithTablespace("TAB_IDX_USERS"))).isFalse();
     }
@@ -39,9 +43,16 @@ class IndexTablespaceRuleTest {
     @DisplayName("Should support formatted error message with pattern arg")
     @Test
     void indexTablespaceRuleShouldReturnFormattedErrorMessage() {
-        rule.configure(RuleConfig.builder().withPattern("^TAB_IDX_[A-Z_]+$").withErrorMessage("Tablespace '%s' for index '%s' must follow pattern '%s'").build());
+        rule.configure(
+            RuleConfig.builder()
+                .withPattern("^TAB_IDX_[A-Z_]+$")
+                .withErrorMessage("Tablespace '%s' for index '%s' must follow pattern '%s'")
+                .build()
+        );
 
-        assertThat(rule.getMessage(createIndexWithTablespace("DDD-001"))).isEqualTo("Tablespace 'DDD-001' for index 'idx_foo' must follow pattern '^TAB_IDX_[A-Z_]+$'");
+        assertThat(rule.getMessage(createIndexWithTablespace("DDD-001"))).isEqualTo(
+            "Tablespace 'DDD-001' for index 'idx_foo' must follow pattern '^TAB_IDX_[A-Z_]+$'"
+        );
     }
 
     private CreateIndexChange createIndexWithTablespace(String tablespace) {

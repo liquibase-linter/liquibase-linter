@@ -1,13 +1,13 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.core.ObjectNameRules.ObjectNameLengthRule;
 import liquibase.change.AddColumnConfig;
 import liquibase.change.core.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class ObjectNameLengthRuleTest {
 
@@ -64,27 +64,58 @@ class ObjectNameLengthRuleTest {
     @DisplayName("Object name length rule should support formatted error message with length arg")
     @Test
     void objectNameLengthRuleShouldReturnFormattedErrorMessage() {
-        rule.configure(RuleConfig.builder().withMaxLength(4).withErrorMessage("Object name '%s' must be less than %d characters").build());
+        rule.configure(
+            RuleConfig.builder()
+                .withMaxLength(4)
+                .withErrorMessage("Object name '%s' must be less than %d characters")
+                .build()
+        );
 
-        assertThat(rule.getMessage(getAddColumnChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
-        assertThat(rule.getMessage(getAddForeignKeyConstraintChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
-        assertThat(rule.getMessage(getAddPrimaryKeyConstraintChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
-        assertThat(rule.getMessage(getAddUniqueConstraintChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
-        assertThat(rule.getMessage(getCreateTableChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
-        assertThat(rule.getMessage(getMergeColumnChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
-        assertThat(rule.getMessage(getRenameColumnChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
-        assertThat(rule.getMessage(getRenameViewChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
-        assertThat(rule.getMessage(getCreateViewChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
-        assertThat(rule.getMessage(getCreateIndexChange("VALUE"))).isEqualTo("Object name 'VALUE' must be less than 4 characters");
+        assertThat(rule.getMessage(getAddColumnChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
+        assertThat(rule.getMessage(getAddForeignKeyConstraintChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
+        assertThat(rule.getMessage(getAddPrimaryKeyConstraintChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
+        assertThat(rule.getMessage(getAddUniqueConstraintChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
+        assertThat(rule.getMessage(getCreateTableChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
+        assertThat(rule.getMessage(getMergeColumnChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
+        assertThat(rule.getMessage(getRenameColumnChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
+        assertThat(rule.getMessage(getRenameViewChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
+        assertThat(rule.getMessage(getCreateViewChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
+        assertThat(rule.getMessage(getCreateIndexChange("VALUE"))).isEqualTo(
+            "Object name 'VALUE' must be less than 4 characters"
+        );
     }
 
     @DisplayName("Object name length rule should support formatted error message with comma separated multiple errors")
     @Test
     void objectNameLengthRuleShouldReturnFormattedErrorMessageWithCommaSeparatedMultipleErrors() {
-        rule.configure(RuleConfig.builder().withMaxLength(4).withErrorMessage("Object name '%s' must be less than %d characters").build());
+        rule.configure(
+            RuleConfig.builder()
+                .withMaxLength(4)
+                .withErrorMessage("Object name '%s' must be less than %d characters")
+                .build()
+        );
 
-        assertThat(rule.getMessage(getAddColumnChange("VALUE", "VALUE2"))).isEqualTo("Object name 'VALUE,VALUE2' must be less than 4 characters");
-
+        assertThat(rule.getMessage(getAddColumnChange("VALUE", "VALUE2"))).isEqualTo(
+            "Object name 'VALUE,VALUE2' must be less than 4 characters"
+        );
     }
 
     private AddColumnChange getAddColumnChange(String... columnNames) {

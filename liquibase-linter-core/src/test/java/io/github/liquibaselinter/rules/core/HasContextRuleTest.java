@@ -1,13 +1,13 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 class HasContextRuleTest {
 

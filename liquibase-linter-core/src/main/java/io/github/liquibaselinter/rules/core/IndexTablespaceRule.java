@@ -8,6 +8,7 @@ import liquibase.change.core.CreateIndexChange;
 
 @AutoService(ChangeRule.class)
 public class IndexTablespaceRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "index-tablespace";
     private static final String MESSAGE = "Tablespace '%s' of index '%s' is empty or does not follow pattern '%s'";
 
@@ -29,7 +30,10 @@ public class IndexTablespaceRule extends AbstractLintRule implements ChangeRule 
     @Override
     public String getMessage(Change change) {
         CreateIndexChange createIndexChange = (CreateIndexChange) change;
-        return formatMessage(createIndexChange.getTablespace(), createIndexChange.getIndexName(), getPatternForMessage(change));
+        return formatMessage(
+            createIndexChange.getTablespace(),
+            createIndexChange.getIndexName(),
+            getPatternForMessage(change)
+        );
     }
-
 }

@@ -1,6 +1,6 @@
 {
-    "fail-fast": true,
-    "rules": {
-        "create-column-remarks": true
-    }
+  "fail-fast": true,
+  "rules": {
+    "create-column-remarks": true
+  }
 }

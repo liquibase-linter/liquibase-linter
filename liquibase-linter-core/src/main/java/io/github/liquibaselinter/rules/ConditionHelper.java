@@ -1,38 +1,46 @@
 package io.github.liquibaselinter.rules;
 
 import io.github.liquibaselinter.config.RuleConfig;
+import java.util.Optional;
 import liquibase.Contexts;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 
-import java.util.Optional;
-
 public final class ConditionHelper {
 
-    private ConditionHelper() {
-
-    }
+    private ConditionHelper() {}
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, Change change) {
-        return ruleConfig.getConditionalExpression()
-            .map(expression -> expression.getValue(new ConditionContext(change.getChangeSet().getChangeLog(), change.getChangeSet(), change), boolean.class))
+        return ruleConfig
+            .getConditionalExpression()
+            .map(expression ->
+                expression.getValue(
+                    new ConditionContext(change.getChangeSet().getChangeLog(), change.getChangeSet(), change),
+                    boolean.class
+                )
+            )
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, ChangeSet changeSet) {
-        return ruleConfig.getConditionalExpression()
-            .map(expression -> expression.getValue(new ConditionContext(changeSet.getChangeLog(), changeSet, null), boolean.class))
+        return ruleConfig
+            .getConditionalExpression()
+            .map(expression ->
+                expression.getValue(new ConditionContext(changeSet.getChangeLog(), changeSet, null), boolean.class)
+            )
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, DatabaseChangeLog databaseChangeLog) {
-        return ruleConfig.getConditionalExpression()
+        return ruleConfig
+            .getConditionalExpression()
             .map(expression -> expression.getValue(new ConditionContext(databaseChangeLog, null, null), boolean.class))
             .orElse(true);
     }
 
     private static final class ConditionContext {
+
         private final DatabaseChangeLog changeLog;
         private final ChangeSet changeSet;
         private final Change change;
@@ -62,5 +70,4 @@ public final class ConditionHelper {
                 .orElse(false);
         }
     }
-
 }

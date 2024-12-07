@@ -1,12 +1,11 @@
 package io.github.liquibaselinter.config;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
 public final class RuleConfig {
@@ -96,9 +95,7 @@ public final class RuleConfig {
     }
 
     public String getDynamicValue(Object subject) {
-        return getDynamicValueExpression()
-            .map(expression -> expression.getValue(subject, String.class))
-            .orElse(null);
+        return getDynamicValueExpression().map(expression -> expression.getValue(subject, String.class)).orElse(null);
     }
 
     public Optional<Pattern> getPattern() {
@@ -121,6 +118,7 @@ public final class RuleConfig {
     }
 
     public static class RuleConfigBuilder {
+
         private boolean enabled = true;
         private String errorMessage;
         private String condition;

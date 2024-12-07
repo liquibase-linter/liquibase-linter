@@ -1,15 +1,5 @@
 package io.github.liquibaselinter.config;
 
-import io.github.liquibaselinter.report.Reporter;
-import liquibase.exception.UnexpectedLiquibaseException;
-import liquibase.resource.ResourceAccessor;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.InputStream;
-
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_CLASSPATH;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_PATH_PROPERTY;
@@ -19,6 +9,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import io.github.liquibaselinter.report.Reporter;
+import java.io.IOException;
+import java.io.InputStream;
+import liquibase.exception.UnexpectedLiquibaseException;
+import liquibase.resource.ResourceAccessor;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class ConfigLoaderTest {
 
@@ -66,13 +65,19 @@ class ConfigLoaderTest {
     @Test
     void shouldImportConfig() throws IOException {
         ResourceAccessor resourceAccessor = mockResourceAccessor();
-        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json"))
-            .thenReturn(getInputStream("lqlint-import-a.test.json"));
-        when(resourceAccessor.openStream(null, "lqlint-import-b.test.json"))
-            .thenReturn(getInputStream("lqlint-import-b.test.json"));
+        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json")).thenReturn(
+            getInputStream("lqlint-import-a.test.json")
+        );
+        when(resourceAccessor.openStream(null, "lqlint-import-b.test.json")).thenReturn(
+            getInputStream("lqlint-import-b.test.json")
+        );
 
         Config config = ConfigLoader.load(resourceAccessor);
-        assertThat(config.getRules().asMap()).containsOnlyKeys("isolate-ddl-changes", "no-preconditions", "changelog-file-name");
+        assertThat(config.getRules().asMap()).containsOnlyKeys(
+            "isolate-ddl-changes",
+            "no-preconditions",
+            "changelog-file-name"
+        );
         assertThat(config.getRules().get("isolate-ddl-changes")).extracting("enabled").containsExactly(true);
         assertThat(config.getRules().get("no-preconditions")).extracting("enabled").containsExactly(false);
         assertThat(config.getRules().get("changelog-file-name")).extracting("enabled").containsExactly(true);
@@ -86,10 +91,12 @@ class ConfigLoaderTest {
     @Test
     void shouldOverrideImportedConfig() throws IOException {
         ResourceAccessor resourceAccessor = mockResourceAccessor();
-        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json"))
-            .thenReturn(getInputStream("lqlint-import-a.test.json"));
-        when(resourceAccessor.openStream(null, "lqlint-import-b.test.json"))
-            .thenReturn(getInputStream("lqlint-import-b.test.json"));
+        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json")).thenReturn(
+            getInputStream("lqlint-import-a.test.json")
+        );
+        when(resourceAccessor.openStream(null, "lqlint-import-b.test.json")).thenReturn(
+            getInputStream("lqlint-import-b.test.json")
+        );
 
         Config config = ConfigLoader.load(resourceAccessor);
         assertThat(config.getReporting().asMap()).containsOnlyKeys("console", "markdown");
@@ -119,8 +126,9 @@ class ConfigLoaderTest {
 
     private ResourceAccessor mockResourceAccessor() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
-        when(resourceAccessor.openStream(null, LQLINT_CONFIG_CLASSPATH))
-            .thenReturn(getInputStream("lqlint-importing.test.json"));
+        when(resourceAccessor.openStream(null, LQLINT_CONFIG_CLASSPATH)).thenReturn(
+            getInputStream("lqlint-importing.test.json")
+        );
         return resourceAccessor;
     }
 
@@ -131,5 +139,4 @@ class ConfigLoaderTest {
     private InputStream getInputStream(String path) {
         return getClass().getClassLoader().getResourceAsStream(path);
     }
-
 }

@@ -1,5 +1,7 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -12,8 +14,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class TableNameRuleTest {
 
@@ -41,14 +41,25 @@ class TableNameRuleTest {
     @DisplayName("Table name rule should support formatted error message with pattern arg")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
-    void tableNameNameRuleShouldReturnFormattedErrorMessage(String changeName, Function<String, Change> changeFromTableName) {
+    void tableNameNameRuleShouldReturnFormattedErrorMessage(
+        String changeName,
+        Function<String, Change> changeFromTableName
+    ) {
         Change change = changeFromTableName.apply("TBL_INVALID");
-        rule.configure(RuleConfig.builder().withPattern("^(?!TBL)[A-Z_]+(?<!_)$").withErrorMessage("Table name '%s' must follow pattern '%s'").build());
+        rule.configure(
+            RuleConfig.builder()
+                .withPattern("^(?!TBL)[A-Z_]+(?<!_)$")
+                .withErrorMessage("Table name '%s' must follow pattern '%s'")
+                .build()
+        );
 
-        assertThat(rule.getMessage(change)).isEqualTo("Table name 'TBL_INVALID' must follow pattern '^(?!TBL)[A-Z_]+(?<!_)$'");
+        assertThat(rule.getMessage(change)).isEqualTo(
+            "Table name 'TBL_INVALID' must follow pattern '^(?!TBL)[A-Z_]+(?<!_)$'"
+        );
     }
 
     private static class ChangeFromTableNameArgumentsProvider implements ArgumentsProvider {
+
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(

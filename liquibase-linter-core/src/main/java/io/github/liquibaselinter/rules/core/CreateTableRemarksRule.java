@@ -8,6 +8,7 @@ import liquibase.change.core.CreateTableChange;
 
 @AutoService(ChangeRule.class)
 public class CreateTableRemarksRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "create-table-remarks";
     private static final String MESSAGE = "Create table must contain remark attribute";
 

@@ -4,7 +4,7 @@ title: Implementing a Custom Rule
 
 Whilst Liquibase Linter has lots of good core rules, you may have a use case that's particular to your project and wouldn't make sense as a core rule.
 
-Fortunately it's trivial to implement custom rules and apply them in your own project; you just need to write a Java class implementing one of our rule interfaces, and do a little configuration. 
+Fortunately it's trivial to implement custom rules and apply them in your own project; you just need to write a Java class implementing one of our rule interfaces, and do a little configuration.
 
 ## Example use case
 
@@ -31,33 +31,39 @@ For our `FORM_LAYOUT` use case, it makes the most sense to lint at changeSet lev
 ```java
 package com.fake.fancyapp.liquibase;
 
-import rules.config.io.github.liquibaselinter.AbstractLintRule;
-import rules.config.io.github.liquibaselinter.ChangeSetRule;
 import liquibase.change.core.UpdateDataChange;
 import liquibase.changelog.ChangeSet;
+import rules.config.io.github.liquibaselinter.AbstractLintRule;
+import rules.config.io.github.liquibaselinter.ChangeSetRule;
 
 public class FormLayoutContextRuleImpl extends AbstractLintRule implements ChangeSetRule {
-    private static final String NAME = "form-layout-context";
-    private static final String MESSAGE = "FORM_LAYOUT should only ever be updated in a client-specific context!";
 
-    public FormLayoutContextRuleImpl() {
-        super(NAME, MESSAGE);
-    }
+  private static final String NAME = "form-layout-context";
+  private static final String MESSAGE = "FORM_LAYOUT should only ever be updated in a client-specific context!";
 
-    @Override
-    public boolean invalid(ChangeSet changeSet) {
-        return isForFormLayout(changeSet) && isCoreContext(changeSet);
-    }
+  public FormLayoutContextRuleImpl() {
+    super(NAME, MESSAGE);
+  }
 
-    private boolean isForFormLayout(ChangeSet changeSet) {
-        return changeSet.getChanges().stream()
-            .anyMatch(change -> change instanceof UpdateDataChange && "FORM_LAYOUT".equals(((UpdateDataChange) change).getTableName()));
-    }
+  @Override
+  public boolean invalid(ChangeSet changeSet) {
+    return isForFormLayout(changeSet) && isCoreContext(changeSet);
+  }
 
-    private boolean isCoreContext(ChangeSet changeSet) {
-        return changeSet.getContexts().getContexts().stream().anyMatch("core"::equals);
-    }
+  private boolean isForFormLayout(ChangeSet changeSet) {
+    return changeSet
+      .getChanges()
+      .stream()
+      .anyMatch(
+        change -> change instanceof UpdateDataChange && "FORM_LAYOUT".equals(((UpdateDataChange) change).getTableName())
+      );
+  }
+
+  private boolean isCoreContext(ChangeSet changeSet) {
+    return changeSet.getContexts().getContexts().stream().anyMatch("core"::equals);
+  }
 }
+
 ```
 
 Some notes about how we've done this:
@@ -88,25 +94,21 @@ So for our example custom rules project `wcg-liquibase-linter` we would have the
 
 ```xml
 <plugin>
-    <groupId>org.liquibase</groupId>
-    <artifactId>liquibase-maven-plugin</artifactId>
-    <configuration>
-        ...
-    </configuration>
-    <dependencies>
-        <dependency>
-            <groupId>io.github.liquibase-linter</groupId>
-            <artifactId>liquibase-parser-extension</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fake.fancyapp</groupId>
-            <artifactId>liquibase-linter-rules</artifactId>
-            <version>0.1.0</version>
-        </dependency>
-    </dependencies>
-    <executions>
-        ...
-    </executions>
+  <groupId>org.liquibase</groupId>
+  <artifactId>liquibase-maven-plugin</artifactId>
+  <configuration>...</configuration>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.liquibase-linter</groupId>
+      <artifactId>liquibase-parser-extension</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fake.fancyapp</groupId>
+      <artifactId>liquibase-linter-rules</artifactId>
+      <version>0.1.0</version>
+    </dependency>
+  </dependencies>
+  <executions>...</executions>
 </plugin>
 ```
 

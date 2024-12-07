@@ -1,5 +1,7 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -12,8 +14,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class TableNameLengthRuleTest {
 
@@ -52,14 +52,20 @@ class TableNameLengthRuleTest {
     @DisplayName("Table name length rule should support formatted error message with length arg")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
-    void tableNameLengthRuleShouldReturnFormattedErrorMessage(String changeName, Function<String, Change> changeFromTableName) {
+    void tableNameLengthRuleShouldReturnFormattedErrorMessage(
+        String changeName,
+        Function<String, Change> changeFromTableName
+    ) {
         Change change = changeFromTableName.apply("TABLE_LONG");
-        rule.configure(RuleConfig.builder().withMaxLength(5).withErrorMessage("Table '%s' name must not be longer than %d").build());
+        rule.configure(
+            RuleConfig.builder().withMaxLength(5).withErrorMessage("Table '%s' name must not be longer than %d").build()
+        );
 
         assertThat(rule.getMessage(change)).isEqualTo("Table 'TABLE_LONG' name must not be longer than 5");
     }
 
     private static class ChangeFromTableNameArgumentsProvider implements ArgumentsProvider {
+
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(

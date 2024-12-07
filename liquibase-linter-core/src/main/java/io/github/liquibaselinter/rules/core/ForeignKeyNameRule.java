@@ -8,6 +8,7 @@ import liquibase.change.core.AddForeignKeyConstraintChange;
 
 @AutoService(ChangeRule.class)
 public class ForeignKeyNameRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "foreign-key-name";
     private static final String MESSAGE = "Foreign key name is missing or does not follow pattern";
 

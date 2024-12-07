@@ -1,15 +1,15 @@
 package io.github.liquibaselinter.report;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 import com.google.auto.service.AutoService;
+import java.io.PrintWriter;
+import java.util.List;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
-import java.io.PrintWriter;
-import java.util.List;
-
-import static org.fusesource.jansi.Ansi.ansi;
-
 public class ConsoleReporter extends TextReporter {
+
     public static final String NAME = "console";
 
     public ConsoleReporter(ReporterConfig config) {
@@ -19,7 +19,7 @@ public class ConsoleReporter extends TextReporter {
     @Override
     protected void process(Report report, List<ReportItem> items) {
         installAnsi();
-        try(PrintWriter writer = new PrintWriter(System.out)) {
+        try (PrintWriter writer = new PrintWriter(System.out)) {
             printReport(writer, report, items);
             writer.flush();
         }

@@ -1,5 +1,11 @@
 package io.github.liquibaselinter.report;
 
+import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
+import static io.github.liquibaselinter.report.ReportItem.ReportItemType.IGNORED;
+import static io.github.liquibaselinter.report.ReportItem.ReportItemType.PASSED;
+import static io.github.liquibaselinter.report.ReporterConfig.builder;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
@@ -8,11 +14,6 @@ import com.google.common.io.Resources;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.ReportItem.ReportItemType;
-import org.fusesource.jansi.HtmlAnsiOutputStream;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.api.function.ThrowingConsumer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -24,20 +25,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.stream.Stream;
-
-import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
-import static io.github.liquibaselinter.report.ReportItem.ReportItemType.IGNORED;
-import static io.github.liquibaselinter.report.ReportItem.ReportItemType.PASSED;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import static io.github.liquibaselinter.report.ReporterConfig.builder;
+import org.fusesource.jansi.HtmlAnsiOutputStream;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.function.ThrowingConsumer;
 
 class ReporterTest {
 
     private static final Map<String, String> REPORT_TYPES = ImmutableMap.of(
-        ConsoleReporter.NAME, "out",
-        TextReporter.NAME, "txt",
-        MarkdownReporter.NAME, "md"
+        ConsoleReporter.NAME,
+        "out",
+        TextReporter.NAME,
+        "txt",
+        MarkdownReporter.NAME,
+        "md"
     );
 
     final List<ReportingTestConfig> tests = new ArrayList<>();
@@ -90,34 +91,90 @@ class ReporterTest {
 
     private void addDefaultFilters(String reportType, String suffix) {
         final Report report = buildFullReport();
-        tests.add(new ReportingTestConfig(reportType, builder().build(),
-            report, "target/lqlint-report." + suffix, "defaultFilters." + suffix));
-        tests.add(new ReportingTestConfig(reportType, builder().withPath("target/lqlint-custom." + suffix).build(),
-            report, "target/lqlint-custom." + suffix, "defaultFilters." + suffix));
+        tests.add(
+            new ReportingTestConfig(
+                reportType,
+                builder().build(),
+                report,
+                "target/lqlint-report." + suffix,
+                "defaultFilters." + suffix
+            )
+        );
+        tests.add(
+            new ReportingTestConfig(
+                reportType,
+                builder().withPath("target/lqlint-custom." + suffix).build(),
+                report,
+                "target/lqlint-custom." + suffix,
+                "defaultFilters." + suffix
+            )
+        );
     }
 
     private void addLimitedFilters(String reportType, String suffix) {
         Report report = buildFullReport();
-        tests.add(new ReportingTestConfig(reportType, builder().withFilter(ERROR).build(),
-            report, "target/lqlint-report." + suffix, "limitedFilters." + suffix));
-        tests.add(new ReportingTestConfig(reportType, builder().withFilter(ERROR).withPath("target/lqlint-custom." + suffix).build(),
-            report, "target/lqlint-custom." + suffix, "limitedFilters." + suffix));
+        tests.add(
+            new ReportingTestConfig(
+                reportType,
+                builder().withFilter(ERROR).build(),
+                report,
+                "target/lqlint-report." + suffix,
+                "limitedFilters." + suffix
+            )
+        );
+        tests.add(
+            new ReportingTestConfig(
+                reportType,
+                builder().withFilter(ERROR).withPath("target/lqlint-custom." + suffix).build(),
+                report,
+                "target/lqlint-custom." + suffix,
+                "limitedFilters." + suffix
+            )
+        );
     }
 
     private void addFullFilters(String reportType, String suffix) {
         final Report report = buildFullReport();
-        tests.add(new ReportingTestConfig(reportType, builder().withFilter(ReportItemType.values()).build(),
-            report, "target/lqlint-report." + suffix, "fullFilters." + suffix));
-        tests.add(new ReportingTestConfig(reportType, builder().withFilter(ReportItemType.values()).withPath("target/lqlint-custom." + suffix).build(),
-            report, "target/lqlint-custom." + suffix, "fullFilters." + suffix));
+        tests.add(
+            new ReportingTestConfig(
+                reportType,
+                builder().withFilter(ReportItemType.values()).build(),
+                report,
+                "target/lqlint-report." + suffix,
+                "fullFilters." + suffix
+            )
+        );
+        tests.add(
+            new ReportingTestConfig(
+                reportType,
+                builder().withFilter(ReportItemType.values()).withPath("target/lqlint-custom." + suffix).build(),
+                report,
+                "target/lqlint-custom." + suffix,
+                "fullFilters." + suffix
+            )
+        );
     }
 
     private void addEmptyReport(String reportType, String suffix) {
         final Report report = buildEmptyReport();
-        tests.add(new ReportingTestConfig(reportType, builder().build(),
-            report, "target/lqlint-report." + suffix, "emptyReport." + suffix));
-        tests.add(new ReportingTestConfig(reportType, builder().withPath("target/lqlint-custom." + suffix).build(),
-            report, "target/lqlint-custom." + suffix, "emptyReport." + suffix));
+        tests.add(
+            new ReportingTestConfig(
+                reportType,
+                builder().build(),
+                report,
+                "target/lqlint-report." + suffix,
+                "emptyReport." + suffix
+            )
+        );
+        tests.add(
+            new ReportingTestConfig(
+                reportType,
+                builder().withPath("target/lqlint-custom." + suffix).build(),
+                report,
+                "target/lqlint-custom." + suffix,
+                "emptyReport." + suffix
+            )
+        );
     }
 
     private Report buildFullReport() {
@@ -145,12 +202,15 @@ class ReporterTest {
         String changeSet3 = "2020010103";
         items.add(new ReportItem(dbChangeLog2, changeSet3, "error-rule", ERROR, "Error message 4\nwith newline"));
 
-        Config config = new Config.Builder().withRules(ImmutableListMultimap.<String, RuleConfig>builder()
-            .put("a", RuleConfig.builder().withEnabled(false).build())
-            .put("a", RuleConfig.builder().withEnabled(true).build())
-            .put("b", RuleConfig.builder().withEnabled(false).build())
-            .build()
-        ).build();
+        Config config = new Config.Builder()
+            .withRules(
+                ImmutableListMultimap.<String, RuleConfig>builder()
+                    .put("a", RuleConfig.builder().withEnabled(false).build())
+                    .put("a", RuleConfig.builder().withEnabled(true).build())
+                    .put("b", RuleConfig.builder().withEnabled(false).build())
+                    .build()
+            )
+            .build();
 
         return new Report(config, items);
     }
@@ -160,13 +220,20 @@ class ReporterTest {
     }
 
     private static final class ReportingTestConfig {
+
         final String reportType;
         final ReporterConfig config;
         final Report report;
         final String outputPath;
         final String expectedResourceName;
 
-        private ReportingTestConfig(String reportType, ReporterConfig config, Report report, String outputPath, String expectedResourceName) {
+        private ReportingTestConfig(
+            String reportType,
+            ReporterConfig config,
+            Report report,
+            String outputPath,
+            String expectedResourceName
+        ) {
             this.reportType = reportType;
             this.config = config;
             this.report = report;

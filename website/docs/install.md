@@ -12,27 +12,27 @@ If you just want to lint your liquibase scripts during build, but are not alread
 
 1. Add the `liquibase-linter-maven-plugin` to your pom.
 2. Add `lqlint.json` to the `src/test/resources` directory of your project. This is the default location, but you can change it in the plugin configuration.
- 
+
 See this simple [example](https://github.com/liquibase-linter/liquibase-linter/tree/main/examples/liquibase-linter-maven-plugin) maven project to help get you started.
 
 ```xml
 <plugin>
-    <groupId>io.github.liquibase-linter</groupId>
-    <artifactId>liquibase-linter-maven-plugin</artifactId>
-    <version>0.7.0</version>
-    <configuration>
-        <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
-        <!-- This is the default value for configurationFile -->
-        <configurationFile>src/test/resources/lqlint.json</configurationFile>
-    </configuration>
-    <executions>
-        <execution>
-            <id>lint-liquibase-scripts</id>
-            <goals>
-                <goal>lint</goal>
-            </goals>
-        </execution>
-    </executions>
+  <groupId>io.github.liquibase-linter</groupId>
+  <artifactId>liquibase-linter-maven-plugin</artifactId>
+  <version>0.7.0</version>
+  <configuration>
+    <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
+    <!-- This is the default value for configurationFile -->
+    <configurationFile>src/test/resources/lqlint.json</configurationFile>
+  </configuration>
+  <executions>
+    <execution>
+      <id>lint-liquibase-scripts</id>
+      <goals>
+        <goal>lint</goal>
+      </goals>
+    </execution>
+  </executions>
 </plugin>
 ```
 
@@ -47,21 +47,17 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
 
 ```xml
 <plugin>
-    <groupId>org.liquibase</groupId>
-    <artifactId>liquibase-maven-plugin</artifactId>
-    <configuration>
-        ...
-    </configuration>
-    <dependencies>
-        <dependency>
-            <groupId>io.github.liquibase-linter</groupId>
-            <artifactId>liquibase-parser-extension</artifactId>
-            <version>0.7.0</version>
-        </dependency>
-    </dependencies>
-    <executions>
-        ...
-    </executions>
+  <groupId>org.liquibase</groupId>
+  <artifactId>liquibase-maven-plugin</artifactId>
+  <configuration>...</configuration>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.liquibase-linter</groupId>
+      <artifactId>liquibase-parser-extension</artifactId>
+      <version>0.7.0</version>
+    </dependency>
+  </dependencies>
+  <executions>...</executions>
 </plugin>
 ```
 
@@ -85,9 +81,9 @@ dependencies {
 ## Command Line
 
 1. Start with the latest [Liquibase release zip](https://github.com/liquibase/liquibase/releases/).
-2. Download the latest Liquibase Linter jar from [maven central](https://repo1.maven.org/maven2/io/github/liquibase-linter/) and download 
-the [dependencies](https://mvnrepository.com/artifact/io.github.liquibase-linter/liquibase-linter) required by Liquibase Linter, then add them to 
-the `lib` directory.
+2. Download the latest Liquibase Linter jar from [maven central](https://repo1.maven.org/maven2/io/github/liquibase-linter/) and download
+   the [dependencies](https://mvnrepository.com/artifact/io.github.liquibase-linter/liquibase-linter) required by Liquibase Linter, then add them to
+   the `lib` directory.
 3. Add your `lqlint.json` configuration file to the `lib` directory.
 
 ## Compatibility

@@ -22,7 +22,9 @@ class UniqueConstraintTablespaceRuleTest {
         rule.configure(RuleConfig.EMPTY);
 
         assertThat(rule.invalid(createUniqueConstraintWithTablespace(null))).isTrue();
-        assertThat(rule.getMessage(createUniqueConstraintWithTablespace(null))).isEqualTo("Tablespace '' of unique constraint 'uniq_constraint_foo' is empty or does not follow pattern ''");
+        assertThat(rule.getMessage(createUniqueConstraintWithTablespace(null))).isEqualTo(
+            "Tablespace '' of unique constraint 'uniq_constraint_foo' is empty or does not follow pattern ''"
+        );
     }
 
     @Test
@@ -31,7 +33,9 @@ class UniqueConstraintTablespaceRuleTest {
         rule.configure(RuleConfig.builder().withPattern("^TAB_IDX_[A-Z_]+$").build());
 
         assertThat(rule.invalid(createUniqueConstraintWithTablespace("INDEXES"))).isTrue();
-        assertThat(rule.getMessage(createUniqueConstraintWithTablespace("INDEXES"))).isEqualTo("Tablespace 'INDEXES' of unique constraint 'uniq_constraint_foo' is empty or does not follow pattern '^TAB_IDX_[A-Z_]+$'");
+        assertThat(rule.getMessage(createUniqueConstraintWithTablespace("INDEXES"))).isEqualTo(
+            "Tablespace 'INDEXES' of unique constraint 'uniq_constraint_foo' is empty or does not follow pattern '^TAB_IDX_[A-Z_]+$'"
+        );
 
         assertThat(rule.invalid(createUniqueConstraintWithTablespace("TAB_IDX_USERS"))).isFalse();
     }
@@ -39,9 +43,16 @@ class UniqueConstraintTablespaceRuleTest {
     @DisplayName("Should support formatted error message with pattern arg")
     @Test
     void uniqueConstraintTablespaceRuleShouldReturnFormattedErrorMessage() {
-        rule.configure(RuleConfig.builder().withPattern("^TAB_IDX_[A-Z_]+$").withErrorMessage("Tablespace '%s' for unique constraint '%s' must follow pattern '%s'").build());
+        rule.configure(
+            RuleConfig.builder()
+                .withPattern("^TAB_IDX_[A-Z_]+$")
+                .withErrorMessage("Tablespace '%s' for unique constraint '%s' must follow pattern '%s'")
+                .build()
+        );
 
-        assertThat(rule.getMessage(createUniqueConstraintWithTablespace("DDD-001"))).isEqualTo("Tablespace 'DDD-001' for unique constraint 'uniq_constraint_foo' must follow pattern '^TAB_IDX_[A-Z_]+$'");
+        assertThat(rule.getMessage(createUniqueConstraintWithTablespace("DDD-001"))).isEqualTo(
+            "Tablespace 'DDD-001' for unique constraint 'uniq_constraint_foo' must follow pattern '^TAB_IDX_[A-Z_]+$'"
+        );
     }
 
     private AddUniqueConstraintChange createUniqueConstraintWithTablespace(String tablespace) {

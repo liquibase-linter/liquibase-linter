@@ -19,21 +19,22 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Streams;
 import io.github.liquibaselinter.report.Reporter;
 import io.github.liquibaselinter.report.ReporterConfig;
-import liquibase.exception.UnexpectedLiquibaseException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import liquibase.exception.UnexpectedLiquibaseException;
 
 @JsonDeserialize(builder = Config.Builder.class)
 public final class Config {
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
         .enable(Feature.ALLOW_COMMENTS)
         .enable(JsonReadFeature.ALLOW_TRAILING_COMMA.mappedFeature());
-    private static final TypeReference<Map<String, Object>> VALUE_TYPE_REF = new TypeReference<Map<String, Object>>() {
-    };
+    private static final TypeReference<Map<String, Object>> VALUE_TYPE_REF = new TypeReference<
+        Map<String, Object>
+    >() {};
 
     private final Pattern ignoreContextPattern;
     private final Pattern ignoreFilesPattern;
@@ -43,19 +44,23 @@ public final class Config {
     private final ListMultimap<String, Reporter> reporting;
     private final List<String> imports;
 
-    private Config(Pattern ignoreContextPattern,
-                   Pattern ignoreFilesPattern,
-                   ListMultimap<String, RuleConfig> rules,
-                   boolean failFast,
-                   String enableAfter,
-                   ListMultimap<String, Reporter> reporting,
-                   List<String> imports) {
+    private Config(
+        Pattern ignoreContextPattern,
+        Pattern ignoreFilesPattern,
+        ListMultimap<String, RuleConfig> rules,
+        boolean failFast,
+        String enableAfter,
+        ListMultimap<String, Reporter> reporting,
+        List<String> imports
+    ) {
         this.ignoreContextPattern = ignoreContextPattern;
         this.ignoreFilesPattern = ignoreFilesPattern;
         this.rules = Optional.ofNullable(rules).map(ImmutableListMultimap::copyOf).orElse(ImmutableListMultimap.of());
         this.failFast = failFast;
         this.enableAfter = enableAfter;
-        this.reporting = Optional.ofNullable(reporting).map(ImmutableListMultimap::copyOf).orElse(ImmutableListMultimap.of());
+        this.reporting = Optional.ofNullable(reporting)
+            .map(ImmutableListMultimap::copyOf)
+            .orElse(ImmutableListMultimap.of());
         this.imports = Optional.ofNullable(imports).map(ImmutableList::copyOf).orElse(ImmutableList.of());
     }
 
@@ -143,24 +148,29 @@ public final class Config {
         return new Config.Builder(this).withRules(mergedRules).withReporting(mergedReporting).withImports().build();
     }
 
-    private static <T> void combine(ListMultimap<String, T> config,
-                                    ListMultimap<String, T> imported,
-                                    ListMultimap<String, T> combined) {
+    private static <T> void combine(
+        ListMultimap<String, T> config,
+        ListMultimap<String, T> imported,
+        ListMultimap<String, T> combined
+    ) {
         if (imported != null) {
-            imported.asMap().forEach((key, importedRulesList) -> {
-                // If the main config has a config of the same name, it overrides any imported config for the same
-                // name. But if not config of the same name exists in the main config, merge all the imported
-                // configs together. This could cause multiple configs of the same name from different imported
-                // files to end up in the final merged config.
-                if (config == null || !config.containsKey(key)) {
-                    combined.putAll(key, importedRulesList);
-                }
-            });
+            imported
+                .asMap()
+                .forEach((key, importedRulesList) -> {
+                    // If the main config has a config of the same name, it overrides any imported config for the same
+                    // name. But if not config of the same name exists in the main config, merge all the imported
+                    // configs together. This could cause multiple configs of the same name from different imported
+                    // files to end up in the final merged config.
+                    if (config == null || !config.containsKey(key)) {
+                        combined.putAll(key, importedRulesList);
+                    }
+                });
         }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Builder {
+
         private Pattern ignoreContextPattern;
         private Pattern ignoreFilesPattern;
         private ListMultimap<String, RuleConfig> rules = ImmutableListMultimap.of();
@@ -238,14 +248,23 @@ public final class Config {
         }
 
         public Config build() {
-            return new Config(ignoreContextPattern, ignoreFilesPattern, rules, failFast, enableAfter, reporting, imports);
+            return new Config(
+                ignoreContextPattern,
+                ignoreFilesPattern,
+                rules,
+                failFast,
+                enableAfter,
+                reporting,
+                imports
+            );
         }
     }
 
     static class RuleConfigDeserializer extends JsonDeserializer<Object> {
 
         @Override
-        public ListMultimap<String, RuleConfig> deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
+        public ListMultimap<String, RuleConfig> deserialize(JsonParser jsonParser, DeserializationContext context)
+            throws IOException {
             final Map<String, Object> config = jsonParser.readValueAs(VALUE_TYPE_REF);
             final ImmutableListMultimap.Builder<String, RuleConfig> ruleConfigs = new ImmutableListMultimap.Builder<>();
             config.forEach((key, value) -> {
@@ -258,7 +277,11 @@ public final class Config {
             return ruleConfigs.build();
         }
 
-        private void populateConfigValue(ImmutableListMultimap.Builder<String, RuleConfig> ruleConfigs, String key, Object value) {
+        private void populateConfigValue(
+            ImmutableListMultimap.Builder<String, RuleConfig> ruleConfigs,
+            String key,
+            Object value
+        ) {
             try {
                 boolean ruleEnabled = OBJECT_MAPPER.convertValue(value, boolean.class);
                 ruleConfigs.put(key, ruleEnabled ? RuleConfig.enabled() : RuleConfig.disabled());
@@ -270,25 +293,33 @@ public final class Config {
     }
 
     static class ReportingDeserializer extends JsonDeserializer<Object> {
+
         private static final ServiceLoader<Reporter.Factory> REPORTERS = ServiceLoader.load(Reporter.Factory.class);
 
         @Override
-        public ListMultimap<String, Reporter> deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
+        public ListMultimap<String, Reporter> deserialize(JsonParser jsonParser, DeserializationContext context)
+            throws IOException {
             final ImmutableListMultimap.Builder<String, Reporter> reporting = new ImmutableListMultimap.Builder<>();
             final JsonNode config = jsonParser.readValueAsTree();
-            config.fields().forEachRemaining(entry -> {
-                final String key = entry.getKey();
-                final JsonNode value = entry.getValue();
-                if (value.isArray()) {
-                    value.elements().forEachRemaining(node -> populateConfigValue(reporting, key, node));
-                } else {
-                    populateConfigValue(reporting, key, value);
-                }
-            });
+            config
+                .fields()
+                .forEachRemaining(entry -> {
+                    final String key = entry.getKey();
+                    final JsonNode value = entry.getValue();
+                    if (value.isArray()) {
+                        value.elements().forEachRemaining(node -> populateConfigValue(reporting, key, node));
+                    } else {
+                        populateConfigValue(reporting, key, value);
+                    }
+                });
             return reporting.build();
         }
 
-        private void populateConfigValue(ImmutableListMultimap.Builder<String, Reporter> reporting, String key, JsonNode node) {
+        private void populateConfigValue(
+            ImmutableListMultimap.Builder<String, Reporter> reporting,
+            String key,
+            JsonNode node
+        ) {
             Reporter.Factory<Reporter, ReporterConfig> reporterFactory = Streams.stream(REPORTERS.iterator())
                 .filter(factory -> factory.supports(key))
                 .findFirst()
@@ -299,9 +330,11 @@ public final class Config {
             } else if (node.isTextual()) {
                 reporting.put(key, reporterFactory.create(node.asText()));
             } else {
-                reporting.put(key, reporterFactory.create(OBJECT_MAPPER.convertValue(node, reporterFactory.getConfigClass())));
+                reporting.put(
+                    key,
+                    reporterFactory.create(OBJECT_MAPPER.convertValue(node, reporterFactory.getConfigClass()))
+                );
             }
         }
     }
-
 }
