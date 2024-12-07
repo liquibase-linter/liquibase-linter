@@ -1,12 +1,14 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
-import io.github.liquibaselinter.rules.ChangeLogRule;
-import io.github.liquibaselinter.rules.ChangeSetRule;
+import io.github.liquibaselinter.config.RuleConfig;
+import io.github.liquibaselinter.rules.*;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.precondition.core.PreconditionContainer;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @AutoService({ChangeLogRule.class, ChangeSetRule.class})
 public class NoPreconditionsRule extends AbstractLintRule implements ChangeSetRule, ChangeLogRule {
@@ -18,17 +20,24 @@ public class NoPreconditionsRule extends AbstractLintRule implements ChangeSetRu
     }
 
     @Override
+    public Collection<RuleViolation> check(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
+        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(MESSAGE, ruleConfig);
+        if (isInvalid(changeLog)) {
+            return Collections.singleton(new RuleViolation(messageGenerator.getMessage()));
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
     public boolean invalid(ChangeSet changeSet) {
         return changeSet.getPreconditions() != null && !changeSet.getPreconditions().getNestedPreconditions().isEmpty();
     }
 
-    @Override
-    public boolean invalid(DatabaseChangeLog changeLog) {
-        PreconditionContainer preconditions = changeLog.getPreconditions();
-        return invalid(preconditions);
+    public boolean isInvalid(DatabaseChangeLog changeLog) {
+        return isInvalid(changeLog.getPreconditions());
     }
 
-    private static boolean invalid(PreconditionContainer preconditions) {
+    private static boolean isInvalid(PreconditionContainer preconditions) {
         if (preconditions == null || preconditions.getNestedPreconditions().isEmpty()) {
             return false;
         }
@@ -37,6 +46,6 @@ public class NoPreconditionsRule extends AbstractLintRule implements ChangeSetRu
         }
         return preconditions.getNestedPreconditions().stream()
             .map(PreconditionContainer.class::cast)
-            .anyMatch(NoPreconditionsRule::invalid);
+            .anyMatch(NoPreconditionsRule::isInvalid);
     }
 }

@@ -8,6 +8,7 @@ import io.github.liquibaselinter.rules.ChangeLogRule;
 import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.rules.ChangeSetRule;
 import io.github.liquibaselinter.rules.ConditionHelper;
+import io.github.liquibaselinter.rules.RuleViolation;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -103,13 +105,12 @@ class RuleRunner {
             final List<RuleConfig> configs = config.forRule(ruleName);
             for (RuleConfig ruleConfig : configs) {
                 if (isEnabled(ruleConfig) && ConditionHelper.evaluateCondition(ruleConfig, changeLog)) {
-                    changeLogRule.configure(ruleConfig);
-                    final String message = changeLogRule.getMessage(changeLog);
-
-                    if (changeLogRule.invalid(changeLog)) {
-                        handleViolation(changeLog, null, ruleName, message);
-                    } else {
-                        reportItems.add(ReportItem.passed(changeLog, null, ruleName, message));
+                    Collection<RuleViolation> ruleViolations = changeLogRule.check(changeLog, ruleConfig);
+                    for (RuleViolation ruleViolation : ruleViolations) {
+                        handleViolation(changeLog, null, ruleName, ruleViolation.message());
+                    }
+                    if (ruleViolations.isEmpty()) {
+                        reportItems.add(ReportItem.passed(changeLog, null, ruleName, ""));
                     }
                 }
             }
