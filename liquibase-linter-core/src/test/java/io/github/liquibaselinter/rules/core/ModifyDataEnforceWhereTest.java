@@ -47,7 +47,7 @@ class ModifyDataEnforceWhereTest {
     @DisplayName("Modify data change should support formatter error messages")
     @Test
     void foreignKeyNameRuleShouldReturnFormattedErrorMessage(ChangeSet changeSet) {
-        rule.configure(RuleConfig.builder().build());
+        rule.configure(RuleConfig.EMPTY);
         assertThat(rule.getMessage(getUpdateDataChange(changeSet, null))).isEqualTo("Modify data on table 'REQUIRES_WHERE' must have a where condition");
         assertThat(rule.getMessage(getDeleteDataChange(changeSet, null))).isEqualTo("Modify data on table 'REQUIRES_WHERE' must have a where condition");
     }
