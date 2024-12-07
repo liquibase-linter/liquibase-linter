@@ -15,15 +15,14 @@ file would be ignored.
 
 `values` - (array of strings) list of paths relative to the classpath of the maven module Liquibase is being run from that should be checked for not-included files
 
-
 ## Example Usage
 
 ```json
 {
-    "rules": {
-        "file-not-included": {
-            "values": ["src/main/resources/ddl", "src/main/resources/dml"]
-        }
+  "rules": {
+    "file-not-included": {
+      "values": ["src/main/resources/ddl", "src/main/resources/dml"]
     }
+  }
 }
 ```

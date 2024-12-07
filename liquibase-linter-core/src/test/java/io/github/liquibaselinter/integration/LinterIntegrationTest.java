@@ -1,9 +1,17 @@
 package io.github.liquibaselinter.integration;
 
+import static org.assertj.core.api.Assertions.*;
+
 import io.github.liquibaselinter.ChangeLogLinter;
 import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.ConfigLoader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import liquibase.Liquibase;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.database.DatabaseConnection;
@@ -16,15 +24,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.ThrowingConsumer;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.*;
 
 abstract class LinterIntegrationTest {
 
@@ -86,6 +85,7 @@ abstract class LinterIntegrationTest {
     }
 
     private static final class IntegrationTestConfig {
+
         private final String displayName;
         private final String changeLogFile;
         private final String configFile;

@@ -1,9 +1,9 @@
 {
-    "fail-fast": true,
-    "enable-after": "enable-after/override-enable-after/has-comment-fail-1.xml",
-    "rules": {
-        "has-comment": {
-            "enableAfter": "enable-after/override-enable-after/has-comment-fail-2.xml"
-        }
+  "fail-fast": true,
+  "enable-after": "enable-after/override-enable-after/has-comment-fail-1.xml",
+  "rules": {
+    "has-comment": {
+      "enableAfter": "enable-after/override-enable-after/has-comment-fail-2.xml"
     }
+  }
 }

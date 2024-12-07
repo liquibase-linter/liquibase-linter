@@ -2,12 +2,12 @@ package io.github.liquibaselinter.rules;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.checker.PatternChecker;
-
 import java.util.Arrays;
 import java.util.Optional;
 
 @Deprecated
 public abstract class AbstractLintRule implements LintRule {
+
     private final String name;
     private final String message;
     protected RuleConfig ruleConfig;
@@ -51,9 +51,7 @@ public abstract class AbstractLintRule implements LintRule {
     }
 
     protected boolean checkPattern(String value, Object subject) {
-        return Optional.ofNullable(patternChecker)
-            .map(checker -> checker.check(value, subject))
-            .orElse(false);
+        return Optional.ofNullable(patternChecker).map(checker -> checker.check(value, subject)).orElse(false);
     }
 
     protected boolean checkMandatoryPattern(String value, Object subject) {
@@ -73,8 +71,9 @@ public abstract class AbstractLintRule implements LintRule {
     }
 
     protected String formatMessage(Object... stuff) {
-        return String.format(getMessageTemplate(), Arrays.stream(stuff)
-            .map(thing -> Optional.ofNullable(thing).orElse(""))
-            .toArray());
+        return String.format(
+            getMessageTemplate(),
+            Arrays.stream(stuff).map(thing -> Optional.ofNullable(thing).orElse("")).toArray()
+        );
     }
 }

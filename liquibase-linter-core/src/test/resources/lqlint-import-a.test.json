@@ -1,10 +1,10 @@
 {
-    "rules": {
-        "isolate-ddl-changes": true
-    },
-    "reporting": {
-        "console": {
-            "filter": ["ERROR"]
-        }
+  "rules": {
+    "isolate-ddl-changes": true
+  },
+  "reporting": {
+    "console": {
+      "filter": ["ERROR"]
     }
+  }
 }

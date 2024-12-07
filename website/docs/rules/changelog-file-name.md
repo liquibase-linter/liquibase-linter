@@ -16,11 +16,11 @@ The `changelog-file-name` rule matches the regex you provide against any `databa
 
 ```json
 {
-    "rules": {
-        "changelog-file-name": {
-            "enabled": true,
-            "pattern": "^\\d{8}_[a-z_]+$"
-        }
+  "rules": {
+    "changelog-file-name": {
+      "enabled": true,
+      "pattern": "^\\d{8}_[a-z_]+$"
     }
+  }
 }
 ```

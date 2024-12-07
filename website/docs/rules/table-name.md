@@ -16,13 +16,13 @@ This rule will fail if the given regex does not match against the name when crea
 
 ```json
 {
-    "rules": {
-        "table-name": {
-            "pattern": "^(?!tbl).*$",
-            "errorMessage": "Don't prefix table names with 'tbl'"
-        }
+  "rules": {
+    "table-name": {
+      "pattern": "^(?!tbl).*$",
+      "errorMessage": "Don't prefix table names with 'tbl'"
     }
+  }
 }
-``` 
+```
 
 (The above example just ensures that the `tbl` prefix convention is not used.)

@@ -1,11 +1,10 @@
 package io.github.liquibaselinter.mavenplugin;
 
+import java.util.logging.Level;
 import liquibase.logging.Logger;
 import liquibase.logging.core.AbstractLogService;
 import liquibase.logging.core.AbstractLogger;
 import org.apache.maven.plugin.logging.Log;
-
-import java.util.logging.Level;
 
 class LiquibaseMavenLogService extends AbstractLogService {
 
@@ -55,4 +54,3 @@ class LiquibaseMavenLogService extends AbstractLogService {
         }
     }
 }
-

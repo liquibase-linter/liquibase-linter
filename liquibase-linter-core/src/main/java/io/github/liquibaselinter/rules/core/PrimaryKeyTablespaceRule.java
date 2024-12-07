@@ -16,6 +16,7 @@ import liquibase.change.core.CreateTableChange;
 
 @AutoService(ChangeRule.class)
 public class PrimaryKeyTablespaceRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "primary-key-tablespace";
     private static final String MESSAGE = "Tablespace '%s' is empty or does not follow pattern '%s'";
 
@@ -29,7 +30,7 @@ public class PrimaryKeyTablespaceRule extends AbstractLintRule implements Change
             return true;
         }
         if (change.getClass().isAssignableFrom(CreateTableChange.class)) {
-            return !primaryKeyTablespacesFromCreateTable((CreateTableChange)change).isEmpty();
+            return !primaryKeyTablespacesFromCreateTable((CreateTableChange) change).isEmpty();
         }
         return false;
     }
@@ -38,11 +39,15 @@ public class PrimaryKeyTablespaceRule extends AbstractLintRule implements Change
         if (change.getColumns() == null) {
             return Collections.emptyList();
         }
-        return change.getColumns()
+        return change
+            .getColumns()
             .stream()
             .map(ColumnConfig::getConstraints)
             .filter(Objects::nonNull)
-            .filter(constraint -> Boolean.TRUE.equals(constraint.isPrimaryKey()) || constraint.getPrimaryKeyTablespace() != null)
+            .filter(
+                constraint ->
+                    Boolean.TRUE.equals(constraint.isPrimaryKey()) || constraint.getPrimaryKeyTablespace() != null
+            )
             .map(ConstraintsConfig::getPrimaryKeyTablespace)
             .distinct()
             .collect(Collectors.toList());
@@ -50,7 +55,9 @@ public class PrimaryKeyTablespaceRule extends AbstractLintRule implements Change
 
     @Override
     public boolean invalid(Change change) {
-        return extractTablespacesFrom(change).stream().anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
+        return extractTablespacesFrom(change)
+            .stream()
+            .anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
     }
 
     private Collection<String> extractTablespacesFrom(Change change) {

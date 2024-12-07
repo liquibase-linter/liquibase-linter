@@ -1,16 +1,15 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.RuleViolation;
+import java.util.Collections;
 import liquibase.change.core.TagDatabaseChange;
 import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 class HasCommentRuleTest {
 
@@ -56,5 +55,4 @@ class HasCommentRuleTest {
             .extracting(RuleViolation::message)
             .containsExactly("Change set must have a comment");
     }
-
 }

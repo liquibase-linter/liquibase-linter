@@ -11,5 +11,4 @@ class AggregateErrorsIntegrationTest extends LinterIntegrationTest {
             "Linting failed with 3 errors"
         );
     }
-
 }

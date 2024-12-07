@@ -1,8 +1,8 @@
 {
-    "fail-fast": true,
-    "rules": {
-        "has-comment": {
-            "enableAfter": "enable-after/rule-enable-after/has-comment-fail-2.xml"
-        }
+  "fail-fast": true,
+  "rules": {
+    "has-comment": {
+      "enableAfter": "enable-after/rule-enable-after/has-comment-fail-2.xml"
     }
+  }
 }

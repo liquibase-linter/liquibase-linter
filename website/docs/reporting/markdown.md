@@ -12,21 +12,25 @@ is saved at `./target/lqlint-report.md`
 No extra options.
 
 ## Sample report
+
 ### `src/main/resources/ddl/first.xml`
-| Change Set | Status  | Rule                | Message                                                                     |
-|------------|---------|---------------------|-----------------------------------------------------------------------------|
-| *none*     | ERROR   | changelog-file-name | Changelog filename does not match pattern                                   |
-|            | IGNORED | no-preconditions    | Preconditions are not allowed in this project                               |
-| 2020010101 | ERROR   | create-index-name   | Index name does not follow pattern                                          |
+
+| Change Set | Status  | Rule                | Message                                                                      |
+| ---------- | ------- | ------------------- | ---------------------------------------------------------------------------- |
+| _none_     | ERROR   | changelog-file-name | Changelog filename does not match pattern                                    |
+|            | IGNORED | no-preconditions    | Preconditions are not allowed in this project                                |
+| 2020010101 | ERROR   | create-index-name   | Index name does not follow pattern                                           |
 |            | IGNORED | no-raw-sql          | Raw sql change types are not allowed, use appropriate Liquibase change types |
 
 ### `src/main/resources/ddl/second.xml`
-| Change Set | Status | Rule                | Message                            |
-|------------|--------|---------------------|------------------------------------|
-| 2020010101 | ERROR  | create-index-name   | Index name does not follow pattern |
+
+| Change Set | Status | Rule              | Message                            |
+| ---------- | ------ | ----------------- | ---------------------------------- |
+| 2020010101 | ERROR  | create-index-name | Index name does not follow pattern |
 
 ### Summary
-* ERROR: 3
-* IGNORED: 2
-* PASSED: 6
-* DISABLED: 2
+
+- ERROR: 3
+- IGNORED: 2
+- PASSED: 6
+- DISABLED: 2

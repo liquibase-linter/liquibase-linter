@@ -1,13 +1,13 @@
 package io.github.liquibaselinter.rules;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
 import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.ContextExpression;
 import liquibase.changelog.ChangeSet;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 class ConditionHelperTest {
 
@@ -49,5 +49,4 @@ class ConditionHelperTest {
         RuleConfig ruleConfig = RuleConfig.builder().withCondition("matchesContext('foo', 'bar')").build();
         assertThat(ConditionHelper.evaluateCondition(ruleConfig, changeSet)).isTrue();
     }
-
 }

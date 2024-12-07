@@ -1,10 +1,10 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import liquibase.change.core.CreateTableChange;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class CreateTableRemarksRuleTest {
 
@@ -34,5 +34,4 @@ class CreateTableRemarksRuleTest {
         createTableChange.setRemarks(remarks);
         return createTableChange;
     }
-
 }

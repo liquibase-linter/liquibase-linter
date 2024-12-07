@@ -14,22 +14,21 @@ Take this example configuration and change log:
 
 ```json
 {
-    "enable-after": "src/main/resources/example-1.xml",
-    "rules": {}
+  "enable-after": "src/main/resources/example-1.xml",
+  "rules": {}
 }
 ```
 
 ```xml
 <!-- root change log file -->
 <databaseChangeLog
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
-
-    <include relativeToChangelogFile="true" file="example-1.xml"/>
-    <include relativeToChangelogFile="true" file="example-2.xml"/>
-    <include relativeToChangelogFile="true" file="example-3.xml"/>
-
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+>
+  <include relativeToChangelogFile="true" file="example-1.xml" />
+  <include relativeToChangelogFile="true" file="example-2.xml" />
+  <include relativeToChangelogFile="true" file="example-3.xml" />
 </databaseChangeLog>
 ```
 
@@ -43,10 +42,10 @@ It works the same way as the root-level one; the value is a change log file name
 
 ```json
 {
-    "rules": {
-        "has-context": {
-            "enableAfter": "last-changeset-before-contexts-became-mandatory.xml"        
-        }   
+  "rules": {
+    "has-context": {
+      "enableAfter": "last-changeset-before-contexts-became-mandatory.xml"
     }
+  }
 }
 ```

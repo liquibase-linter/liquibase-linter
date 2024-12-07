@@ -1,16 +1,14 @@
 package io.github.liquibaselinter.rules.core;
 
-
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.rules.AbstractLintRule;
 import io.github.liquibaselinter.rules.ChangeRule;
-import liquibase.change.Change;
-import liquibase.change.core.*;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
+import liquibase.change.Change;
+import liquibase.change.core.*;
 
 public class SchemaNameRules {
 
@@ -28,9 +26,15 @@ public class SchemaNameRules {
         } else if (change instanceof AddDefaultValueChange) {
             return Collections.singletonList(((AddDefaultValueChange) change).getSchemaName());
         } else if (change instanceof AddForeignKeyConstraintChange) {
-            return Arrays.asList(((AddForeignKeyConstraintChange) change).getBaseTableSchemaName(), ((AddForeignKeyConstraintChange) change).getReferencedTableSchemaName());
+            return Arrays.asList(
+                ((AddForeignKeyConstraintChange) change).getBaseTableSchemaName(),
+                ((AddForeignKeyConstraintChange) change).getReferencedTableSchemaName()
+            );
         } else if (change instanceof AddLookupTableChange) {
-            return Arrays.asList(((AddLookupTableChange) change).getExistingTableSchemaName(), ((AddLookupTableChange) change).getNewTableSchemaName());
+            return Arrays.asList(
+                ((AddLookupTableChange) change).getExistingTableSchemaName(),
+                ((AddLookupTableChange) change).getNewTableSchemaName()
+            );
         } else if (change instanceof AddNotNullConstraintChange) {
             return Collections.singletonList(((AddNotNullConstraintChange) change).getSchemaName());
         } else if (change instanceof AddPrimaryKeyChange) {
@@ -119,10 +123,12 @@ public class SchemaNameRules {
 
         @Override
         public String getMessage(Change change) {
-            String joined = getSchemaName(change).stream().filter(schemaName -> checkMandatoryPattern(schemaName, change)).collect(Collectors.joining(","));
+            String joined = getSchemaName(change)
+                .stream()
+                .filter(schemaName -> checkMandatoryPattern(schemaName, change))
+                .collect(Collectors.joining(","));
             return formatMessage(joined, getConfig().getPatternString());
         }
-
     }
 
     @AutoService(ChangeRule.class)
@@ -145,5 +151,4 @@ public class SchemaNameRules {
             return getSchemaName(change).stream().anyMatch(this::checkBlank);
         }
     }
-
 }

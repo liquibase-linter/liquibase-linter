@@ -8,6 +8,7 @@ import liquibase.change.DatabaseChange;
 
 @AutoService(ChangeRule.class)
 public class IllegalChangeTypesRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "illegal-change-types";
     private static final String MESSAGE = "Change type '%s' is not allowed in this project";
 
@@ -25,7 +26,9 @@ public class IllegalChangeTypesRule extends AbstractLintRule implements ChangeRu
         if (ruleConfig.getValues() == null) {
             return false;
         }
-        return ruleConfig.getValues().stream()
+        return ruleConfig
+            .getValues()
+            .stream()
             .anyMatch(illegal -> getChangeName(change).equals(illegal) || getChangeClassName(change).equals(illegal));
     }
 

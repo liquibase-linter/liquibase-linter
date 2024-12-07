@@ -1,12 +1,11 @@
 package io.github.liquibaselinter.mavenplugin;
 
+import static com.soebes.itf.extension.assertj.MavenExecutionResultAssert.assertThat;
 
 import com.soebes.itf.jupiter.extension.MavenGoal;
 import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
 import com.soebes.itf.jupiter.extension.MavenTest;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
-
-import static com.soebes.itf.extension.assertj.MavenExecutionResultAssert.assertThat;
 
 @MavenJupiterExtension
 class LintMojoIT {
@@ -48,9 +47,6 @@ class LintMojoIT {
                 "[ERROR] \t\t'index-name': Index names must be the table name, suffixed with 'IX' and a two-digit number, e.g. FOO_IX01"
             );
 
-        assertThat(result)
-            .err()
-            .plain()
-            .isEmpty();
+        assertThat(result).err().plain().isEmpty();
     }
 }

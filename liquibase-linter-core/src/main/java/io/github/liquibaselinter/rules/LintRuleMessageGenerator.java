@@ -1,11 +1,11 @@
 package io.github.liquibaselinter.rules;
 
 import io.github.liquibaselinter.config.RuleConfig;
-
 import java.util.Arrays;
 import java.util.Optional;
 
 public class LintRuleMessageGenerator {
+
     private final String defaultMessage;
     private final RuleConfig ruleConfig;
 
@@ -29,8 +29,9 @@ public class LintRuleMessageGenerator {
     }
 
     public String formatMessage(Object... stuff) {
-        return String.format(getMessageTemplate(), Arrays.stream(stuff)
-            .map(thing -> Optional.ofNullable(thing).orElse(""))
-            .toArray());
+        return String.format(
+            getMessageTemplate(),
+            Arrays.stream(stuff).map(thing -> Optional.ofNullable(thing).orElse("")).toArray()
+        );
     }
 }

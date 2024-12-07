@@ -21,9 +21,9 @@ To simply ensure that a name is always given:
 
 ```json
 {
-    "rules": {
-        "index-name": true
-    }
+  "rules": {
+    "index-name": true
+  }
 }
 ```
 
@@ -31,12 +31,12 @@ To ensure that a pattern is matched, including the table name:
 
 ```json
 {
-    "rules": {
-        "index-name": {
-            "pattern": "^{{value}}_I\\d$",
-            "dynamicValue": "tableName",
-            "errorMessage": "Index names must be the table name, suffixed with 'I' and a number, e.g. FOO_I2"
-        }
+  "rules": {
+    "index-name": {
+      "pattern": "^{{value}}_I\\d$",
+      "dynamicValue": "tableName",
+      "errorMessage": "Index names must be the table name, suffixed with 'I' and a number, e.g. FOO_I2"
     }
+  }
 }
 ```

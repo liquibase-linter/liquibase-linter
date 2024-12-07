@@ -16,11 +16,11 @@ The `changeset-author` will fail if the given regex does not match against the `
 
 ```json
 {
-    "rules": {
-        "changeset-author": {
-            "enabled": true,
-            "pattern": "^(me|you)$"
-        }
+  "rules": {
+    "changeset-author": {
+      "enabled": true,
+      "pattern": "^(me|you)$"
     }
+  }
 }
 ```

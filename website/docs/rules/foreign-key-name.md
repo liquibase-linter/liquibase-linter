@@ -21,13 +21,13 @@ To ensure that a pattern is matched, including the base table name:
 
 ```json
 {
-    "rules": {
-        "foreign-key-name": {
-            "pattern": "^{{value}}_FK\\d$",
-            "dynamicValue": "baseTableName",
-            "errorMessage": "Foreign key constraint names must be the table name, suffixed with 'FK' and a number, e.g. FOO_FK1"
-        }
+  "rules": {
+    "foreign-key-name": {
+      "pattern": "^{{value}}_FK\\d$",
+      "dynamicValue": "baseTableName",
+      "errorMessage": "Foreign key constraint names must be the table name, suffixed with 'FK' and a number, e.g. FOO_FK1"
     }
+  }
 }
 ```
 
@@ -35,12 +35,12 @@ To ensure that a pattern is matched, including both table names - unless it woul
 
 ```json
 {
-    "rules": {
-        "foreign-key-name": {
-            "pattern": "^{{value}}_FK$",
-            "dynamicValue": "(baseTableName + '_' + referencedTableName).length() <= 27 ? baseTableName + '_' + referencedTableName : '[A-Z_]+'",
-            "errorMessage": "Foreign key constraint '%s' must be named, ending in _FK, and follow pattern '{base_table_name}_{parent_table_name}_FK' where space permits"
-        }
+  "rules": {
+    "foreign-key-name": {
+      "pattern": "^{{value}}_FK$",
+      "dynamicValue": "(baseTableName + '_' + referencedTableName).length() <= 27 ? baseTableName + '_' + referencedTableName : '[A-Z_]+'",
+      "errorMessage": "Foreign key constraint '%s' must be named, ending in _FK, and follow pattern '{base_table_name}_{parent_table_name}_FK' where space permits"
     }
+  }
 }
 ```

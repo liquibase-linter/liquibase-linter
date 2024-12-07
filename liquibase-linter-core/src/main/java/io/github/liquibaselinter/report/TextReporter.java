@@ -1,17 +1,17 @@
 package io.github.liquibaselinter.report;
 
-import com.google.auto.service.AutoService;
-
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
-
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
+import com.google.auto.service.AutoService;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
+
 public class TextReporter extends AbstractReporter {
+
     public static final String NAME = "text";
 
     public TextReporter(ReporterConfig config) {
@@ -29,8 +29,12 @@ public class TextReporter extends AbstractReporter {
     }
 
     protected void printByChangeLogFile(PrintWriter output, List<ReportItem> items) {
-        items.stream().collect(groupingBy(item -> ofNullable(item.getFilePath()).map(String::trim).orElse("")))
-            .entrySet().stream().sorted(Map.Entry.comparingByKey(new EmptyLastComparator()))
+        items
+            .stream()
+            .collect(groupingBy(item -> ofNullable(item.getFilePath()).map(String::trim).orElse("")))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByKey(new EmptyLastComparator()))
             .forEach(entry -> printChangeLogFile(output, entry.getKey(), entry.getValue()));
     }
 
@@ -49,8 +53,12 @@ public class TextReporter extends AbstractReporter {
     }
 
     protected void printByChangeSet(PrintWriter output, List<ReportItem> items) {
-        items.stream().collect(groupingBy(item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse("")))
-            .entrySet().stream().sorted(Map.Entry.comparingByKey())
+        items
+            .stream()
+            .collect(groupingBy(item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse("")))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByKey())
             .forEach(entry -> printChangeSet(output, entry.getKey(), entry.getValue()));
     }
 
@@ -66,8 +74,12 @@ public class TextReporter extends AbstractReporter {
     }
 
     protected void printByItemType(PrintWriter output, List<ReportItem> items) {
-        items.stream().collect(groupingBy(ReportItem::getType))
-            .entrySet().stream().sorted(Map.Entry.comparingByKey())
+        items
+            .stream()
+            .collect(groupingBy(ReportItem::getType))
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByKey())
             .forEach(entry -> printItemType(output, entry.getKey(), entry.getValue()));
     }
 
@@ -120,5 +132,4 @@ public class TextReporter extends AbstractReporter {
             super(NAME);
         }
     }
-
 }
