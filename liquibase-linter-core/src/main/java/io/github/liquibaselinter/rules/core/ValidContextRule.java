@@ -25,7 +25,7 @@ public class ValidContextRule implements ChangeSetRule {
 
     @Override
     public Collection<RuleViolation> check(ChangeSet changeSet, RuleConfig ruleConfig) {
-        ContextExpression contextExpression = changeSet.getContexts();
+        ContextExpression contextExpression = changeSet.getContextFilter();
         if (contextExpression != null) {
             LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
             return contextExpression

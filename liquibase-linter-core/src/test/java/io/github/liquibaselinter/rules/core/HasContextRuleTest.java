@@ -17,7 +17,7 @@ class HasContextRuleTest {
     @Test
     void shouldPassWithContexts() {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
-        when(changeSet.getContexts().isEmpty()).thenReturn(false);
+        when(changeSet.getContextFilter().isEmpty()).thenReturn(false);
 
         assertThat(rule.check(changeSet, RuleConfig.EMPTY)).isEmpty();
     }
@@ -26,7 +26,7 @@ class HasContextRuleTest {
     @Test
     void shouldFailWithNoContexts() {
         ChangeSet changeSet = mock(ChangeSet.class, RETURNS_DEEP_STUBS);
-        when(changeSet.getContexts().isEmpty()).thenReturn(true);
+        when(changeSet.getContextFilter().isEmpty()).thenReturn(true);
 
         assertThat(rule.check(changeSet, RuleConfig.EMPTY))
             .extracting(RuleViolation::message)

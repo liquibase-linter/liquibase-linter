@@ -32,7 +32,7 @@ public class SeparateDDLChangesRule implements ChangeSetRule {
     }
 
     public boolean isInvalid(ChangeSet changeSet, RuleConfig ruleConfig) {
-        ContextExpression contextExpression = changeSet.getContexts();
+        ContextExpression contextExpression = changeSet.getContextFilter();
         if (contextExpression == null || contextExpression.getContexts().isEmpty()) {
             return false;
         }

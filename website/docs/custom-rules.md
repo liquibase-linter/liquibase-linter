@@ -60,7 +60,7 @@ public class FormLayoutContextRuleImpl extends AbstractLintRule implements Chang
   }
 
   private boolean isCoreContext(ChangeSet changeSet) {
-    return changeSet.getContexts().getContexts().stream().anyMatch("core"::equals);
+    return changeSet.getContextFilter().getContexts().stream().anyMatch("core"::equals);
   }
 }
 

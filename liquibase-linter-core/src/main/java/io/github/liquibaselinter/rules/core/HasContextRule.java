@@ -22,7 +22,7 @@ public class HasContextRule implements ChangeSetRule {
 
     @Override
     public Collection<RuleViolation> check(ChangeSet changeSet, RuleConfig ruleConfig) {
-        if (changeSet.getContexts().isEmpty()) {
+        if (changeSet.getContextFilter().isEmpty()) {
             return Collections.singleton(new RuleViolation(getMessage(ruleConfig)));
         }
         return Collections.emptyList();

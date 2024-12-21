@@ -10,11 +10,7 @@ import io.github.liquibaselinter.config.ConfigLoader;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.ReportItem;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import liquibase.ContextExpression;
 import liquibase.Scope;
 import liquibase.change.Change;
@@ -99,7 +95,7 @@ public class ChangeLogLinter {
     }
 
     private boolean isContextIgnored(ChangeSet changeSet) {
-        final Set<String> contexts = Optional.ofNullable(changeSet.getContexts())
+        final Set<String> contexts = Optional.ofNullable(changeSet.getContextFilter())
             .map(ContextExpression::getContexts)
             .orElseGet(Collections::emptySet);
         if (config.getIgnoreContextPattern() != null && !contexts.isEmpty()) {
