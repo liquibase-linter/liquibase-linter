@@ -14,28 +14,21 @@ public final class ConditionHelper {
     public static boolean evaluateCondition(RuleConfig ruleConfig, Change change) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression ->
-                expression.getValue(
-                    new ConditionContext(change.getChangeSet().getChangeLog(), change.getChangeSet(), change),
-                    boolean.class
-                )
-            )
+            .map(expression -> expression.getValue(ConditionContext.from(change), boolean.class))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, ChangeSet changeSet) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression ->
-                expression.getValue(new ConditionContext(changeSet.getChangeLog(), changeSet, null), boolean.class)
-            )
+            .map(expression -> expression.getValue(ConditionContext.from(changeSet), boolean.class))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, DatabaseChangeLog databaseChangeLog) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> expression.getValue(new ConditionContext(databaseChangeLog, null, null), boolean.class))
+            .map(expression -> expression.getValue(ConditionContext.from(databaseChangeLog), boolean.class))
             .orElse(true);
     }
 
@@ -49,6 +42,18 @@ public final class ConditionHelper {
             this.changeLog = changeLog;
             this.changeSet = changeSet;
             this.change = change;
+        }
+
+        private static ConditionContext from(Change change) {
+            return new ConditionContext(change.getChangeSet().getChangeLog(), change.getChangeSet(), change);
+        }
+
+        private static ConditionContext from(ChangeSet changeSet) {
+            return new ConditionContext(changeSet.getChangeLog(), changeSet, null);
+        }
+
+        private static ConditionContext from(DatabaseChangeLog changeLog) {
+            return new ConditionContext(changeLog, null, null);
         }
 
         public DatabaseChangeLog getChangeLog() {
