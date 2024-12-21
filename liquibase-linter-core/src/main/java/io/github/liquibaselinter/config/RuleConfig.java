@@ -74,17 +74,23 @@ public final class RuleConfig {
     }
 
     public Optional<Expression> getConditionalExpression() {
-        if (conditionExpression == null && condition != null) {
+        if (condition == null) {
+            return Optional.empty();
+        }
+        if (conditionExpression == null) {
             conditionExpression = new SpelExpressionParser().parseExpression(condition);
         }
-        return Optional.ofNullable(conditionExpression);
+        return Optional.of(conditionExpression);
     }
 
     public Optional<Expression> getDynamicValueExpression() {
-        if (dynamicValueExpression == null && dynamicValue != null) {
+        if (dynamicValue == null) {
+            return Optional.empty();
+        }
+        if (dynamicValueExpression == null) {
             dynamicValueExpression = new SpelExpressionParser().parseExpression(dynamicValue);
         }
-        return Optional.ofNullable(dynamicValueExpression);
+        return Optional.of(dynamicValueExpression);
     }
 
     public Pattern getDynamicPattern(String value) {
