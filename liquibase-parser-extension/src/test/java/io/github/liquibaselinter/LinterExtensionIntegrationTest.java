@@ -1,6 +1,11 @@
 package io.github.liquibaselinter;
 
+import static org.assertj.core.api.Assertions.*;
+
 import com.google.common.io.CharStreams;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.Writer;
 import liquibase.Contexts;
 import liquibase.Liquibase;
 import liquibase.database.DatabaseConnection;
@@ -11,12 +16,6 @@ import liquibase.resource.DirectoryResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.Writer;
-
-import static org.assertj.core.api.Assertions.*;
 
 class LinterExtensionIntegrationTest {
 

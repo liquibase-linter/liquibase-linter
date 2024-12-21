@@ -18,9 +18,9 @@ To simply ensure that a name is always given:
 
 ```json
 {
-    "rules": {
-        "unique-constraint-tablespace": true
-    }
+  "rules": {
+    "unique-constraint-tablespace": true
+  }
 }
 ```
 
@@ -28,10 +28,10 @@ To ensure that a pattern is matched:
 
 ```json
 {
-    "rules": {
-        "unique-constraint-tablespace": {
-            "pattern": "^IDX_[A-Z_]+$"
-        }
+  "rules": {
+    "unique-constraint-tablespace": {
+      "pattern": "^IDX_[A-Z_]+$"
     }
+  }
 }
 ```

@@ -8,12 +8,13 @@ class DropNotNullRequireColumnDataTypeIntegrationTest extends LinterIntegrationT
             "Should fail with invalid context value",
             "drop-not-null-require-column-data-type/drop-not-null-require-column-data-type-fail.xml",
             "drop-not-null-require-column-data-type/lqlint.json",
-            "Drop not null constraint column data type attribute must be populated");
+            "Drop not null constraint column data type attribute must be populated"
+        );
 
         shouldPass(
             "Should pass with valid context value",
             "drop-not-null-require-column-data-type/drop-not-null-require-column-data-type-pass.xml",
-            "drop-not-null-require-column-data-type/lqlint.json");
+            "drop-not-null-require-column-data-type/lqlint.json"
+        );
     }
-
 }

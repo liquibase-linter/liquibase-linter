@@ -21,9 +21,9 @@ To simply ensure that a name is always given:
 
 ```json
 {
-    "rules": {
-        "unique-constraint-name": true
-    }
+  "rules": {
+    "unique-constraint-name": true
+  }
 }
 ```
 
@@ -31,12 +31,12 @@ To ensure that a pattern is matched, including the table name:
 
 ```json
 {
-    "rules": {
-        "unique-constraint-name": {
-            "pattern": "^{{value}}_U\\d$",
-            "dynamicValue": "tableName",
-            "errorMessage": "Unique constraint names must be the table name, suffixed with 'U' and a number, e.g. FOO_U2"
-        }
+  "rules": {
+    "unique-constraint-name": {
+      "pattern": "^{{value}}_U\\d$",
+      "dynamicValue": "tableName",
+      "errorMessage": "Unique constraint names must be the table name, suffixed with 'U' and a number, e.g. FOO_U2"
     }
+  }
 }
 ```

@@ -1,77 +1,65 @@
 {
   "docs": {
-      "Setup": [
-          "install",
-          "configure",
-          "retrofitting"
-      ],
-      "Rules": [
-          "rules/index",
-          {
-              "type": "category",
-              "label": "Core Rules",
-              "items": [
-                  "rules/create-column-no-define-primary-key",
-                  "rules/create-column-nullable-constraint",
-                  "rules/create-column-remarks",
-                  "rules/create-table-remarks",
-                  "rules/drop-not-null-require-column-data-type",
-                  "rules/changelog-file-name",
-                  "rules/changeset-author",
-                  "rules/changeset-id",
-                  "rules/file-not-included",
-                  "rules/foreign-key-name",
-                  "rules/has-comment",
-                  "rules/has-context",
-                  "rules/illegal-change-types",
-                  "rules/index-name",
-                  "rules/index-tablespace",
-                  "rules/isolate-ddl-changes",
-                  "rules/modify-data-enforce-where",
-                  "rules/modify-data-starts-with-where",
-                  "rules/no-preconditions",
-                  "rules/no-schema-name",
-                  "rules/no-raw-sql",
-                  "rules/object-name",
-                  "rules/object-name-length",
-                  "rules/primary-key-name",
-                  "rules/primary-key-tablespace",
-                  "rules/schema-name",
-                  "rules/separate-ddl-context",
-                  "rules/sequence-name",
-                  "rules/table-name",
-                  "rules/table-name-length",
-                  "rules/unique-constraint-name",
-                  "rules/unique-constraint-tablespace",
-                  "rules/valid-context"
-              ]
-          },
-          {
-              "type": "category",
-              "label": "Custom Rules",
-              "items": [
-                  "custom-rules"
-              ]
-          }
-      ],
-      "Reporting": [
-          "reporting/index",
-          {
-              "type": "category",
-              "label": "Core Reporters",
-              "items": [
-                  "reporting/console",
-                  "reporting/markdown",
-                  "reporting/text"
-              ]
-          },
-          {
-              "type": "category",
-              "label": "Custom Reporters",
-              "items": [
-                  "custom-reporters"
-              ]
-          }
-      ]
+    "Setup": ["install", "configure", "retrofitting"],
+    "Rules": [
+      "rules/index",
+      {
+        "type": "category",
+        "label": "Core Rules",
+        "items": [
+          "rules/create-column-no-define-primary-key",
+          "rules/create-column-nullable-constraint",
+          "rules/create-column-remarks",
+          "rules/create-table-remarks",
+          "rules/drop-not-null-require-column-data-type",
+          "rules/changelog-file-name",
+          "rules/changeset-author",
+          "rules/changeset-id",
+          "rules/file-not-included",
+          "rules/foreign-key-name",
+          "rules/has-comment",
+          "rules/has-context",
+          "rules/illegal-change-types",
+          "rules/index-name",
+          "rules/index-tablespace",
+          "rules/isolate-ddl-changes",
+          "rules/modify-data-enforce-where",
+          "rules/modify-data-starts-with-where",
+          "rules/no-preconditions",
+          "rules/no-schema-name",
+          "rules/no-raw-sql",
+          "rules/object-name",
+          "rules/object-name-length",
+          "rules/primary-key-name",
+          "rules/primary-key-tablespace",
+          "rules/schema-name",
+          "rules/separate-ddl-context",
+          "rules/sequence-name",
+          "rules/table-name",
+          "rules/table-name-length",
+          "rules/unique-constraint-name",
+          "rules/unique-constraint-tablespace",
+          "rules/valid-context"
+        ]
+      },
+      {
+        "type": "category",
+        "label": "Custom Rules",
+        "items": ["custom-rules"]
+      }
+    ],
+    "Reporting": [
+      "reporting/index",
+      {
+        "type": "category",
+        "label": "Core Reporters",
+        "items": ["reporting/console", "reporting/markdown", "reporting/text"]
+      },
+      {
+        "type": "category",
+        "label": "Custom Reporters",
+        "items": ["custom-reporters"]
+      }
+    ]
   }
 }

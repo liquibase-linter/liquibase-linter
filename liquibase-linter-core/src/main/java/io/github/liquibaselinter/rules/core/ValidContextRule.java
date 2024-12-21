@@ -6,15 +6,15 @@ import io.github.liquibaselinter.rules.ChangeSetRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
 import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
-import liquibase.ContextExpression;
-import liquibase.changelog.ChangeSet;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
+import liquibase.ContextExpression;
+import liquibase.changelog.ChangeSet;
 
-@AutoService({ChangeSetRule.class})
+@AutoService({ ChangeSetRule.class })
 public class ValidContextRule implements ChangeSetRule {
+
     private static final String NAME = "valid-context";
     private static final String DEFAULT_MESSAGE = "Context does not follow pattern";
 
@@ -28,7 +28,8 @@ public class ValidContextRule implements ChangeSetRule {
         ContextExpression contextExpression = changeSet.getContexts();
         if (contextExpression != null) {
             LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
-            return contextExpression.getContexts()
+            return contextExpression
+                .getContexts()
                 .stream()
                 .filter(context -> ruleChecker.checkPattern(context, changeSet))
                 .map(context -> new RuleViolation(getMessage(ruleConfig)))

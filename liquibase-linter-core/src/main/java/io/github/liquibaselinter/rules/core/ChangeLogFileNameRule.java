@@ -6,13 +6,13 @@ import io.github.liquibaselinter.rules.ChangeLogRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
 import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
-import liquibase.changelog.DatabaseChangeLog;
-
 import java.util.Collection;
 import java.util.Collections;
+import liquibase.changelog.DatabaseChangeLog;
 
-@AutoService({ChangeLogRule.class})
+@AutoService({ ChangeLogRule.class })
 public class ChangeLogFileNameRule implements ChangeLogRule {
+
     private static final String NAME = "changelog-file-name";
     private static final String MESSAGE = "ChangeLog filename '%s' must follow pattern '%s'";
 

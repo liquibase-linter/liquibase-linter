@@ -1,7 +1,7 @@
 {
-    "fail-fast": true,
-    "ignore-files-pattern": "^ignore-files-pattern/nested/ignore/.*$",
-    "rules": {
-        "has-comment": true
-    }
+  "fail-fast": true,
+  "ignore-files-pattern": "^ignore-files-pattern/nested/ignore/.*$",
+  "rules": {
+    "has-comment": true
+  }
 }

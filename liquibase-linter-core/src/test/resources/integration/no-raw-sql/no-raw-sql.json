@@ -1,6 +1,6 @@
 {
-    "fail-fast": true,
-    "rules": {
-        "no-raw-sql": true
-    }
+  "fail-fast": true,
+  "rules": {
+    "no-raw-sql": true
+  }
 }

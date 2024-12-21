@@ -18,9 +18,9 @@ To simply ensure that a name is always given:
 
 ```json
 {
-    "rules": {
-        "primary-key-tablespace": true
-    }
+  "rules": {
+    "primary-key-tablespace": true
+  }
 }
 ```
 
@@ -28,10 +28,10 @@ To ensure that a pattern is matched:
 
 ```json
 {
-    "rules": {
-        "primary-key-tablespace": {
-            "pattern": "^IDX_[A-Z_]+$"
-        }
+  "rules": {
+    "primary-key-tablespace": {
+      "pattern": "^IDX_[A-Z_]+$"
     }
+  }
 }
 ```

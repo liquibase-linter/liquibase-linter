@@ -8,6 +8,7 @@ import liquibase.change.core.CreateIndexChange;
 
 @AutoService(ChangeRule.class)
 public class IndexNameRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "index-name";
     private static final String MESSAGE = "Index name does not follow pattern";
 
@@ -31,5 +32,4 @@ public class IndexNameRule extends AbstractLintRule implements ChangeRule {
         CreateIndexChange createIndexChange = (CreateIndexChange) change;
         return formatMessage(createIndexChange.getIndexName());
     }
-
 }

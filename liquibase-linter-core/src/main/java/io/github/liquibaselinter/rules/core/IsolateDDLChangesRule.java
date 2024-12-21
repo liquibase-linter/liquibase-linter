@@ -6,13 +6,13 @@ import io.github.liquibaselinter.rules.ChangeSetRule;
 import io.github.liquibaselinter.rules.Changes;
 import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
-import liquibase.changelog.ChangeSet;
-
 import java.util.Collection;
 import java.util.Collections;
+import liquibase.changelog.ChangeSet;
 
-@AutoService({ChangeSetRule.class})
+@AutoService({ ChangeSetRule.class })
 public class IsolateDDLChangesRule implements ChangeSetRule {
+
     private static final String NAME = "isolate-ddl-changes";
     private static final String DEFAULT_MESSAGE = "Should only have a single ddl change per change set";
 

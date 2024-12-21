@@ -17,8 +17,8 @@ No extra options.
 
 ```json
 {
-    "rules": {
-        "no-raw-sql": true
-    }
+  "rules": {
+    "no-raw-sql": true
+  }
 }
 ```

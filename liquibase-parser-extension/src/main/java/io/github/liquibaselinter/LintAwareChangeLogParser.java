@@ -1,14 +1,13 @@
 package io.github.liquibaselinter;
 
 import com.google.auto.service.AutoService;
+import java.util.stream.Stream;
 import liquibase.changelog.ChangeLogParameters;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.exception.ChangeLogParseException;
 import liquibase.parser.ChangeLogParser;
 import liquibase.parser.ChangeLogParserFactory;
 import liquibase.resource.ResourceAccessor;
-
-import java.util.stream.Stream;
 
 @SuppressWarnings("WeakerAccess")
 @AutoService(ChangeLogParser.class)
@@ -25,15 +24,22 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
     }
 
     @Override
-    public DatabaseChangeLog parse(String physicalChangeLogLocation, ChangeLogParameters changeLogParameters, ResourceAccessor resourceAccessor) throws ChangeLogParseException {
+    public DatabaseChangeLog parse(
+        String physicalChangeLogLocation,
+        ChangeLogParameters changeLogParameters,
+        ResourceAccessor resourceAccessor
+    ) throws ChangeLogParseException {
         try {
-            final DatabaseChangeLog changeLog = parseChangeLog(physicalChangeLogLocation, changeLogParameters, resourceAccessor);
+            final DatabaseChangeLog changeLog = parseChangeLog(
+                physicalChangeLogLocation,
+                changeLogParameters,
+                resourceAccessor
+            );
 
             if (isRootChangeLog(changeLog)) {
                 new ChangeLogLinter(resourceAccessor).lintChangeLog(changeLog);
             }
             return changeLog;
-
         } catch (ChangeLogLintingException lintingException) {
             throw new ChangeLogParseException(lintingException.getMessage(), lintingException);
         }
@@ -43,7 +49,11 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
         return changeLog.getRootChangeLog() == changeLog;
     }
 
-    private static DatabaseChangeLog parseChangeLog(String physicalChangeLogLocation, ChangeLogParameters changeLogParameters, ResourceAccessor resourceAccessor) throws ChangeLogParseException {
+    private static DatabaseChangeLog parseChangeLog(
+        String physicalChangeLogLocation,
+        ChangeLogParameters changeLogParameters,
+        ResourceAccessor resourceAccessor
+    ) throws ChangeLogParseException {
         ChangeLogParser supportingParser = getParsers()
             .filter(parser -> parser.supports(physicalChangeLogLocation, resourceAccessor))
             .findFirst()
@@ -52,7 +62,8 @@ public class LintAwareChangeLogParser implements ChangeLogParser {
     }
 
     private static Stream<ChangeLogParser> getParsers() {
-        return ChangeLogParserFactory.getInstance().getParsers()
+        return ChangeLogParserFactory.getInstance()
+            .getParsers()
             .stream()
             .filter(parser -> !(parser instanceof LintAwareChangeLogParser));
     }

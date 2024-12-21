@@ -1,14 +1,14 @@
 package io.github.liquibaselinter.report;
 
-import io.github.liquibaselinter.config.Config;
+import static java.util.Collections.emptyList;
 
+import io.github.liquibaselinter.config.Config;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.emptyList;
-
 public class Report {
+
     private final Config config;
     private final List<ReportItem> items;
 

@@ -21,9 +21,9 @@ To simply ensure that a name is always given:
 
 ```json
 {
-    "rules": {
-        "primary-key-name": true
-    }
+  "rules": {
+    "primary-key-name": true
+  }
 }
 ```
 
@@ -31,12 +31,12 @@ To ensure that a pattern is matched, including the table name:
 
 ```json
 {
-    "rules": {
-        "primary-key-name": {
-            "pattern": "^{{value}}_PK$",
-            "dynamicValue": "tableName",
-            "errorMessage": "Primary key names must be the table name, suffixed with 'PK', e.g. FOO_PK"
-        }
+  "rules": {
+    "primary-key-name": {
+      "pattern": "^{{value}}_PK$",
+      "dynamicValue": "tableName",
+      "errorMessage": "Primary key names must be the table name, suffixed with 'PK', e.g. FOO_PK"
     }
+  }
 }
 ```

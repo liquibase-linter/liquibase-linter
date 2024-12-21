@@ -1,15 +1,5 @@
 package io.github.liquibaselinter;
 
-import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.ListMultimap;
-import io.github.liquibaselinter.config.Config;
-import io.github.liquibaselinter.report.Report;
-import io.github.liquibaselinter.config.RuleConfig;
-import liquibase.change.Change;
-import liquibase.change.core.RenameTableChange;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.IGNORED;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.PASSED;
@@ -19,8 +9,19 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ListMultimap;
+import io.github.liquibaselinter.config.Config;
+import io.github.liquibaselinter.config.RuleConfig;
+import io.github.liquibaselinter.report.Report;
+import liquibase.change.Change;
+import liquibase.change.core.RenameTableChange;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 @SuppressWarnings("unchecked")
 class RuleRunnerTest {
+
     @DisplayName("Should add rule violation to report as an error")
     @Test
     void shouldReportErrorsForFailureWhenNotIgnored() throws ChangeLogLintingException {
@@ -62,8 +63,9 @@ class RuleRunnerTest {
     void shouldThrowForErrorsWhenFailFastOn() {
         RuleRunner ruleRunner = ruleRunnerWithTableNameRule(null, true);
 
-        assertThatExceptionOfType(ChangeLogLintingException.class).isThrownBy(() ->
-            ruleRunner.checkChange(mockInvalidChange(null, "TBL_TABLE"))).withMessageContaining("Table name does not follow pattern");
+        assertThatExceptionOfType(ChangeLogLintingException.class)
+            .isThrownBy(() -> ruleRunner.checkChange(mockInvalidChange(null, "TBL_TABLE")))
+            .withMessageContaining("Table name does not follow pattern");
     }
 
     @DisplayName("Should report rule violation as ignored when ignored via comment and fail-fast is on")
@@ -119,17 +121,21 @@ class RuleRunnerTest {
 
     private RuleRunner ruleRunnerWithTableNameRule(String condition, boolean failFast, String enableAfter) {
         final ListMultimap<String, RuleConfig> ruleConfigMap = ImmutableListMultimap.of(
-            "table-name", RuleConfig.builder()
+            "table-name",
+            RuleConfig.builder()
                 .withEnabled(true)
                 .withPattern("^(?!TBL)[A-Z_]+(?<!_)$")
                 .withCondition(condition)
                 .build(),
-            "table-name", RuleConfig.builder()
+            "table-name",
+            RuleConfig.builder()
                 .withEnabled(true)
                 .withPattern("^(?!FOO)[A-Z_]+(?<!_)$")
                 .withCondition(condition)
-                .build());
-        return new RuleRunner(new Config.Builder().withRules(ruleConfigMap).withFailFast(failFast).withEnableAfter(enableAfter).build()
+                .build()
+        );
+        return new RuleRunner(
+            new Config.Builder().withRules(ruleConfigMap).withFailFast(failFast).withEnableAfter(enableAfter).build()
         );
     }
 
@@ -139,5 +145,4 @@ class RuleRunnerTest {
         when(change.getChangeSet().getComments()).thenReturn(changeComment);
         return change;
     }
-
 }

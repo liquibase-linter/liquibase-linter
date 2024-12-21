@@ -9,6 +9,7 @@ import liquibase.change.core.RenameSequenceChange;
 
 @AutoService(ChangeRule.class)
 public class SequenceNameRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "sequence-name";
     private static final String MESSAGE = "Sequence name '%s' does not follow pattern '%s'";
 

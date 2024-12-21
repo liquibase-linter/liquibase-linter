@@ -1,12 +1,12 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import liquibase.change.AddColumnConfig;
 import liquibase.change.ConstraintsConfig;
 import liquibase.change.core.AddColumnChange;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class CreateColumnNoDefinePrimaryKeyRuleTest {
 
@@ -35,7 +35,7 @@ class CreateColumnNoDefinePrimaryKeyRuleTest {
     void truePrimaryKeyAttributeShouldBeInvalid() {
         ConstraintsConfig constraintsConfig = new ConstraintsConfig();
         constraintsConfig.setPrimaryKey(Boolean.TRUE);
-        
+
         assertThat(rule.invalid(buildAddColumnChange(Boolean.TRUE))).isTrue();
     }
 
@@ -48,5 +48,4 @@ class CreateColumnNoDefinePrimaryKeyRuleTest {
         addColumnChange.getColumns().add(addColumnConfig);
         return addColumnChange;
     }
-
 }

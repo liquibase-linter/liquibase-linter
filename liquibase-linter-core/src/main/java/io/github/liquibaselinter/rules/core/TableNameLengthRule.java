@@ -9,6 +9,7 @@ import liquibase.change.core.RenameTableChange;
 
 @AutoService(ChangeRule.class)
 public class TableNameLengthRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "table-name-length";
     private static final String MESSAGE = "Table '%s' name must not be longer than %d";
 

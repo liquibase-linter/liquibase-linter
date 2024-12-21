@@ -24,13 +24,13 @@ This rule will fail if the given regex does not match against the name for any:
 
 ```json
 {
-    "rules": {
-        "object-name": {
-            "pattern": "^(?!_)[A-Z_0-9]+(?<!_)$",
-            "errorMessage": "Object name '%s' name must be uppercase and use '_' separation"
-        }
+  "rules": {
+    "object-name": {
+      "pattern": "^(?!_)[A-Z_0-9]+(?<!_)$",
+      "errorMessage": "Object name '%s' name must be uppercase and use '_' separation"
     }
+  }
 }
-``` 
+```
 
 (The above example ensures objects are named like `NAME_OF_THING`.)

@@ -12,39 +12,39 @@ You do this by providing a `lqlint.json` file at the root of your project. Here'
 
 ```json
 {
-    "fail-fast": false,
-    "ignore-context-pattern": null,
-    "ignore-files-pattern": null,
-    "rules": {}
+  "fail-fast": false,
+  "ignore-context-pattern": null,
+  "ignore-files-pattern": null,
+  "rules": {}
 }
 ```
 
 #### From the classpath
 
 It is also possible for Liquibase Linter to load the `lqlint.json` file from the classpath. This can be useful when you have many different
-projects using Liquibase and want to share the rule config between them. With maven this would be done in the following way, 
+projects using Liquibase and want to share the rule config between them. With maven this would be done in the following way,
 where `lqlint.json` is stored directly under `src/main/resources` in `lqlint-config`
 
 ```xml
 <plugin>
-    <groupId>org.liquibase</groupId>
-    <artifactId>liquibase-maven-plugin</artifactId>
-    <configuration>
-        <propertyFile>${liquibase.property.file}</propertyFile>
-    </configuration>
-    <dependencies>
-        <dependency>
-            <groupId>io.github.liquibase-linter</groupId>
-            <artifactId>liquibase-parser-extension</artifactId>
-            <version>${liquibaselinter.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.your.group.id</groupId>
-            <artifactId>lqlint-config</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
-    ...
+  <groupId>org.liquibase</groupId>
+  <artifactId>liquibase-maven-plugin</artifactId>
+  <configuration>
+    <propertyFile>${liquibase.property.file}</propertyFile>
+  </configuration>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.liquibase-linter</groupId>
+      <artifactId>liquibase-parser-extension</artifactId>
+      <version>${liquibaselinter.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.your.group.id</groupId>
+      <artifactId>lqlint-config</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  ...
 </plugin>
 ```
 
@@ -71,8 +71,8 @@ Example usage:
 
 ```json
 {
-    "ignore-context-pattern": "^baseline.*$",
-    "rules": {}
+  "ignore-context-pattern": "^baseline.*$",
+  "rules": {}
 }
 ```
 
@@ -86,10 +86,11 @@ Example usage:
 
 ```json
 {
-    "ignore-files-pattern": "^src/main/resources/core/legacy/.*$",
-    "rules": {}
+  "ignore-files-pattern": "^src/main/resources/core/legacy/.*$",
+  "rules": {}
 }
 ```
+
 <small>To avoid issues with script file paths resolving to using either `\` or `/`, all occurrences of `\` are replaced with `/`</small>
 
 <small>(Regular expression literals aren't valid JSON, so you do need to use a string.)</small>
@@ -100,9 +101,9 @@ Sometimes you might have to do something less than perfect to get you out of a j
 
 ```xml
 <changeSet id="201809061514dg" author="dgoss">
-    <comment>Doing awful things to fix a problem lql-ignore</comment>
-    
-    <!-- awful things here -->
+  <comment>Doing awful things to fix a problem lql-ignore</comment>
+
+  <!-- awful things here -->
 </changeSet>
 ```
 
@@ -110,20 +111,22 @@ You can also disable an individual rule while leaving all others on, if that's a
 
 ```xml
 <changeSet id="201809061514dg" author="dgoss">
-    <comment>Empty this whole table lql-ignore:modify-data-enforce-where</comment>
-    
-    <delete tableName="FOO"/>
+  <comment>Empty this whole table lql-ignore:modify-data-enforce-where</comment>
+
+  <delete tableName="FOO" />
 </changeSet>
 ```
 
 ## Importing other configuration
 
 The Liquibase Linter configuration can import configuration from other configuration files.
+
 ```json
 {
-    "import": [ "imported-lqlint.json" ]
+  "import": ["imported-lqlint.json"]
 }
 ```
+
 In this way, common configuration can be centralized. For example, common
 configuration could be published as a Maven artifact and included in the
 Liquibase plugin dependencies in the same way `liquibase-linter` is included.

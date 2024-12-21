@@ -16,6 +16,7 @@ import liquibase.change.core.CreateTableChange;
 
 @AutoService(ChangeRule.class)
 public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule {
+
     private static final String NAME = "primary-key-name";
     private static final String MESSAGE = "Primary key name '%s' is missing or does not follow pattern '%s'";
 
@@ -29,7 +30,7 @@ public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule {
             return true;
         }
         if (change.getClass().isAssignableFrom(CreateTableChange.class)) {
-            return !primaryKeyNamesFromCreateTable((CreateTableChange)change).isEmpty();
+            return !primaryKeyNamesFromCreateTable((CreateTableChange) change).isEmpty();
         }
         return false;
     }
@@ -38,11 +39,14 @@ public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule {
         if (change.getColumns() == null) {
             return Collections.emptyList();
         }
-        return change.getColumns()
+        return change
+            .getColumns()
             .stream()
             .map(ColumnConfig::getConstraints)
             .filter(Objects::nonNull)
-            .filter(constraint -> Boolean.TRUE.equals(constraint.isPrimaryKey()) || constraint.getPrimaryKeyName() != null)
+            .filter(
+                constraint -> Boolean.TRUE.equals(constraint.isPrimaryKey()) || constraint.getPrimaryKeyName() != null
+            )
             .map(ConstraintsConfig::getPrimaryKeyName)
             .distinct()
             .collect(Collectors.toList());
@@ -50,7 +54,9 @@ public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule {
 
     @Override
     public boolean invalid(Change change) {
-        return extractConstraintNamesFrom(change).stream().anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
+        return extractConstraintNamesFrom(change)
+            .stream()
+            .anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
     }
 
     private Collection<String> extractConstraintNamesFrom(Change change) {

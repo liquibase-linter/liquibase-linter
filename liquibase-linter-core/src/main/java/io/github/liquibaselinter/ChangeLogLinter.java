@@ -1,11 +1,20 @@
 package io.github.liquibaselinter;
 
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
+
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.ConfigLoader;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.ReportItem;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import liquibase.ContextExpression;
 import liquibase.Scope;
 import liquibase.change.Change;
@@ -13,16 +22,6 @@ import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.resource.ResourceAccessor;
 import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toSet;
 
 public class ChangeLogLinter {
 
@@ -44,7 +43,6 @@ public class ChangeLogLinter {
     }
 
     public void lintChangeLog(final DatabaseChangeLog databaseChangeLog) throws ChangeLogLintingException {
-
         if (shouldLint(databaseChangeLog)) {
             ruleRunner.checkChangeLog(databaseChangeLog);
         }
@@ -59,7 +57,6 @@ public class ChangeLogLinter {
 
     private void lintChangeSets(List<ChangeSet> changeSets) throws ChangeLogLintingException {
         for (ChangeSet changeSet : changeSets) {
-
             DatabaseChangeLog databaseChangeLog = changeSet.getChangeLog();
             if (shouldLint(databaseChangeLog) && isNotRootChangeLog(databaseChangeLog)) {
                 ruleRunner.checkChangeLog(databaseChangeLog);
@@ -82,9 +79,11 @@ public class ChangeLogLinter {
     }
 
     private boolean shouldLint(DatabaseChangeLog changeLog) {
-        return isEnabled()
-            && isFilePathNotIgnored(changeLog.getFilePath())
-            && !hasAlreadyBeenParsed(changeLog.getFilePath());
+        return (
+            isEnabled() &&
+            isFilePathNotIgnored(changeLog.getFilePath()) &&
+            !hasAlreadyBeenParsed(changeLog.getFilePath())
+        );
     }
 
     private boolean isEnabled() {
@@ -96,14 +95,13 @@ public class ChangeLogLinter {
     }
 
     private boolean shouldLint(ChangeSet changeSet) {
-        return isEnabled()
-            && !isContextIgnored(changeSet)
-            && isFilePathNotIgnored(changeSet.getFilePath());
+        return isEnabled() && !isContextIgnored(changeSet) && isFilePathNotIgnored(changeSet.getFilePath());
     }
 
     private boolean isContextIgnored(ChangeSet changeSet) {
         final Set<String> contexts = Optional.ofNullable(changeSet.getContexts())
-            .map(ContextExpression::getContexts).orElseGet(Collections::emptySet);
+            .map(ContextExpression::getContexts)
+            .orElseGet(Collections::emptySet);
         if (config.getIgnoreContextPattern() != null && !contexts.isEmpty()) {
             return contexts.stream().anyMatch(context -> config.getIgnoreContextPattern().matcher(context).matches());
         }
@@ -119,24 +117,30 @@ public class ChangeLogLinter {
     }
 
     private void checkForFilesNotIncluded() throws ChangeLogLintingException {
-        final Set<String> fileExtensions = ruleRunner.getFilesParsed().stream()
+        final Set<String> fileExtensions = ruleRunner
+            .getFilesParsed()
+            .stream()
             .map(Files::getFileExtension)
             .filter(ext -> !Strings.isNullOrEmpty(ext))
             .collect(toSet());
 
         for (RuleConfig ruleConfig : config.getEnabledRuleConfig("file-not-included")) {
-            List<String> paths = Optional.ofNullable(ruleConfig.getValues())
-                .orElseThrow(() -> new IllegalArgumentException("values not configured for rule `file-not-included`"));
+            List<String> paths = Optional.ofNullable(ruleConfig.getValues()).orElseThrow(() ->
+                new IllegalArgumentException("values not configured for rule `file-not-included`")
+            );
 
             for (String path : paths) {
                 try {
-                    final String unparsedFiles = resourceAccessor.list(null, path, true, true, false).stream()
+                    final String unparsedFiles = resourceAccessor
+                        .list(null, path, true, true, false)
+                        .stream()
                         .filter(file -> fileExtensions.contains(Files.getFileExtension(file)))
                         .filter(file -> !ruleRunner.getFilesParsed().contains(file))
                         .collect(joining(","));
                     if (!Strings.isNullOrEmpty(unparsedFiles)) {
-                        final String errorMessage = Optional.ofNullable(ruleConfig.getErrorMessage())
-                            .orElse("Changelog files not included in deltas change log: %s");
+                        final String errorMessage = Optional.ofNullable(ruleConfig.getErrorMessage()).orElse(
+                            "Changelog files not included in deltas change log: %s"
+                        );
                         throw new ChangeLogLintingException(String.format(errorMessage, unparsedFiles));
                     }
                 } catch (IOException e) {
@@ -147,12 +151,19 @@ public class ChangeLogLinter {
     }
 
     private void reports() throws ChangeLogLintingException {
-        config.getReporting().forEach((reportType, reporter) -> {
-            if (reporter.isEnabled()) {
-                reporter.processReport(ruleRunner.buildReport());
-            }
-        });
-        final long errorCount = ruleRunner.buildReport().getItems().stream().filter(item -> item.getType() == ReportItem.ReportItemType.ERROR).count();
+        config
+            .getReporting()
+            .forEach((reportType, reporter) -> {
+                if (reporter.isEnabled()) {
+                    reporter.processReport(ruleRunner.buildReport());
+                }
+            });
+        final long errorCount = ruleRunner
+            .buildReport()
+            .getItems()
+            .stream()
+            .filter(item -> item.getType() == ReportItem.ReportItemType.ERROR)
+            .count();
         if (errorCount > 0) {
             throw new ChangeLogLintingException(String.format("Linting failed with %d errors", errorCount));
         }

@@ -2,10 +2,10 @@ package io.github.liquibaselinter.rules;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.checker.PatternChecker;
-
 import java.util.Optional;
 
 public class LintRuleChecker {
+
     private final RuleConfig ruleConfig;
     private final PatternChecker patternChecker;
 
@@ -27,9 +27,7 @@ public class LintRuleChecker {
     }
 
     public boolean checkPattern(String value, Object subject) {
-        return Optional.ofNullable(patternChecker)
-            .map(checker -> checker.check(value, subject))
-            .orElse(false);
+        return Optional.ofNullable(patternChecker).map(checker -> checker.check(value, subject)).orElse(false);
     }
 
     public boolean checkMandatoryPattern(String value, Object subject) {

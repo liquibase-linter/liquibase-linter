@@ -1,14 +1,5 @@
 package io.github.liquibaselinter.report;
 
-import com.google.auto.service.AutoService;
-
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import static java.lang.Math.max;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.groupingBy;
@@ -17,10 +8,19 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.repeat;
 import static org.apache.commons.lang3.StringUtils.rightPad;
 
+import com.google.auto.service.AutoService;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 public class MarkdownReporter extends TextReporter {
+
     public static final String NAME = "markdown";
 
-    private static final String[] HEADERS = {"Change Set", "Status", "Rule", "Message"};
+    private static final String[] HEADERS = { "Change Set", "Status", "Rule", "Message" };
     private static final int COL_CHANGE_SET = 0;
     private static final int COL_STATUS = 1;
     private static final int COL_RULE = 2;
@@ -46,14 +46,23 @@ public class MarkdownReporter extends TextReporter {
         final int[] maxWidth = Arrays.stream(HEADERS).mapToInt(String::length).toArray();
         int row = 0;
 
-        SortedMap<String, List<ReportItem>> itemsByChangeSet = items.stream()
-            .collect(groupingBy(item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse(""), TreeMap::new, toList()));
+        SortedMap<String, List<ReportItem>> itemsByChangeSet = items
+            .stream()
+            .collect(
+                groupingBy(
+                    item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse(""),
+                    TreeMap::new,
+                    toList()
+                )
+            );
 
         for (Map.Entry<String, List<ReportItem>> changeSetEntry : itemsByChangeSet.entrySet()) {
             String changeSet = tableCellFormat(isEmpty(changeSetEntry.getKey()) ? "*none*" : changeSetEntry.getKey());
             maxWidth[COL_CHANGE_SET] = max(maxWidth[COL_CHANGE_SET], tableCellWidth(changeSet));
 
-            final SortedMap<ReportItem.ReportItemType, List<ReportItem>> itemsByType = changeSetEntry.getValue().stream()
+            final SortedMap<ReportItem.ReportItemType, List<ReportItem>> itemsByType = changeSetEntry
+                .getValue()
+                .stream()
                 .collect(groupingBy(ReportItem::getType, TreeMap::new, toList()));
 
             for (Map.Entry<ReportItem.ReportItemType, List<ReportItem>> typedEntry : itemsByType.entrySet()) {
@@ -80,18 +89,12 @@ public class MarkdownReporter extends TextReporter {
     }
 
     private static String tableCellFormat(String value) {
-        return ofNullable(value)
-            .map(String::trim)
-            .map(cell -> cell.replace("\n", "<br>"))
-            .orElse("");
+        return ofNullable(value).map(String::trim).map(cell -> cell.replace("\n", "<br>")).orElse("");
     }
 
     private static int tableCellWidth(String value) {
         final String trimmed = ofNullable(value).map(String::trim).orElse("");
-        return Arrays.stream(trimmed.split("<br>"))
-            .map(String::length)
-            .max(Integer::compare)
-            .get();
+        return Arrays.stream(trimmed.split("<br>")).map(String::length).max(Integer::compare).get();
     }
 
     private void printTableHeader(PrintWriter output, int[] maxWidth) {
@@ -113,7 +116,6 @@ public class MarkdownReporter extends TextReporter {
             output.append("| ").append(rightPad(row[col], maxWidth[col], ' ')).append(' ');
         }
         output.println('|');
-
     }
 
     @Override

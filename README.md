@@ -1,13 +1,13 @@
 # Liquibase Linter
 
-*Quality control for your Liquibase migration scripts*
+_Quality control for your Liquibase migration scripts_
 
 [![Build Status](https://github.com/liquibase-linter/liquibase-linter/workflows/build/badge.svg)](https://github.com/liquibase-linter/liquibase-linter/actions)
-![Maven Central](https://img.shields.io/maven-central/v/io.github.liquibase-linter/liquibase-linter.svg) 
+![Maven Central](https://img.shields.io/maven-central/v/io.github.liquibase-linter/liquibase-linter.svg)
 
 ## Description
 
-*liquibase-linter* is a tool to help you write better Liquibase migration scripts. 
+_liquibase-linter_ is a tool to help you write better Liquibase migration scripts.
 It checks your scripts against a set of rules to ensure they are well-formed and maintainable.
 
 This is a friendly fork of the original [liquibase-linter](https://github.com/whiteclarkegroup/liquibase-linter) project that is unmaintained since 2021.
@@ -22,23 +22,18 @@ If you're already using the `liquibase-maven-plugin`, you can add `liquibase-par
 
 ```xml
 <plugin>
-    <groupId>org.liquibase</groupId>
-    <artifactId>liquibase-maven-plugin</artifactId>
-    <configuration>
-        ...
-    </configuration>
-    <dependencies>
-        <dependency>
-            <groupId>io.github.liquibase-linter</groupId>
-            <artifactId>liquibase-parser-extension</artifactId>
-            <version>0.7.0</version>
-        </dependency>
-    </dependencies>
-    <executions>
-        ...
-    </executions>
+  <groupId>org.liquibase</groupId>
+  <artifactId>liquibase-maven-plugin</artifactId>
+  <configuration>...</configuration>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.liquibase-linter</groupId>
+      <artifactId>liquibase-parser-extension</artifactId>
+      <version>0.7.0</version>
+    </dependency>
+  </dependencies>
+  <executions>...</executions>
 </plugin>
-
 ```
 
 **2** Add the [config file](https://liquibase-linter.github.io/liquibase-linter/docs/configure) to your project root, and start turning [on rules](https://liquibase-linter.github.io/liquibase-linter/docs/rules/).
@@ -49,24 +44,23 @@ If you're already using the `liquibase-maven-plugin`, you can add `liquibase-par
 
 ```xml
 <plugin>
-    <groupId>io.github.liquibase-linter</groupId>
-    <artifactId>liquibase-linter-maven-plugin</artifactId>
-    <version>0.7.0</version>
-    <configuration>
-        <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
-        <!-- This is the default value for configurationFile -->
-        <configurationFile>src/test/resources/lqlint.json</configurationFile>
-    </configuration>
-    <executions>
-        <execution>
-            <id>lint-liquibase-scripts</id>
-            <goals>
-                <goal>lint</goal>
-            </goals>
-        </execution>
-    </executions>
+  <groupId>io.github.liquibase-linter</groupId>
+  <artifactId>liquibase-linter-maven-plugin</artifactId>
+  <version>0.7.0</version>
+  <configuration>
+    <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
+    <!-- This is the default value for configurationFile -->
+    <configurationFile>src/test/resources/lqlint.json</configurationFile>
+  </configuration>
+  <executions>
+    <execution>
+      <id>lint-liquibase-scripts</id>
+      <goals>
+        <goal>lint</goal>
+      </goals>
+    </execution>
+  </executions>
 </plugin>
-
 ```
 
 **2** Add the [config file](https://liquibase-linter.github.io/liquibase-linter/docs/configure), and start turning [on rules](https://liquibase-linter.github.io/liquibase-linter/docs/rules/).

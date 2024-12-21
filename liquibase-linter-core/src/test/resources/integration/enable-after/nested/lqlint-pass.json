@@ -1,8 +1,8 @@
 {
-    "fail-fast": true,
-    "rules": {
-        "has-comment": {
-            "enableAfter": "enable-after/nested/core/core-has-comment-fail.xml"
-        }
+  "fail-fast": true,
+  "rules": {
+    "has-comment": {
+      "enableAfter": "enable-after/nested/core/core-has-comment-fail.xml"
     }
+  }
 }

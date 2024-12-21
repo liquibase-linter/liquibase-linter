@@ -18,10 +18,10 @@ This rule will fail if the given maximum length is exceeded by the name when cre
 
 ```json
 {
-    "rules": {
-        "table-name-length": {
-            "maxLength": 60
-        }
+  "rules": {
+    "table-name-length": {
+      "maxLength": 60
     }
+  }
 }
-``` 
+```

@@ -1,11 +1,11 @@
 package io.github.liquibaselinter.rules.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import liquibase.change.AddColumnConfig;
 import liquibase.change.core.AddColumnChange;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class CreateColumnRemarksRuleTest {
 
@@ -36,5 +36,4 @@ class CreateColumnRemarksRuleTest {
         addColumnChange.getColumns().add(addColumnConfig);
         return addColumnChange;
     }
-
 }

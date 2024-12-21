@@ -6,14 +6,14 @@ import io.github.liquibaselinter.rules.ChangeSetRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
 import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
+import java.util.Collection;
+import java.util.Collections;
 import liquibase.change.core.TagDatabaseChange;
 import liquibase.changelog.ChangeSet;
 
-import java.util.Collection;
-import java.util.Collections;
-
-@AutoService({ChangeSetRule.class})
+@AutoService({ ChangeSetRule.class })
 public class HasCommentRule implements ChangeSetRule {
+
     private static final String NAME = "has-comment";
     private static final String DEFAULT_MESSAGE = "Change set must have a comment";
 
