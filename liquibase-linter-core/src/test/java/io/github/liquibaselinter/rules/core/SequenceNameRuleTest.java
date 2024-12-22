@@ -9,6 +9,7 @@ import liquibase.change.Change;
 import liquibase.change.core.CreateSequenceChange;
 import liquibase.change.core.RenameSequenceChange;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,7 +29,7 @@ class SequenceNameRuleTest {
     @DisplayName("Sequence name must not be null")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromSequenceNameArgumentsProvider.class)
-    void sequenceNameNameMustNotBeNull(String changeName, Function<String, Change> changeFromSequenceName) {
+    void sequenceNameNameMustNotBeNull(Function<String, Change> changeFromSequenceName) {
         Change change = changeFromSequenceName.apply(null);
 
         assertThat(rule.invalid(change)).isTrue();
@@ -37,7 +38,7 @@ class SequenceNameRuleTest {
     @DisplayName("Sequence name must follow pattern")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromSequenceNameArgumentsProvider.class)
-    void sequenceNameNameMustFollowPattern(String changeName, Function<String, Change> changeFromSequenceName) {
+    void sequenceNameNameMustFollowPattern(Function<String, Change> changeFromSequenceName) {
         rule.configure(RuleConfig.builder().withPattern("^(?!SEQ)[A-Z_]+(?<!_)$").build());
 
         assertThat(rule.invalid(changeFromSequenceName.apply("SEQ_INVALID"))).isTrue();
@@ -51,10 +52,7 @@ class SequenceNameRuleTest {
     @DisplayName("Sequence name rule should support formatted error message with pattern arg")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromSequenceNameArgumentsProvider.class)
-    void sequenceNameNameRuleShouldReturnFormattedErrorMessage(
-        String changeName,
-        Function<String, Change> changeFromSequenceName
-    ) {
+    void sequenceNameNameRuleShouldReturnFormattedErrorMessage(Function<String, Change> changeFromSequenceName) {
         Change change = changeFromSequenceName.apply("SEQ_INVALID");
         rule.configure(
             RuleConfig.builder()
@@ -73,8 +71,8 @@ class SequenceNameRuleTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
-                Arguments.of("CreateSequenceChange", createSequenceChangeFactory()),
-                Arguments.of("RenameSequenceChange", renameSequenceChangeFactory())
+                Arguments.of(Named.of(CreateSequenceChange.class.getSimpleName(), createSequenceChangeFactory())),
+                Arguments.of(Named.of(RenameSequenceChange.class.getSimpleName(), renameSequenceChangeFactory()))
             );
         }
 

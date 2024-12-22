@@ -9,6 +9,7 @@ import liquibase.change.Change;
 import liquibase.change.core.CreateTableChange;
 import liquibase.change.core.RenameTableChange;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,7 +23,7 @@ class TableNameRuleTest {
     @DisplayName("Table name must not be null")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
-    void tableNameNameMustNotBeNull(String changeName, Function<String, Change> changeFromTableName) {
+    void tableNameNameMustNotBeNull(Function<String, Change> changeFromTableName) {
         Change change = changeFromTableName.apply(null);
 
         assertThat(rule.invalid(change)).isTrue();
@@ -31,7 +32,7 @@ class TableNameRuleTest {
     @DisplayName("Table name must follow pattern")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
-    void tableNameNameMustFollowPattern(String changeName, Function<String, Change> changeFromTableName) {
+    void tableNameNameMustFollowPattern(Function<String, Change> changeFromTableName) {
         rule.configure(RuleConfig.builder().withPattern("^(?!TBL)[A-Z_]+(?<!_)$").build());
 
         assertThat(rule.invalid(changeFromTableName.apply("TBL_INVALID"))).isTrue();
@@ -41,10 +42,7 @@ class TableNameRuleTest {
     @DisplayName("Table name rule should support formatted error message with pattern arg")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
-    void tableNameNameRuleShouldReturnFormattedErrorMessage(
-        String changeName,
-        Function<String, Change> changeFromTableName
-    ) {
+    void tableNameNameRuleShouldReturnFormattedErrorMessage(Function<String, Change> changeFromTableName) {
         Change change = changeFromTableName.apply("TBL_INVALID");
         rule.configure(
             RuleConfig.builder()
@@ -63,8 +61,8 @@ class TableNameRuleTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
-                Arguments.of("CreateTableChange", createTableChangeFactory()),
-                Arguments.of("RenameTableChange", renameTableChangeFactory())
+                Arguments.of(Named.of(CreateTableChange.class.getSimpleName(), createTableChangeFactory())),
+                Arguments.of(Named.of(RenameTableChange.class.getSimpleName(), renameTableChangeFactory()))
             );
         }
 
