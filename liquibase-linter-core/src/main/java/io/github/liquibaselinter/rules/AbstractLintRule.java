@@ -3,10 +3,13 @@ package io.github.liquibaselinter.rules;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.checker.PatternChecker;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
+import liquibase.change.Change;
 
 @Deprecated
-public abstract class AbstractLintRule implements LintRule {
+public abstract class AbstractLintRule implements ChangeRule {
 
     private final String name;
     private final String message;
@@ -23,6 +26,7 @@ public abstract class AbstractLintRule implements LintRule {
         return name;
     }
 
+    @Override
     public void configure(RuleConfig ruleConfig) {
         this.ruleConfig = ruleConfig;
         if (ruleConfig.hasPattern()) {
@@ -75,5 +79,27 @@ public abstract class AbstractLintRule implements LintRule {
             getMessageTemplate(),
             Arrays.stream(stuff).map(thing -> Optional.ofNullable(thing).orElse("")).toArray()
         );
+    }
+
+    @Override
+    public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
+        configure(ruleConfig); // TODO: for compatibility, remove this once all rules are updated
+        if (!supports(change)) {
+            return Collections.emptyList();
+        }
+        if (invalid(change)) {
+            return Collections.singletonList(new RuleViolation(getMessage(change)));
+        }
+        return Collections.emptyList();
+    }
+
+    @Deprecated
+    protected boolean supports(Change change) {
+        return true;
+    }
+
+    @Deprecated
+    protected String getMessage(Change change) {
+        return getMessage();
     }
 }
