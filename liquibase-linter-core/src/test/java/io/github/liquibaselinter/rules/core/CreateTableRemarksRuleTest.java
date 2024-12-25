@@ -1,6 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import liquibase.change.core.CreateTableChange;
 import org.junit.jupiter.api.DisplayName;
@@ -13,19 +13,23 @@ class CreateTableRemarksRuleTest {
     @DisplayName("Should not allow create table without remarks attribute")
     @Test
     void shouldNotAllowCreteTableWithoutRemarks() {
-        assertThat(rule.invalid(getCreateTableChange(null))).isTrue();
+        assertThat(rule)
+            .checkingChange(getCreateTableChange(null))
+            .hasExactlyViolationsMessages("Create table must contain remark attribute");
     }
 
     @DisplayName("Should not allow create table without remarks attribute")
     @Test
     void shouldNotAllowCreateTableWithEmptyRemarks() {
-        assertThat(rule.invalid(getCreateTableChange(""))).isTrue();
+        assertThat(rule)
+            .checkingChange(getCreateTableChange(""))
+            .hasExactlyViolationsMessages("Create table must contain remark attribute");
     }
 
     @DisplayName("Should allow create table with remarks attribute")
     @Test
     void shouldAllowCreateTableWithRemarks() {
-        assertThat(rule.invalid(getCreateTableChange("REMARK"))).isFalse();
+        assertThat(rule).checkingChange(getCreateTableChange("REMARK")).hasNoViolations();
     }
 
     private CreateTableChange getCreateTableChange(String remarks) {

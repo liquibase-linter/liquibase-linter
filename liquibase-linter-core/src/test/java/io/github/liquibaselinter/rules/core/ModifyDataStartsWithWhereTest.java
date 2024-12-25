@@ -1,47 +1,69 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
-import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import liquibase.change.Change;
 import liquibase.change.core.DeleteDataChange;
 import liquibase.change.core.UpdateDataChange;
-import liquibase.changelog.ChangeSet;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
-@ExtendWith(ChangeSetParameterResolver.class)
 class ModifyDataStartsWithWhereTest {
 
     private final ModifyDataStartsWithWhere rule = new ModifyDataStartsWithWhere();
 
-    @Test
-    void shouldNotAllowWhereConditionToStartWithWhereCaseInsensitive(ChangeSet changeSet) {
-        assertThat(rule.invalid(getUpdateDataChange(changeSet, "WHERE table = 'X'"))).isTrue();
-        assertThat(rule.invalid(getDeleteDataChange(changeSet, "WHERE table = 'X'"))).isTrue();
+    @ParameterizedTest(name = "With {0}")
+    @ArgumentsSource(ModifyDataWithWhereArgumentsProvider.class)
+    void shouldNotAllowWhereConditionToStartWithWhereCaseInsensitive(
+        Function<String, Change> modifyDataChangeWithWhereFactory
+    ) {
+        assertThat(rule)
+            .checkingChange(modifyDataChangeWithWhereFactory.apply("WHERE table = 'X'"))
+            .hasExactlyViolationsMessages("Modify data where starts with where clause, that's probably a mistake");
 
-        assertThat(rule.invalid(getUpdateDataChange(changeSet, "where table = 'X'"))).isTrue();
-        assertThat(rule.invalid(getDeleteDataChange(changeSet, "where table = 'X'"))).isTrue();
+        assertThat(rule)
+            .checkingChange(modifyDataChangeWithWhereFactory.apply("where table = 'X'"))
+            .hasExactlyViolationsMessages("Modify data where starts with where clause, that's probably a mistake");
     }
 
-    @Test
-    void shouldBeValidOnNullWhereValue(ChangeSet changeSet) {
-        assertThat(rule.invalid(getUpdateDataChange(changeSet, null))).isFalse();
-        assertThat(rule.invalid(getDeleteDataChange(changeSet, null))).isFalse();
+    @ParameterizedTest(name = "With {0}")
+    @ArgumentsSource(ModifyDataWithWhereArgumentsProvider.class)
+    void shouldBeValidOnNullWhereValue(Function<String, Change> modifyDataChangeWithWhereFactory) {
+        assertThat(rule).checkingChange(modifyDataChangeWithWhereFactory.apply(null)).hasNoViolations();
     }
 
-    private UpdateDataChange getUpdateDataChange(ChangeSet changeSet, String where) {
-        UpdateDataChange updateDataChange = new UpdateDataChange();
-        updateDataChange.setTableName("TABLE");
-        updateDataChange.setWhere(where);
-        updateDataChange.setChangeSet(changeSet);
-        return updateDataChange;
-    }
+    private static class ModifyDataWithWhereArgumentsProvider implements ArgumentsProvider {
 
-    private DeleteDataChange getDeleteDataChange(ChangeSet changeSet, String where) {
-        DeleteDataChange deleteDataChange = new DeleteDataChange();
-        deleteDataChange.setTableName("TABLE");
-        deleteDataChange.setWhere(where);
-        deleteDataChange.setChangeSet(changeSet);
-        return deleteDataChange;
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(
+                Arguments.of(Named.of(UpdateDataChange.class.getSimpleName(), updateDataChangeFactory())),
+                Arguments.of(Named.of(DeleteDataChange.class.getSimpleName(), deleteDataChangeFactory()))
+            );
+        }
+
+        private Function<String, Change> updateDataChangeFactory() {
+            return where -> {
+                UpdateDataChange updateDataChange = new UpdateDataChange();
+                updateDataChange.setTableName("TABLE");
+                updateDataChange.setWhere(where);
+                return updateDataChange;
+            };
+        }
+
+        private Function<String, Change> deleteDataChangeFactory() {
+            return where -> {
+                DeleteDataChange deleteDataChange = new DeleteDataChange();
+                deleteDataChange.setTableName("TABLE");
+                deleteDataChange.setWhere(where);
+                return deleteDataChange;
+            };
+        }
     }
 }

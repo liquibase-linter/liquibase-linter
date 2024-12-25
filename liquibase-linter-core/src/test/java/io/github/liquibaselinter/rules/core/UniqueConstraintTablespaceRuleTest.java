@@ -1,6 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.change.core.AddUniqueConstraintChange;
@@ -13,46 +13,51 @@ class UniqueConstraintTablespaceRuleTest {
 
     @Test
     void shouldHaveName() {
-        assertThat(rule.getName()).isEqualTo("unique-constraint-tablespace");
+        assertThat(rule).hasName("unique-constraint-tablespace");
     }
 
     @Test
     @DisplayName("Tablespace should not be empty")
     void indexTablespaceShouldNotBeEmpty() {
-        rule.configure(RuleConfig.EMPTY);
-
-        assertThat(rule.invalid(createUniqueConstraintWithTablespace(null))).isTrue();
-        assertThat(rule.getMessage(createUniqueConstraintWithTablespace(null))).isEqualTo(
-            "Tablespace '' of unique constraint 'uniq_constraint_foo' is empty or does not follow pattern ''"
-        );
+        assertThat(rule)
+            .checkingChange(createUniqueConstraintWithTablespace(null))
+            .hasExactlyViolationsMessages(
+                "Tablespace '' of unique constraint 'uniq_constraint_foo' is empty or does not follow pattern ''"
+            );
     }
 
     @Test
     @DisplayName("Tablespace must follow pattern")
     void uniqueConstraintTablespaceMustFollowPattern() {
-        rule.configure(RuleConfig.builder().withPattern("^TAB_IDX_[A-Z_]+$").build());
+        RuleConfig ruleConfig = RuleConfig.builder().withPattern("^TAB_IDX_[A-Z_]+$").build();
 
-        assertThat(rule.invalid(createUniqueConstraintWithTablespace("INDEXES"))).isTrue();
-        assertThat(rule.getMessage(createUniqueConstraintWithTablespace("INDEXES"))).isEqualTo(
-            "Tablespace 'INDEXES' of unique constraint 'uniq_constraint_foo' is empty or does not follow pattern '^TAB_IDX_[A-Z_]+$'"
-        );
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(createUniqueConstraintWithTablespace("INDEXES"))
+            .hasExactlyViolationsMessages(
+                "Tablespace 'INDEXES' of unique constraint 'uniq_constraint_foo' is empty or does not follow pattern '^TAB_IDX_[A-Z_]+$'"
+            );
 
-        assertThat(rule.invalid(createUniqueConstraintWithTablespace("TAB_IDX_USERS"))).isFalse();
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(createUniqueConstraintWithTablespace("TAB_IDX_USERS"))
+            .hasNoViolations();
     }
 
     @DisplayName("Should support formatted error message with pattern arg")
     @Test
     void uniqueConstraintTablespaceRuleShouldReturnFormattedErrorMessage() {
-        rule.configure(
-            RuleConfig.builder()
-                .withPattern("^TAB_IDX_[A-Z_]+$")
-                .withErrorMessage("Tablespace '%s' for unique constraint '%s' must follow pattern '%s'")
-                .build()
-        );
+        RuleConfig ruleConfig = RuleConfig.builder()
+            .withPattern("^TAB_IDX_[A-Z_]+$")
+            .withErrorMessage("Tablespace '%s' for unique constraint '%s' must follow pattern '%s'")
+            .build();
 
-        assertThat(rule.getMessage(createUniqueConstraintWithTablespace("DDD-001"))).isEqualTo(
-            "Tablespace 'DDD-001' for unique constraint 'uniq_constraint_foo' must follow pattern '^TAB_IDX_[A-Z_]+$'"
-        );
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(createUniqueConstraintWithTablespace("DDD-001"))
+            .hasExactlyViolationsMessages(
+                "Tablespace 'DDD-001' for unique constraint 'uniq_constraint_foo' must follow pattern '^TAB_IDX_[A-Z_]+$'"
+            );
     }
 
     private AddUniqueConstraintChange createUniqueConstraintWithTablespace(String tablespace) {

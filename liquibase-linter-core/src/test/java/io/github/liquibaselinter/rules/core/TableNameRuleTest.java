@@ -1,6 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.function.Function;
@@ -24,36 +24,38 @@ class TableNameRuleTest {
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
     void tableNameNameMustNotBeNull(Function<String, Change> changeFromTableName) {
-        Change change = changeFromTableName.apply(null);
-
-        assertThat(rule.invalid(change)).isTrue();
+        assertThat(rule).checkingChange(changeFromTableName.apply(null)).hasViolations();
     }
 
     @DisplayName("Table name must follow pattern")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
     void tableNameNameMustFollowPattern(Function<String, Change> changeFromTableName) {
-        rule.configure(RuleConfig.builder().withPattern("^(?!TBL)[A-Z_]+(?<!_)$").build());
+        RuleConfig ruleConfig = RuleConfig.builder().withPattern("^(?!TBL)[A-Z_]+(?<!_)$").build();
 
-        assertThat(rule.invalid(changeFromTableName.apply("TBL_INVALID"))).isTrue();
-        assertThat(rule.invalid(changeFromTableName.apply("TABLE_VALID"))).isFalse();
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(changeFromTableName.apply("TBL_INVALID"))
+            .hasExactlyViolationsMessages("Table name does not follow pattern");
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(changeFromTableName.apply("TABLE_VALID"))
+            .hasNoViolations();
     }
 
     @DisplayName("Table name rule should support formatted error message with pattern arg")
     @ParameterizedTest(name = "With {0}")
     @ArgumentsSource(ChangeFromTableNameArgumentsProvider.class)
     void tableNameNameRuleShouldReturnFormattedErrorMessage(Function<String, Change> changeFromTableName) {
-        Change change = changeFromTableName.apply("TBL_INVALID");
-        rule.configure(
-            RuleConfig.builder()
-                .withPattern("^(?!TBL)[A-Z_]+(?<!_)$")
-                .withErrorMessage("Table name '%s' must follow pattern '%s'")
-                .build()
-        );
+        RuleConfig ruleConfig = RuleConfig.builder()
+            .withPattern("^(?!TBL)[A-Z_]+(?<!_)$")
+            .withErrorMessage("Table name '%s' must follow pattern '%s'")
+            .build();
 
-        assertThat(rule.getMessage(change)).isEqualTo(
-            "Table name 'TBL_INVALID' must follow pattern '^(?!TBL)[A-Z_]+(?<!_)$'"
-        );
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(changeFromTableName.apply("TBL_INVALID"))
+            .hasExactlyViolationsMessages("Table name 'TBL_INVALID' must follow pattern '^(?!TBL)[A-Z_]+(?<!_)$'");
     }
 
     private static class ChangeFromTableNameArgumentsProvider implements ArgumentsProvider {

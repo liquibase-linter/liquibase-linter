@@ -1,6 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.change.ColumnConfig;
@@ -21,45 +21,61 @@ class PrimaryKeyNameRuleTest {
         @DisplayName("Primary key name must not be null")
         @Test
         void primaryKeyNameMustNotBeNull() {
-            assertThat(rule.invalid(getAddPrimaryKeyConstraintChange(null))).isTrue();
+            assertThat(rule)
+                .checkingChange((getAddPrimaryKeyConstraintChange(null)))
+                .hasExactlyViolationsMessages("Primary key name '' is missing or does not follow pattern ''");
         }
 
         @DisplayName("Primary key name must follow pattern basic")
         @Test
         void primaryKeyNameMustFollowPatternBasic() {
-            rule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
-            assertThat(rule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isTrue();
-            assertThat(rule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo(
-                "Primary key name 'INVALID_PK' is missing or does not follow pattern '^VALID_PK$'"
-            );
+            RuleConfig ruleConfig = RuleConfig.builder().withPattern("^VALID_PK$").build();
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(getAddPrimaryKeyConstraintChange("INVALID_PK"))
+                .hasExactlyViolationsMessages(
+                    "Primary key name 'INVALID_PK' is missing or does not follow pattern '^VALID_PK$'"
+                );
 
-            assertThat(rule.invalid(getAddPrimaryKeyConstraintChange("VALID_PK"))).isFalse();
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(getAddPrimaryKeyConstraintChange("VALID_PK"))
+                .hasNoViolations();
         }
 
         @DisplayName("Primary key name must follow pattern dynamic value")
         @Test
         void primaryKeyNameMustFollowPatternDynamicValue() {
-            rule.configure(RuleConfig.builder().withPattern("^{{value}}_PK$").withDynamicValue("tableName").build());
-            assertThat(rule.invalid(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isTrue();
-            assertThat(rule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo(
-                "Primary key name 'INVALID_PK' is missing or does not follow pattern '^TABLE_PK$'"
-            );
+            RuleConfig ruleConfig = RuleConfig.builder()
+                .withPattern("^{{value}}_PK$")
+                .withDynamicValue("tableName")
+                .build();
 
-            assertThat(rule.invalid(getAddPrimaryKeyConstraintChange("TABLE_PK"))).isFalse();
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(getAddPrimaryKeyConstraintChange("INVALID_PK"))
+                .hasExactlyViolationsMessages(
+                    "Primary key name 'INVALID_PK' is missing or does not follow pattern '^TABLE_PK$'"
+                );
+
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(getAddPrimaryKeyConstraintChange("TABLE_PK"))
+                .hasNoViolations();
         }
 
         @DisplayName("Primary key name rule should support formatted error message with pattern arg")
         @Test
         void primaryKeyNameRuleShouldReturnFormattedErrorMessage() {
-            rule.configure(
-                RuleConfig.builder()
-                    .withPattern("^VALID_PK$")
-                    .withErrorMessage("Primary key constraints %s must follow pattern '%s'")
-                    .build()
-            );
-            assertThat(rule.getMessage(getAddPrimaryKeyConstraintChange("INVALID_PK"))).isEqualTo(
-                "Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'"
-            );
+            RuleConfig ruleConfig = RuleConfig.builder()
+                .withPattern("^VALID_PK$")
+                .withErrorMessage("Primary key constraints %s must follow pattern '%s'")
+                .build();
+
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(getAddPrimaryKeyConstraintChange("INVALID_PK"))
+                .hasExactlyViolationsMessages("Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
         }
 
         private AddPrimaryKeyChange getAddPrimaryKeyConstraintChange(String constraintName) {
@@ -76,82 +92,91 @@ class PrimaryKeyNameRuleTest {
         @DisplayName("Primary key name must not be null")
         @Test
         void primaryKeyNameMustNotBeNull() {
-            rule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
+            RuleConfig ruleConfig = RuleConfig.builder().withPattern("^VALID_PK$").build();
 
             CreateTableChange change = new CreateTableChange();
             change.setTableName("TABLE");
             change.addColumn(columnWithPrimaryKeyConstraint(null, true));
 
-            assertThat(rule.supports(change)).isTrue();
-            assertThat(rule.invalid(change)).isTrue();
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(change)
+                .hasExactlyViolationsMessages("Primary key name '' is missing or does not follow pattern '^VALID_PK$'");
         }
 
         @DisplayName("Primary key name must follow pattern basic")
         @Test
         void primaryKeyNameMustFollowPatternBasic() {
-            rule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
+            RuleConfig ruleConfig = RuleConfig.builder().withPattern("^VALID_PK$").build();
 
             CreateTableChange invalidChange = createTableChange("INVALID_PK");
-            assertThat(rule.supports(invalidChange)).isTrue();
-            assertThat(rule.invalid(invalidChange)).isTrue();
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(invalidChange)
+                .hasExactlyViolationsMessages(
+                    "Primary key name 'INVALID_PK' is missing or does not follow pattern '^VALID_PK$'"
+                );
 
             CreateTableChange validChange = createTableChange("VALID_PK");
-            assertThat(rule.supports(validChange)).isTrue();
-            assertThat(rule.invalid(validChange)).isFalse();
+            assertThat(rule).withConfig(ruleConfig).checkingChange(validChange).hasNoViolations();
         }
 
         @DisplayName("Primary key name must follow pattern dynamic value")
         @Test
         void primaryKeyNameMustFollowPatternDynamicValue() {
-            rule.configure(RuleConfig.builder().withPattern("^{{value}}_PK$").withDynamicValue("tableName").build());
-            assertThat(rule.invalid(createTableChange("INVALID_PK"))).isTrue();
-            assertThat(rule.invalid(createTableChange("TABLE_PK"))).isFalse();
+            RuleConfig ruleConfig = RuleConfig.builder()
+                .withPattern("^{{value}}_PK$")
+                .withDynamicValue("tableName")
+                .build();
+
+            assertThat(rule).withConfig(ruleConfig).checkingChange(createTableChange("INVALID_PK")).hasViolations();
+
+            assertThat(rule).withConfig(ruleConfig).checkingChange(createTableChange("TABLE_PK")).hasNoViolations();
         }
 
         @DisplayName("Primary key name rule should support formatted error message with pattern arg")
         @Test
         void primaryKeyNameRuleShouldReturnFormattedErrorMessage() {
-            rule.configure(
-                RuleConfig.builder()
-                    .withPattern("^VALID_PK$")
-                    .withErrorMessage("Primary key constraints %s must follow pattern '%s'")
-                    .build()
-            );
-            assertThat(rule.getMessage(createTableChange("INVALID_PK"))).isEqualTo(
-                "Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'"
-            );
+            RuleConfig ruleConfig = RuleConfig.builder()
+                .withPattern("^VALID_PK$")
+                .withErrorMessage("Primary key constraints %s must follow pattern '%s'")
+                .build();
+
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(createTableChange("INVALID_PK"))
+                .hasExactlyViolationsMessages("Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
         }
 
         @Test
         @DisplayName("Name of composite primary key should only be reported once")
         void compositePrimaryKeyNameShouldOnlyBeReportedOnce() {
-            rule.configure(
-                RuleConfig.builder()
-                    .withPattern("^VALID_PK$")
-                    .withErrorMessage("Primary key constraints %s must follow pattern '%s'")
-                    .build()
-            );
+            RuleConfig ruleConfig = RuleConfig.builder()
+                .withPattern("^VALID_PK$")
+                .withErrorMessage("Primary key constraints %s must follow pattern '%s'")
+                .build();
 
             CreateTableChange createTableChange = new CreateTableChange();
             createTableChange.setTableName("TABLE");
             createTableChange.addColumn(columnWithPrimaryKeyConstraint("INVALID_PK", false));
             createTableChange.addColumn(columnWithPrimaryKeyConstraint("INVALID_PK", false));
 
-            assertThat(rule.getMessage(createTableChange)).isEqualTo(
-                "Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'"
-            );
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(createTableChange)
+                .hasExactlyViolationsMessages("Primary key constraints INVALID_PK must follow pattern '^VALID_PK$'");
         }
 
         @Test
         @DisplayName("Creating a table without primary key should not be invalid")
         void createTableWithoutPrimaryKeyShouldNotBeInvalid() {
-            rule.configure(RuleConfig.builder().withPattern("^VALID_PK$").build());
+            RuleConfig ruleConfig = RuleConfig.builder().withPattern("^VALID_PK$").build();
 
             CreateTableChange createTableChange = new CreateTableChange();
             createTableChange.setTableName("TABLE");
             createTableChange.addColumn(new ColumnConfig());
 
-            assertThat(rule.supports(createTableChange)).isFalse();
+            assertThat(rule).withConfig(ruleConfig).checkingChange(createTableChange).hasNoViolations();
         }
 
         @Test
@@ -159,17 +184,19 @@ class PrimaryKeyNameRuleTest {
             "A table with a valid primary key and an invalid primary key should only report invalid primary key"
         )
         void createTableWithMultiplePrimaryKeysShouldDetectInvalidPrimaryKey() {
-            rule.configure(RuleConfig.builder().withPattern("^VALID_PK.*$").build());
+            RuleConfig ruleConfig = RuleConfig.builder().withPattern("^VALID_PK.*$").build();
 
             CreateTableChange createTableChange = new CreateTableChange();
             createTableChange.setTableName("TABLE");
             createTableChange.addColumn(columnWithPrimaryKeyConstraint("VALID_PK", false));
             createTableChange.addColumn(columnWithPrimaryKeyConstraint("INVALID_PK", true));
 
-            assertThat(rule.invalid(createTableChange)).isTrue();
-            assertThat(rule.getMessage(createTableChange)).isEqualTo(
-                "Primary key name 'INVALID_PK' is missing or does not follow pattern '^VALID_PK.*$'"
-            );
+            assertThat(rule)
+                .withConfig(ruleConfig)
+                .checkingChange(createTableChange)
+                .hasExactlyViolationsMessages(
+                    "Primary key name 'INVALID_PK' is missing or does not follow pattern '^VALID_PK.*$'"
+                );
         }
 
         private CreateTableChange createTableChange(String primaryKeyName) {

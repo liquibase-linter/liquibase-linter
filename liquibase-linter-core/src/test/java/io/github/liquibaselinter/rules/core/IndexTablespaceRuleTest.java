@@ -1,6 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.change.core.CreateIndexChange;
@@ -13,46 +13,49 @@ class IndexTablespaceRuleTest {
 
     @Test
     void shouldHaveName() {
-        assertThat(rule.getName()).isEqualTo("index-tablespace");
+        assertThat(rule).hasName("index-tablespace");
     }
 
     @Test
     @DisplayName("Tablespace should not be empty")
     void indexTablespaceShouldNotBeEmpty() {
-        rule.configure(RuleConfig.EMPTY);
-
-        assertThat(rule.invalid(createIndexWithTablespace(null))).isTrue();
-        assertThat(rule.getMessage(createIndexWithTablespace(null))).isEqualTo(
-            "Tablespace '' of index 'idx_foo' is empty or does not follow pattern ''"
-        );
+        assertThat(rule)
+            .checkingChange(createIndexWithTablespace(null))
+            .hasExactlyViolationsMessages("Tablespace '' of index 'idx_foo' is empty or does not follow pattern ''");
     }
 
     @Test
     @DisplayName("Tablespace must follow pattern")
     void indexTablespaceMustFollowPattern() {
-        rule.configure(RuleConfig.builder().withPattern("^TAB_IDX_[A-Z_]+$").build());
+        RuleConfig ruleConfig = RuleConfig.builder().withPattern("^TAB_IDX_[A-Z_]+$").build();
 
-        assertThat(rule.invalid(createIndexWithTablespace("INDEXES"))).isTrue();
-        assertThat(rule.getMessage(createIndexWithTablespace("INDEXES"))).isEqualTo(
-            "Tablespace 'INDEXES' of index 'idx_foo' is empty or does not follow pattern '^TAB_IDX_[A-Z_]+$'"
-        );
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(createIndexWithTablespace("INDEXES"))
+            .hasExactlyViolationsMessages(
+                "Tablespace 'INDEXES' of index 'idx_foo' is empty or does not follow pattern '^TAB_IDX_[A-Z_]+$'"
+            );
 
-        assertThat(rule.invalid(createIndexWithTablespace("TAB_IDX_USERS"))).isFalse();
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(createIndexWithTablespace("TAB_IDX_USERS"))
+            .hasNoViolations();
     }
 
     @DisplayName("Should support formatted error message with pattern arg")
     @Test
     void indexTablespaceRuleShouldReturnFormattedErrorMessage() {
-        rule.configure(
-            RuleConfig.builder()
-                .withPattern("^TAB_IDX_[A-Z_]+$")
-                .withErrorMessage("Tablespace '%s' for index '%s' must follow pattern '%s'")
-                .build()
-        );
+        RuleConfig ruleConfig = RuleConfig.builder()
+            .withPattern("^TAB_IDX_[A-Z_]+$")
+            .withErrorMessage("Tablespace '%s' for index '%s' must follow pattern '%s'")
+            .build();
 
-        assertThat(rule.getMessage(createIndexWithTablespace("DDD-001"))).isEqualTo(
-            "Tablespace 'DDD-001' for index 'idx_foo' must follow pattern '^TAB_IDX_[A-Z_]+$'"
-        );
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(createIndexWithTablespace("DDD-001"))
+            .hasExactlyViolationsMessages(
+                "Tablespace 'DDD-001' for index 'idx_foo' must follow pattern '^TAB_IDX_[A-Z_]+$'"
+            );
     }
 
     private CreateIndexChange createIndexWithTablespace(String tablespace) {
