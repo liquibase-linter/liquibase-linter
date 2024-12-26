@@ -1,6 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
 import liquibase.change.core.DropNotNullConstraintChange;
@@ -17,19 +17,23 @@ class DropNotNullRequireColumnDataTypeRuleTest {
     @DisplayName("Should allow non null column data type")
     @Test
     void shouldAllowNonNullColumnDataType(ChangeSet changeSet) {
-        assertThat(rule.invalid(build(changeSet, "NVARCHAR(10)"))).isFalse();
+        assertThat(rule).checkingChange(build(changeSet, "NVARCHAR(10)")).hasNoViolations();
     }
 
     @DisplayName("Should not allow null column data type")
     @Test
     void shouldNotAllowNullColumnDataType(ChangeSet changeSet) {
-        assertThat(rule.invalid(build(changeSet, null))).isTrue();
+        assertThat(rule)
+            .checkingChange(build(changeSet, null))
+            .hasExactlyViolationsMessages("Drop not null constraint column data type attribute must be populated");
     }
 
     @DisplayName("Should not allow blank column data type")
     @Test
     void shouldNotAllowBlankColumnDataType(ChangeSet changeSet) {
-        assertThat(rule.invalid(build(changeSet, ""))).isTrue();
+        assertThat(rule)
+            .checkingChange(build(changeSet, ""))
+            .hasExactlyViolationsMessages("Drop not null constraint column data type attribute must be populated");
     }
 
     private DropNotNullConstraintChange build(ChangeSet changeSet, String columnDataType) {

@@ -1,51 +1,91 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
-import java.util.Collections;
+import java.util.Arrays;
 import liquibase.change.AddColumnConfig;
 import liquibase.change.ConstraintsConfig;
 import liquibase.change.core.AddColumnChange;
+import liquibase.change.core.CreateTableChange;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class CreateColumnNullableConstraintRuleTest {
 
     private final CreateColumnNullableConstraintRule rule = new CreateColumnNullableConstraintRule();
 
-    @DisplayName("Null constraints should be invalid")
-    @Test
-    void nullConstraintsShouldBeInvalid() {
-        final AddColumnChange addColumnChange = mockAddColumnChangeWithConstraints(null);
-        assertThat(rule.invalid(addColumnChange)).isTrue();
+    @Nested
+    class AddColumn {
+
+        @DisplayName("Null constraints should be invalid")
+        @Test
+        void nullConstraintsShouldBeInvalid() {
+            AddColumnChange addColumnChange = addColumnChangeWithConstraints(null);
+            assertThat(rule)
+                .checkingChange(addColumnChange)
+                .hasExactlyViolationsMessages("Add column must specify nullable constraint");
+        }
+
+        @DisplayName("Null nullable attribute should be invalid")
+        @Test
+        void nullNullableAttributeShouldBeInvalid() {
+            ConstraintsConfig constraintsConfig = new ConstraintsConfig();
+            AddColumnChange addColumnChange = addColumnChangeWithConstraints(constraintsConfig);
+
+            assertThat(rule)
+                .checkingChange(addColumnChange)
+                .hasExactlyViolationsMessages("Add column must specify nullable constraint");
+        }
+
+        @DisplayName("Not null nullable attribute should be valid")
+        @Test
+        void notNullNullableAttributeShouldBeValid() {
+            ConstraintsConfig constraintsConfig = new ConstraintsConfig();
+            constraintsConfig.setNullable(Boolean.TRUE);
+            AddColumnChange addColumnChange = addColumnChangeWithConstraints(constraintsConfig);
+
+            assertThat(rule).checkingChange(addColumnChange).hasNoViolations();
+        }
+
+        private AddColumnChange addColumnChangeWithConstraints(ConstraintsConfig constraintsConfig) {
+            AddColumnConfig column = column("column_name", constraintsConfig);
+
+            AddColumnChange change = new AddColumnChange();
+            change.addColumn(column);
+            return change;
+        }
     }
 
-    @DisplayName("Null nullable attribute should be invalid")
-    @Test
-    void nullNullableAttributeShouldBeInvalid() {
-        ConstraintsConfig constraintsConfig = new ConstraintsConfig();
-        final AddColumnChange addColumnChange = mockAddColumnChangeWithConstraints(constraintsConfig);
-        assertThat(constraintsConfig.isNullable()).isNull();
-        assertThat(rule.invalid(addColumnChange)).isTrue();
+    @Nested
+    class CreateTable {
+
+        @Test
+        @DisplayName("Null constraints should be invalid")
+        void nullConstraintsShouldBeInvalid() {
+            ConstraintsConfig constraintsConfig = new ConstraintsConfig();
+            constraintsConfig.setNullable(Boolean.TRUE);
+            CreateTableChange change = createTableWithConstraints(
+                column("column_name", null),
+                column("column_name", constraintsConfig)
+            );
+
+            assertThat(rule)
+                .checkingChange(change)
+                .hasExactlyViolationsMessages("Add column must specify nullable constraint");
+        }
+
+        private CreateTableChange createTableWithConstraints(AddColumnConfig... columns) {
+            CreateTableChange change = new CreateTableChange();
+            Arrays.stream(columns).forEach(change::addColumn);
+            return change;
+        }
     }
 
-    @DisplayName("Not null nullable attribute should be valid")
-    @Test
-    void notNullNullableAttributeShouldBeValid() {
-        ConstraintsConfig constraintsConfig = new ConstraintsConfig();
-        constraintsConfig.setNullable(Boolean.TRUE);
-        final AddColumnChange addColumnChange = mockAddColumnChangeWithConstraints(constraintsConfig);
-        assertThat(constraintsConfig.isNullable()).isTrue();
-        assertThat(rule.invalid(addColumnChange)).isFalse();
-    }
-
-    private AddColumnChange mockAddColumnChangeWithConstraints(ConstraintsConfig constraintsConfig) {
-        AddColumnChange addColumnChange = mock(AddColumnChange.class);
-        final AddColumnConfig addColumnConfig = new AddColumnConfig();
-        addColumnConfig.setConstraints(constraintsConfig);
-        when(addColumnChange.getColumns()).thenReturn(Collections.singletonList(addColumnConfig));
-        return addColumnChange;
+    private static AddColumnConfig column(String columnName, ConstraintsConfig constraintsConfig) {
+        AddColumnConfig column = new AddColumnConfig();
+        column.setName(columnName);
+        column.setConstraints(constraintsConfig);
+        return column;
     }
 }

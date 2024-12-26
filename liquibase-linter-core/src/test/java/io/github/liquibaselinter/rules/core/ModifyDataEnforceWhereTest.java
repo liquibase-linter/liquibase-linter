@@ -1,10 +1,10 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.resolvers.ChangeSetParameterResolver;
-import java.util.Collections;
+import io.github.liquibaselinter.rules.ChangeRuleAssert;
 import liquibase.change.core.DeleteDataChange;
 import liquibase.change.core.UpdateDataChange;
 import liquibase.changelog.ChangeSet;
@@ -19,47 +19,63 @@ class ModifyDataEnforceWhereTest {
 
     @Test
     void shouldEnforceWhereConditionOnCertainTablesNullValue(ChangeSet changeSet) {
-        rule.configure(RuleConfig.builder().withValues(Collections.singletonList("REQUIRES_WHERE")).build());
-        assertThat(rule.invalid(getUpdateDataChange(changeSet, null))).isTrue();
-        assertThat(rule.invalid(getDeleteDataChange(changeSet, null))).isTrue();
+        RuleConfig ruleConfig = RuleConfig.builder().withValues("TABLE_NAME").build();
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getUpdateDataChange(changeSet, null))
+            .hasExactlyViolationsMessages("Modify data on table 'TABLE_NAME' must have a where condition");
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getDeleteDataChange(changeSet, null))
+            .hasExactlyViolationsMessages("Modify data on table 'TABLE_NAME' must have a where condition");
     }
 
     @Test
     void shouldEnforceWhereConditionOnCertainTablesEmptyValue(ChangeSet changeSet) {
-        rule.configure(RuleConfig.builder().withValues(Collections.singletonList("REQUIRES_WHERE")).build());
-        assertThat(rule.invalid(getUpdateDataChange(changeSet, ""))).isTrue();
-        assertThat(rule.invalid(getDeleteDataChange(changeSet, ""))).isTrue();
+        RuleConfig ruleConfig = RuleConfig.builder().withValues("TABLE_NAME").build();
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getUpdateDataChange(changeSet, ""))
+            .hasExactlyViolationsMessages("Modify data on table 'TABLE_NAME' must have a where condition");
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getDeleteDataChange(changeSet, ""))
+            .hasExactlyViolationsMessages("Modify data on table 'TABLE_NAME' must have a where condition");
     }
 
     @Test
     void shouldEnforcePresenceAndPattern(ChangeSet changeSet) {
-        rule.configure(
-            RuleConfig.builder()
-                .withValues(Collections.singletonList("REQUIRES_WHERE"))
-                .withPattern("^.*CODE =.*$")
-                .build()
-        );
+        RuleConfig ruleConfig = RuleConfig.builder().withValues("TABLE_NAME").withPattern("^.*CODE =.*$").build();
 
-        assertThat(rule.invalid(getUpdateDataChange(changeSet, null))).isTrue();
-        assertThat(rule.invalid(getUpdateDataChange(changeSet, "sausages"))).isTrue();
-        assertThat(rule.invalid(getUpdateDataChange(changeSet, "CODE = 'foo'"))).isFalse();
+        ChangeRuleAssert ruleAssertion = assertThat(rule).withConfig(ruleConfig);
+        ruleAssertion.checkingChange(getUpdateDataChange(changeSet, null)).hasViolations();
+        ruleAssertion.checkingChange(getUpdateDataChange(changeSet, "sausages")).hasViolations();
+        ruleAssertion.checkingChange(getUpdateDataChange(changeSet, "CODE = 'foo'")).hasNoViolations();
     }
 
     @DisplayName("Modify data change should support formatter error messages")
     @Test
     void foreignKeyNameRuleShouldReturnFormattedErrorMessage(ChangeSet changeSet) {
-        rule.configure(RuleConfig.EMPTY);
-        assertThat(rule.getMessage(getUpdateDataChange(changeSet, null))).isEqualTo(
-            "Modify data on table 'REQUIRES_WHERE' must have a where condition"
-        );
-        assertThat(rule.getMessage(getDeleteDataChange(changeSet, null))).isEqualTo(
-            "Modify data on table 'REQUIRES_WHERE' must have a where condition"
-        );
+        RuleConfig ruleConfig = RuleConfig.builder().withErrorMessage("Custom error message for table '%s'").build();
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getUpdateDataChange(changeSet, null))
+            .hasExactlyViolationsMessages("Custom error message for table 'TABLE_NAME'");
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getDeleteDataChange(changeSet, null))
+            .hasExactlyViolationsMessages("Custom error message for table 'TABLE_NAME'");
     }
 
     private static UpdateDataChange getUpdateDataChange(ChangeSet changeSet, String where) {
         UpdateDataChange updateDataChange = new UpdateDataChange();
-        updateDataChange.setTableName("REQUIRES_WHERE");
+        updateDataChange.setTableName("TABLE_NAME");
         updateDataChange.setWhere(where);
         updateDataChange.setChangeSet(changeSet);
         return updateDataChange;
@@ -67,7 +83,7 @@ class ModifyDataEnforceWhereTest {
 
     private static DeleteDataChange getDeleteDataChange(ChangeSet changeSet, String where) {
         DeleteDataChange deleteDataChange = new DeleteDataChange();
-        deleteDataChange.setTableName("REQUIRES_WHERE");
+        deleteDataChange.setTableName("TABLE_NAME");
         deleteDataChange.setWhere(where);
         deleteDataChange.setChangeSet(changeSet);
         return deleteDataChange;

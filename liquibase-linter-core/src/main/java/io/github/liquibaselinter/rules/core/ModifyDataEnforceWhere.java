@@ -38,6 +38,9 @@ public class ModifyDataEnforceWhere extends AbstractLintRule implements ChangeRu
     }
 
     private boolean matchesTableName(String tableName) {
+        if (getConfig().getValues() == null || getConfig().getValues().isEmpty()) {
+            return true;
+        }
         return getConfig().getValues().stream().anyMatch(value -> Pattern.compile(value).matcher(tableName).matches());
     }
 }

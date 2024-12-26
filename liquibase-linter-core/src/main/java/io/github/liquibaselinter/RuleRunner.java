@@ -57,20 +57,17 @@ class RuleRunner {
         final DatabaseChangeLog changeLog = changeSet.getChangeLog();
 
         for (ChangeRule changeRule : changeRules) {
-            if (changeRule.supports(change)) {
-                final List<RuleConfig> configs = config.forRule(changeRule.getName());
-                final String ruleName = changeRule.getName();
+            final List<RuleConfig> configs = config.forRule(changeRule.getName());
+            final String ruleName = changeRule.getName();
 
-                for (RuleConfig ruleConfig : configs) {
-                    if (isEnabled(ruleConfig) && ConditionHelper.evaluateCondition(ruleConfig, change)) {
-                        changeRule.configure(ruleConfig);
-                        final String message = changeRule.getMessage(change);
-
-                        if (changeRule.invalid(change)) {
-                            handleViolation(changeLog, changeSet, ruleName, message);
-                        } else {
-                            reportItems.add(ReportItem.passed(changeLog, changeSet, ruleName, message));
-                        }
+            for (RuleConfig ruleConfig : configs) {
+                if (isEnabled(ruleConfig) && ConditionHelper.evaluateCondition(ruleConfig, change)) {
+                    Collection<RuleViolation> violations = changeRule.check(change, ruleConfig);
+                    for (RuleViolation violation : violations) {
+                        handleViolation(changeLog, changeSet, ruleName, violation.message());
+                    }
+                    if (violations.isEmpty()) {
+                        reportItems.add(ReportItem.passed(changeLog, changeSet, ruleName, ""));
                     }
                 }
             }

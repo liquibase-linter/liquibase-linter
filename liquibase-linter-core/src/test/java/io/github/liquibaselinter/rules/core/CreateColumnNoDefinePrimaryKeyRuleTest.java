@@ -1,6 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import liquibase.change.AddColumnConfig;
 import liquibase.change.ConstraintsConfig;
@@ -15,19 +15,13 @@ class CreateColumnNoDefinePrimaryKeyRuleTest {
     @DisplayName("Null primary key attribute should be valid")
     @Test
     void nullPrimaryKeyAttributeShouldBeValid() {
-        ConstraintsConfig constraintsConfig = new ConstraintsConfig();
-        assertThat(constraintsConfig.isPrimaryKey()).isNull();
-
-        assertThat(rule.invalid(buildAddColumnChange(null))).isFalse();
+        assertThat(rule).checkingChange(buildAddColumnChange(null)).hasNoViolations();
     }
 
     @DisplayName("False primary key attribute should be valid")
     @Test
     void falsePrimaryKeyAttributeShouldBeValid() {
-        ConstraintsConfig constraintsConfig = new ConstraintsConfig();
-        constraintsConfig.setPrimaryKey(Boolean.FALSE);
-
-        assertThat(rule.invalid(buildAddColumnChange(Boolean.FALSE))).isFalse();
+        assertThat(rule).checkingChange(buildAddColumnChange(Boolean.FALSE)).hasNoViolations();
     }
 
     @DisplayName("True primary key attribute should be valid")
@@ -36,7 +30,11 @@ class CreateColumnNoDefinePrimaryKeyRuleTest {
         ConstraintsConfig constraintsConfig = new ConstraintsConfig();
         constraintsConfig.setPrimaryKey(Boolean.TRUE);
 
-        assertThat(rule.invalid(buildAddColumnChange(Boolean.TRUE))).isTrue();
+        assertThat(rule)
+            .checkingChange(buildAddColumnChange(Boolean.TRUE))
+            .hasExactlyViolationsMessages(
+                "Add column must not use primary key attribute. Instead use AddPrimaryKey change type"
+            );
     }
 
     private static AddColumnChange buildAddColumnChange(Boolean primaryKey) {

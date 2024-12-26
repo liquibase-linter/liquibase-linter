@@ -1,6 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import liquibase.change.AddColumnConfig;
 import liquibase.change.core.AddColumnChange;
@@ -14,26 +14,32 @@ class CreateColumnRemarksRuleTest {
     @DisplayName("Should not allow create column without remarks attribute")
     @Test
     void shouldNotAllowCreateColumnWithoutRemarks() {
-        assertThat(rule.invalid(buildAddColumnChange(null))).isTrue();
+        assertThat(rule)
+            .checkingChange(addColumnChange(null))
+            .hasExactlyViolationsMessages("Add column must contain remarks");
     }
 
     @DisplayName("Should not allow create column with empty attribute")
     @Test
     void shouldNotAllowCreateColumnWithEmptyRemarks() {
-        assertThat(rule.invalid(buildAddColumnChange(""))).isTrue();
+        assertThat(rule)
+            .checkingChange(addColumnChange(""))
+            .hasExactlyViolationsMessages("Add column must contain remarks");
     }
 
     @DisplayName("Should allow create column with remarks attribute")
     @Test
     void shouldAllowCreateColumnWithRemarks() {
-        assertThat(rule.invalid(buildAddColumnChange("Some remarks"))).isFalse();
+        assertThat(rule).checkingChange(addColumnChange("Some remarks")).hasNoViolations();
     }
 
-    private AddColumnChange buildAddColumnChange(String remarks) {
-        AddColumnChange addColumnChange = new AddColumnChange();
-        AddColumnConfig addColumnConfig = new AddColumnConfig();
-        addColumnConfig.setRemarks(remarks);
-        addColumnChange.getColumns().add(addColumnConfig);
-        return addColumnChange;
+    private AddColumnChange addColumnChange(String remarks) {
+        AddColumnConfig column = new AddColumnConfig();
+        column.setName("column_name");
+        column.setRemarks(remarks);
+
+        AddColumnChange change = new AddColumnChange();
+        change.addColumn(column);
+        return change;
     }
 }

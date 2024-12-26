@@ -1,122 +1,160 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import io.github.liquibaselinter.rules.core.SchemaNameRules.NoSchemaNameRule;
-import liquibase.change.core.*;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import liquibase.change.Change;
+import liquibase.change.core.AddColumnChange;
+import liquibase.change.core.AddForeignKeyConstraintChange;
+import liquibase.change.core.AddPrimaryKeyChange;
+import liquibase.change.core.AddUniqueConstraintChange;
+import liquibase.change.core.CreateIndexChange;
+import liquibase.change.core.CreateTableChange;
+import liquibase.change.core.CreateViewChange;
+import liquibase.change.core.MergeColumnChange;
+import liquibase.change.core.RenameColumnChange;
+import liquibase.change.core.RenameViewChange;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Named;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 class NoSchemaNameRuleTest {
 
     private final NoSchemaNameRule rule = new NoSchemaNameRule();
 
     @DisplayName("Schema name should be null")
-    @Test
-    void schemaNameShouldBeNull() {
-        assertThat(rule.invalid(getAddColumnChange("SCHEMA_NAME"))).isTrue();
-        assertThat(rule.invalid(getAddForeignKeyConstraintChange("SCHEMA_NAME", "SCHEMA_NAME"))).isTrue();
-        assertThat(rule.invalid(getAddPrimaryKeyConstraintChange("SCHEMA_NAME"))).isTrue();
-        assertThat(rule.invalid(getAddUniqueConstraintChange("SCHEMA_NAME"))).isTrue();
-        assertThat(rule.invalid(getCreateTableChange("SCHEMA_NAME"))).isTrue();
-        assertThat(rule.invalid(getMergeColumnChange("SCHEMA_NAME"))).isTrue();
-        assertThat(rule.invalid(getRenameColumnChange("SCHEMA_NAME"))).isTrue();
-        assertThat(rule.invalid(getRenameViewChange("SCHEMA_NAME"))).isTrue();
-        assertThat(rule.invalid(getCreateViewChange("SCHEMA_NAME"))).isTrue();
-        assertThat(rule.invalid(getCreateIndexChange("SCHEMA_NAME"))).isTrue();
+    @ParameterizedTest(name = "With {0}")
+    @ArgumentsSource(ChangeWithSchemaNameArgumentsProvider.class)
+    void definedSchemaNameShouldBeInvalid(Function<String, Change> changeWithSchemaNameFactory) {
+        assertThat(rule)
+            .checkingChange(changeWithSchemaNameFactory.apply("SCHEMA_NAME"))
+            .hasExactlyViolationsMessages("Schema names are not allowed in this project");
     }
 
     @DisplayName("Schema name null should be valid")
-    @Test
-    void schemaNameNullShouldBeValid() {
-        assertThat(rule.invalid(getAddColumnChange(null))).isFalse();
-        assertThat(rule.invalid(getAddForeignKeyConstraintChange(null, null))).isFalse();
-        assertThat(rule.invalid(getAddPrimaryKeyConstraintChange(null))).isFalse();
-        assertThat(rule.invalid(getAddUniqueConstraintChange(null))).isFalse();
-        assertThat(rule.invalid(getCreateTableChange(null))).isFalse();
-        assertThat(rule.invalid(getMergeColumnChange(null))).isFalse();
-        assertThat(rule.invalid(getRenameColumnChange(null))).isFalse();
-        assertThat(rule.invalid(getRenameViewChange(null))).isFalse();
-        assertThat(rule.invalid(getCreateViewChange(null))).isFalse();
-        assertThat(rule.invalid(getCreateIndexChange(null))).isFalse();
+    @ParameterizedTest(name = "With {0}")
+    @ArgumentsSource(ChangeWithSchemaNameArgumentsProvider.class)
+    void schemaNameNullShouldBeValid(Function<String, Change> changeWithSchemaNameFactory) {
+        assertThat(rule).checkingChange(changeWithSchemaNameFactory.apply(null)).hasNoViolations();
     }
 
     @DisplayName("Schema name empty should be valid")
-    @Test
-    void schemaNameEmptyShouldBeValid() {
-        assertThat(rule.invalid(getAddColumnChange(""))).isFalse();
-        assertThat(rule.invalid(getAddForeignKeyConstraintChange("", ""))).isFalse();
-        assertThat(rule.invalid(getAddPrimaryKeyConstraintChange(""))).isFalse();
-        assertThat(rule.invalid(getAddUniqueConstraintChange(""))).isFalse();
-        assertThat(rule.invalid(getCreateTableChange(""))).isFalse();
-        assertThat(rule.invalid(getMergeColumnChange(""))).isFalse();
-        assertThat(rule.invalid(getRenameColumnChange(""))).isFalse();
-        assertThat(rule.invalid(getRenameViewChange(""))).isFalse();
-        assertThat(rule.invalid(getCreateViewChange(""))).isFalse();
-        assertThat(rule.invalid(getCreateIndexChange(""))).isFalse();
+    @ParameterizedTest(name = "With {0}")
+    @ArgumentsSource(ChangeWithSchemaNameArgumentsProvider.class)
+    void schemaNameEmptyShouldBeValid(Function<String, Change> changeWithSchemaNameFactory) {
+        assertThat(rule).checkingChange(changeWithSchemaNameFactory.apply("")).hasNoViolations();
     }
 
-    private AddColumnChange getAddColumnChange(String schemaName) {
-        AddColumnChange addColumnChange = new AddColumnChange();
-        addColumnChange.setSchemaName(schemaName);
-        return addColumnChange;
-    }
+    private static class ChangeWithSchemaNameArgumentsProvider implements ArgumentsProvider {
 
-    private AddForeignKeyConstraintChange getAddForeignKeyConstraintChange(
-        String baseSchemaName,
-        String referenceSchemaName
-    ) {
-        AddForeignKeyConstraintChange addForeignKeyConstraintChange = new AddForeignKeyConstraintChange();
-        addForeignKeyConstraintChange.setBaseTableSchemaName(baseSchemaName);
-        addForeignKeyConstraintChange.setReferencedTableSchemaName(referenceSchemaName);
-        return addForeignKeyConstraintChange;
-    }
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(
+                Arguments.of(Named.of(AddColumnChange.class.getSimpleName(), addColumnChangeFactory())),
+                Arguments.of(
+                    Named.of(
+                        AddForeignKeyConstraintChange.class.getSimpleName(),
+                        addForeignKeyConstraintChangeFactory()
+                    )
+                ),
+                Arguments.of(Named.of(AddPrimaryKeyChange.class.getSimpleName(), addPrimaryKeyChangeFactory())),
+                Arguments.of(
+                    Named.of(AddUniqueConstraintChange.class.getSimpleName(), addUniqueConstraintChangeFactory())
+                ),
+                Arguments.of(Named.of(CreateTableChange.class.getSimpleName(), createTableChangeFactory())),
+                Arguments.of(Named.of(MergeColumnChange.class.getSimpleName(), mergeColumnChangeFactory())),
+                Arguments.of(Named.of(RenameColumnChange.class.getSimpleName(), renameColumnChangeFactory())),
+                Arguments.of(Named.of(RenameViewChange.class.getSimpleName(), renameViewChangeFactory())),
+                Arguments.of(Named.of(CreateViewChange.class.getSimpleName(), createViewChangeFactory())),
+                Arguments.of(Named.of(CreateIndexChange.class.getSimpleName(), createIndexChangeFactory()))
+            );
+        }
 
-    private AddPrimaryKeyChange getAddPrimaryKeyConstraintChange(String schemaName) {
-        AddPrimaryKeyChange addPrimaryKeyChange = new AddPrimaryKeyChange();
-        addPrimaryKeyChange.setSchemaName(schemaName);
-        return addPrimaryKeyChange;
-    }
+        private Function<String, Change> addColumnChangeFactory() {
+            return schemaName -> {
+                AddColumnChange addColumnChange = new AddColumnChange();
+                addColumnChange.setSchemaName(schemaName);
+                return addColumnChange;
+            };
+        }
 
-    private AddUniqueConstraintChange getAddUniqueConstraintChange(String schemaName) {
-        AddUniqueConstraintChange addUniqueConstraintChange = new AddUniqueConstraintChange();
-        addUniqueConstraintChange.setSchemaName(schemaName);
-        return addUniqueConstraintChange;
-    }
+        private Function<String, Change> addForeignKeyConstraintChangeFactory() {
+            return schemaName -> {
+                AddForeignKeyConstraintChange addForeignKeyConstraintChange = new AddForeignKeyConstraintChange();
+                addForeignKeyConstraintChange.setBaseTableSchemaName(schemaName);
+                addForeignKeyConstraintChange.setReferencedTableSchemaName(schemaName);
+                return addForeignKeyConstraintChange;
+            };
+        }
 
-    private CreateTableChange getCreateTableChange(String schemaName) {
-        CreateTableChange createTableChange = new CreateTableChange();
-        createTableChange.setSchemaName(schemaName);
-        return createTableChange;
-    }
+        private Function<String, Change> addPrimaryKeyChangeFactory() {
+            return schemaName -> {
+                AddPrimaryKeyChange addPrimaryKeyChange = new AddPrimaryKeyChange();
+                addPrimaryKeyChange.setSchemaName(schemaName);
+                return addPrimaryKeyChange;
+            };
+        }
 
-    private MergeColumnChange getMergeColumnChange(String schemaName) {
-        MergeColumnChange mergeColumnChange = new MergeColumnChange();
-        mergeColumnChange.setSchemaName(schemaName);
-        return mergeColumnChange;
-    }
+        private Function<String, Change> addUniqueConstraintChangeFactory() {
+            return schemaName -> {
+                AddUniqueConstraintChange addUniqueConstraintChange = new AddUniqueConstraintChange();
+                addUniqueConstraintChange.setSchemaName(schemaName);
+                return addUniqueConstraintChange;
+            };
+        }
 
-    private RenameColumnChange getRenameColumnChange(String schemaName) {
-        RenameColumnChange renameColumnChange = new RenameColumnChange();
-        renameColumnChange.setSchemaName(schemaName);
-        return renameColumnChange;
-    }
+        private Function<String, Change> createTableChangeFactory() {
+            return schemaName -> {
+                CreateTableChange createTableChange = new CreateTableChange();
+                createTableChange.setSchemaName(schemaName);
+                return createTableChange;
+            };
+        }
 
-    private RenameViewChange getRenameViewChange(String schemaName) {
-        RenameViewChange renameViewChange = new RenameViewChange();
-        renameViewChange.setSchemaName(schemaName);
-        return renameViewChange;
-    }
+        private Function<String, Change> mergeColumnChangeFactory() {
+            return schemaName -> {
+                MergeColumnChange mergeColumnChange = new MergeColumnChange();
+                mergeColumnChange.setSchemaName(schemaName);
+                return mergeColumnChange;
+            };
+        }
 
-    private CreateViewChange getCreateViewChange(String schemaName) {
-        CreateViewChange createViewChange = new CreateViewChange();
-        createViewChange.setSchemaName(schemaName);
-        return createViewChange;
-    }
+        private Function<String, Change> renameColumnChangeFactory() {
+            return schemaName -> {
+                RenameColumnChange renameColumnChange = new RenameColumnChange();
+                renameColumnChange.setSchemaName(schemaName);
+                return renameColumnChange;
+            };
+        }
 
-    private CreateIndexChange getCreateIndexChange(String schemaName) {
-        CreateIndexChange createViewChange = new CreateIndexChange();
-        createViewChange.setSchemaName(schemaName);
-        return createViewChange;
+        private Function<String, Change> renameViewChangeFactory() {
+            return schemaName -> {
+                RenameViewChange renameViewChange = new RenameViewChange();
+                renameViewChange.setSchemaName(schemaName);
+                return renameViewChange;
+            };
+        }
+
+        private Function<String, Change> createViewChangeFactory() {
+            return schemaName -> {
+                CreateViewChange createViewChange = new CreateViewChange();
+                createViewChange.setSchemaName(schemaName);
+                return createViewChange;
+            };
+        }
+
+        private Function<String, Change> createIndexChangeFactory() {
+            return schemaName -> {
+                CreateIndexChange createViewChange = new CreateIndexChange();
+                createViewChange.setSchemaName(schemaName);
+                return createViewChange;
+            };
+        }
     }
 }

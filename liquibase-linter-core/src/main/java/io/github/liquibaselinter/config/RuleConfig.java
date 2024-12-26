@@ -1,6 +1,8 @@
 package io.github.liquibaselinter.config;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -134,41 +136,53 @@ public final class RuleConfig {
         private Integer maxLength;
         private String enableAfter;
 
+        @JsonProperty("enabled")
         public RuleConfigBuilder withEnabled(boolean enabled) {
             this.enabled = enabled;
             return this;
         }
 
+        @JsonProperty("errorMessage")
         public RuleConfigBuilder withErrorMessage(String errorMessage) {
             this.errorMessage = errorMessage;
             return this;
         }
 
+        @JsonProperty("condition")
         public RuleConfigBuilder withCondition(String condition) {
             this.condition = condition;
             return this;
         }
 
+        @JsonProperty("pattern")
         public RuleConfigBuilder withPattern(String pattern) {
             this.pattern = pattern;
             return this;
         }
 
+        @JsonProperty("dynamicValue")
         public RuleConfigBuilder withDynamicValue(String dynamicValue) {
             this.dynamicValue = dynamicValue;
             return this;
         }
 
+        @JsonProperty("values")
         public RuleConfigBuilder withValues(List<String> values) {
             this.values = values;
             return this;
         }
 
+        public RuleConfigBuilder withValues(String... values) {
+            return withValues(Arrays.asList(values));
+        }
+
+        @JsonProperty("maxLength")
         public RuleConfigBuilder withMaxLength(Integer maxLength) {
             this.maxLength = maxLength;
             return this;
         }
 
+        @JsonProperty("enableAfter")
         public RuleConfigBuilder withEnableAfter(String enableAfter) {
             this.enableAfter = enableAfter;
             return this;

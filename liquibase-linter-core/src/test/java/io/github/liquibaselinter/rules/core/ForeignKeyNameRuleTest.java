@@ -1,6 +1,6 @@
 package io.github.liquibaselinter.rules.core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static io.github.liquibaselinter.rules.ChangeRuleAssert.assertThat;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.change.core.AddForeignKeyConstraintChange;
@@ -14,42 +14,57 @@ class ForeignKeyNameRuleTest {
     @DisplayName("Foreign key name must not be null")
     @Test
     void foreignKeyNameMustNotBeNull() {
-        assertThat(rule.invalid(getAddForeignKeyConstraintChange(null))).isTrue();
+        assertThat(rule)
+            .checkingChange(getAddForeignKeyConstraintChange(null))
+            .hasExactlyViolationsMessages("Foreign key name is missing or does not follow pattern");
     }
 
     @DisplayName("Foreign key name must follow pattern basic")
     @Test
     void foreignKeyNameMustFollowPatternBasic() {
-        rule.configure(RuleConfig.builder().withPattern("^VALID_FK$").build());
-        assertThat(rule.invalid(getAddForeignKeyConstraintChange("INVALID_FK"))).isTrue();
-        assertThat(rule.invalid(getAddForeignKeyConstraintChange("VALID_FK"))).isFalse();
+        RuleConfig ruleConfig = RuleConfig.builder().withPattern("^VALID_FK$").build();
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getAddForeignKeyConstraintChange("INVALID_FK"))
+            .hasExactlyViolationsMessages("Foreign key name is missing or does not follow pattern");
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getAddForeignKeyConstraintChange("VALID_FK"))
+            .hasNoViolations();
     }
 
     @DisplayName("Foreign key name must follow pattern dynamic value")
     @Test
     void foreignKeyNameMustFollowPatternDynamicValue() {
-        rule.configure(
-            RuleConfig.builder()
-                .withPattern("^{{value}}_FK$")
-                .withDynamicValue("baseTableName + '_' + referencedTableName")
-                .build()
-        );
-        assertThat(rule.invalid(getAddForeignKeyConstraintChange("INVALID_FK"))).isTrue();
-        assertThat(rule.invalid(getAddForeignKeyConstraintChange("BASE_REFERENCED_FK"))).isFalse();
+        RuleConfig ruleConfig = RuleConfig.builder()
+            .withPattern("^{{value}}_FK$")
+            .withDynamicValue("baseTableName + '_' + referencedTableName")
+            .build();
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getAddForeignKeyConstraintChange("INVALID_FK"))
+            .hasExactlyViolationsMessages("Foreign key name is missing or does not follow pattern");
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getAddForeignKeyConstraintChange("BASE_REFERENCED_FK"))
+            .hasNoViolations();
     }
 
     @DisplayName("Foreign key name rule should support formatted error message with pattern arg")
     @Test
     void foreignKeyNameRuleShouldReturnFormattedErrorMessage() {
-        rule.configure(
-            RuleConfig.builder()
-                .withPattern("^VALID_FK$")
-                .withErrorMessage("Foreign key constraint '%s' must follow pattern '%s'")
-                .build()
-        );
-        assertThat(rule.getMessage(getAddForeignKeyConstraintChange("INVALID_FK"))).isEqualTo(
-            "Foreign key constraint 'INVALID_FK' must follow pattern '^VALID_FK$'"
-        );
+        RuleConfig ruleConfig = RuleConfig.builder()
+            .withPattern("^VALID_FK$")
+            .withErrorMessage("Foreign key constraint '%s' must follow pattern '%s'")
+            .build();
+
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getAddForeignKeyConstraintChange("INVALID_FK"))
+            .hasExactlyViolationsMessages("Foreign key constraint 'INVALID_FK' must follow pattern '^VALID_FK$'");
     }
 
     private AddForeignKeyConstraintChange getAddForeignKeyConstraintChange(String constraintName) {
