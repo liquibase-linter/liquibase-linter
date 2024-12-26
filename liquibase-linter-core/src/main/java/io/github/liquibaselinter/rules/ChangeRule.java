@@ -6,10 +6,4 @@ import liquibase.change.Change;
 
 public interface ChangeRule extends LintRule {
     Collection<RuleViolation> check(Change change, RuleConfig ruleConfig);
-
-    @Deprecated
-    void configure(RuleConfig ruleConfig);
-
-    @Deprecated
-    boolean invalid(Change change);
 }

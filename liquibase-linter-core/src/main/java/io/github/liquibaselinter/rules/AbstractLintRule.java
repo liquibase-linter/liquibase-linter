@@ -26,8 +26,8 @@ public abstract class AbstractLintRule implements ChangeRule {
         return name;
     }
 
-    @Override
-    public void configure(RuleConfig ruleConfig) {
+    @Deprecated
+    private void configure(RuleConfig ruleConfig) {
         this.ruleConfig = ruleConfig;
         if (ruleConfig.hasPattern()) {
             this.patternChecker = new PatternChecker(ruleConfig);
@@ -92,6 +92,9 @@ public abstract class AbstractLintRule implements ChangeRule {
         }
         return Collections.emptyList();
     }
+
+    @Deprecated
+    protected abstract boolean invalid(Change change);
 
     @Deprecated
     protected boolean supports(Change change) {
