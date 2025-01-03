@@ -8,10 +8,15 @@ import io.github.liquibaselinter.config.ConfigLoader;
 import io.github.liquibaselinter.report.ConsoleReporter;
 import io.github.liquibaselinter.report.Reporter;
 import io.github.liquibaselinter.report.ReporterConfig;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import javax.inject.Inject;
 import liquibase.Liquibase;
 import liquibase.Scope;
@@ -102,14 +107,40 @@ public class LintMojo extends AbstractMojo {
     }
 
     private ResourceAccessor buildResourceAccessor() throws MojoExecutionException {
-        try {
-            return new CompositeResourceAccessor(
-                new DirectoryResourceAccessor(mavenProject.getBasedir()),
-                new ClassLoaderResourceAccessor(Thread.currentThread().getContextClassLoader())
-            );
-        } catch (FileNotFoundException exception) {
+        try (
+            ResourceAccessor baseDirResourceAccessor = new DirectoryResourceAccessor(mavenProject.getBasedir());
+            ResourceAccessor projectClasspathResourceAccessor = new ClassLoaderResourceAccessor(
+                classLoaderIncludingProjectClasspath()
+            )
+        ) {
+            return new CompositeResourceAccessor(baseDirResourceAccessor, projectClasspathResourceAccessor);
+        } catch (Exception exception) {
             throw new MojoExecutionException(exception);
         }
+    }
+
+    private ClassLoader classLoaderIncludingProjectClasspath() throws MojoExecutionException {
+        try {
+            URL[] urls = mavenProject
+                .getCompileClasspathElements()
+                .stream()
+                .map(File::new)
+                .map(fileToURL())
+                .toArray(URL[]::new);
+            return new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+        } catch (Exception exception) {
+            throw new MojoExecutionException("Failed to create project classloader", exception);
+        }
+    }
+
+    private static Function<File, URL> fileToURL() {
+        return file -> {
+            try {
+                return file.toURI().toURL();
+            } catch (MalformedURLException exception) {
+                throw new UncheckedIOException(exception);
+            }
+        };
     }
 
     private static Liquibase createLiquibase(String changeLogFile, ResourceAccessor resourceAccessor)
