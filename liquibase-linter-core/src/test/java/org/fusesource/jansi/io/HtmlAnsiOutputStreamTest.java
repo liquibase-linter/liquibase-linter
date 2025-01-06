@@ -1,76 +1,73 @@
 package org.fusesource.jansi.io;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="http://code.dblock.org">Daniel Doubrovkine</a>
  */
-public class HtmlAnsiOutputStreamTest {
+class HtmlAnsiOutputStreamTest {
 
     @Test
-    public void testNoMarkup() throws IOException {
-        assertEquals("line", colorize("line"));
+    void testNoMarkup() throws IOException {
+        assertThat(colorize("line")).isEqualTo("line");
     }
 
     @Test
-    public void testClear() throws IOException {
-        assertEquals("", colorize("[0m[K"));
-        assertEquals("hello world", colorize("[0mhello world"));
+    void testClear() throws IOException {
+        assertThat(colorize("[0m[K")).isEmpty();
+        assertThat(colorize("[0mhello world")).isEqualTo("hello world");
     }
 
     @Test
-    public void testBold() throws IOException {
-        assertEquals("<b>hello world</b>", colorize("[1mhello world"));
+    void testBold() throws IOException {
+        assertThat(colorize("[1mhello world")).isEqualTo("<b>hello world</b>");
     }
 
     @Test
-    public void testGreen() throws IOException {
-        assertEquals("<span style=\"color: green;\">hello world</span>",
-                colorize("[32mhello world"));
+    void testGreen() throws IOException {
+        assertThat(colorize("[32mhello world")).isEqualTo("<span style=\"color: green;\">hello world</span>");
     }
 
     @Test
-    public void testGreenOnWhite() throws IOException {
-        assertEquals("<span style=\"background-color: white;\"><span style=\"color: green;\">hello world</span></span>",
-                colorize("[47;32mhello world"));
+    void testGreenOnWhite() throws IOException {
+        assertThat(colorize("[47;32mhello world")).isEqualTo(
+            "<span style=\"background-color: white;\"><span style=\"color: green;\">hello world</span></span>"
+        );
     }
 
     @Test
-    public void testEscapeHtml() throws IOException {
-        assertEquals("&quot;", colorize("\""));
-        assertEquals("&amp;", colorize("&"));
-        assertEquals("&lt;", colorize("<"));
-        assertEquals("&gt;", colorize(">"));
-        assertEquals("&quot;&amp;&lt;&gt;", colorize("\"&<>"));
+    void testEscapeHtml() throws IOException {
+        assertThat(colorize("\"")).isEqualTo("&quot;");
+        assertThat(colorize("&")).isEqualTo("&amp;");
+        assertThat(colorize("<")).isEqualTo("&lt;");
+        assertThat(colorize(">")).isEqualTo("&gt;");
+        assertThat(colorize("\"&<>")).isEqualTo("&quot;&amp;&lt;&gt;");
     }
 
     @Test
-    public void testResetOnOpen() throws IOException {
-        assertEquals("<span style=\"color: red;\">red</span>",
-                colorize("[0;31;49mred[0m"));
+    void testResetOnOpen() throws IOException {
+        assertThat(colorize("[0;31;49mred[0m")).isEqualTo("<span style=\"color: red;\">red</span>");
     }
 
     @Test
-    public void testUTF8Character() throws IOException {
-        assertEquals("<b>\u3053\u3093\u306b\u3061\u306f</b>",
-                colorize("[1m\u3053\u3093\u306b\u3061\u306f"));
+    void testUTF8Character() throws IOException {
+        assertThat(colorize("[1m\u3053\u3093\u306b\u3061\u306f")).isEqualTo("<b>\u3053\u3093\u306b\u3061\u306f</b>");
     }
 
     @Test
-    public void testResetCharacterSet() throws IOException {
-        assertEquals(colorize("(\033(0)"), "()");
-        assertEquals(colorize("(\033)0)"), "()");
+    void testResetCharacterSet() throws IOException {
+        assertThat(colorize("(\033(0)")).isEqualTo("()");
+        assertThat(colorize("(\033)0)")).isEqualTo("()");
     }
 
     private String colorize(String text) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try(HtmlAnsiOutputStream hos = new HtmlAnsiOutputStream(os)){
+        try (HtmlAnsiOutputStream hos = new HtmlAnsiOutputStream(os)) {
             hos.write(text.getBytes(StandardCharsets.UTF_8));
         }
         os.close();

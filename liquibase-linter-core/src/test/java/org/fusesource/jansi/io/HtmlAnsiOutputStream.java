@@ -15,10 +15,6 @@
  */
 package org.fusesource.jansi.io;
 
-import org.fusesource.jansi.AnsiColors;
-import org.fusesource.jansi.AnsiMode;
-import org.fusesource.jansi.AnsiType;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -26,9 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.fusesource.jansi.AnsiColors;
+import org.fusesource.jansi.AnsiMode;
+import org.fusesource.jansi.AnsiType;
 
 /**
- * A optimized/edited {@link HtmlAnsiOutputStream} for ansi 2.x and above. <br>
+ * An optimized/edited {@link HtmlAnsiOutputStream} for ansi 2.x and above. <br>
  * @author <a href="https://github.com/Osiris-Team">Osiris Team</a>
  * @author <a href="http://code.dblock.org">Daniel Doubrovkine</a>
  */
@@ -42,7 +41,7 @@ public class HtmlAnsiOutputStream extends AnsiOutputStream {
      * This is done to have working multithreading and diminish the need of a getProcessor() method <br>
      * in the {@link AnsiOutputStream}.
      */
-    private static synchronized AnsiToHtmlProcessor createAnsiToHtmlProcessorForOutput(OutputStream out){
+    private static synchronized AnsiToHtmlProcessor createAnsiToHtmlProcessorForOutput(OutputStream out) {
         AnsiToHtmlProcessor processor = new AnsiToHtmlProcessor(out);
         streamsAndProcessors.put(out, processor);
         return processor;
@@ -54,8 +53,16 @@ public class HtmlAnsiOutputStream extends AnsiOutputStream {
         super.close();
     }
 
-    public static final String[] ANSI_COLOR_MAP = {"black", "red",
-            "green", "yellow", "blue", "magenta", "cyan", "white",};
+    public static final String[] ANSI_COLOR_MAP = {
+        "black",
+        "red",
+        "green",
+        "yellow",
+        "blue",
+        "magenta",
+        "cyan",
+        "white",
+    };
 
     private static final byte[] BYTES_QUOT = "&quot;".getBytes();
     private static final byte[] BYTES_AMP = "&amp;".getBytes();
@@ -63,21 +70,18 @@ public class HtmlAnsiOutputStream extends AnsiOutputStream {
     private static final byte[] BYTES_GT = "&gt;".getBytes();
 
     public HtmlAnsiOutputStream(OutputStream os) {
-        super(os,
-                new WidthSupplier() {
-                    @Override
-                    public int getTerminalWidth() {
-                        return Integer.MAX_VALUE;
-                    }
-                },
-                AnsiMode.Default,
-                createAnsiToHtmlProcessorForOutput(os),
-                AnsiType.Native,
-                AnsiColors.Colors16,
-                Charset.defaultCharset(),
-                null,
-                null,
-                true);
+        super(
+            os,
+            () -> Integer.MAX_VALUE,
+            AnsiMode.Default,
+            createAnsiToHtmlProcessorForOutput(os),
+            AnsiType.Native,
+            AnsiColors.Colors16,
+            Charset.defaultCharset(),
+            null,
+            null,
+            true
+        );
         streamsAndProcessors.get(os).setHtmlAnsiOutputStream(this);
     }
 
@@ -118,10 +122,5 @@ public class HtmlAnsiOutputStream extends AnsiOutputStream {
                 super.write(data);
                 break;
         }
-    }
-
-    public void writeLine(byte[] buf, int offset, int len) throws IOException {
-        write(buf, offset, len);
-        closeAttributes();
     }
 }

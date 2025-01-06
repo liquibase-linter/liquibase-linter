@@ -3,16 +3,13 @@ package org.fusesource.jansi.io;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class AnsiToHtmlProcessor extends AnsiProcessor {
+class AnsiToHtmlProcessor extends AnsiProcessor {
+
     private boolean concealOn = false;
     private HtmlAnsiOutputStream haos;
 
     AnsiToHtmlProcessor(OutputStream os) {
         super(os);
-    }
-
-    public HtmlAnsiOutputStream getHtmlAnsiOutputStream() {
-        return haos;
     }
 
     public void setHtmlAnsiOutputStream(HtmlAnsiOutputStream haos) {
@@ -30,18 +27,14 @@ public class AnsiToHtmlProcessor extends AnsiProcessor {
                 haos.writeAttribute("b");
                 break;
             case ATTRIBUTE_INTENSITY_NORMAL:
+            case ATTRIBUTE_UNDERLINE_OFF:
                 haos.closeAttributes();
                 break;
             case ATTRIBUTE_UNDERLINE:
                 haos.writeAttribute("u");
                 break;
-            case ATTRIBUTE_UNDERLINE_OFF:
-                haos.closeAttributes();
-                break;
             case ATTRIBUTE_NEGATIVE_ON:
-                break;
             case ATTRIBUTE_NEGATIVE_OFF:
-                break;
             default:
                 break;
         }
