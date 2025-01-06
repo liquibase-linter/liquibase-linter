@@ -80,7 +80,7 @@
     <!-- test libraries -->
     <assertj.version>3.27.0</assertj.version>
     <junit.version>5.11.4</junit.version>
-    <mockito.version>4.11.0</mockito.version>
+    <mockito.version>5.15.2</mockito.version>
     <!-- plugins -->
     <maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>
     <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
