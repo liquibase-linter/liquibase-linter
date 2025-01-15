@@ -11,6 +11,7 @@ import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.ReportItem;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import liquibase.ContextExpression;
 import liquibase.Scope;
 import liquibase.change.Change;
@@ -154,14 +155,18 @@ public class ChangeLogLinter {
                     reporter.processReport(ruleRunner.buildReport());
                 }
             });
-        final long errorCount = ruleRunner
+        final List<ReportItem> errors = ruleRunner
             .buildReport()
             .getItems()
             .stream()
             .filter(item -> item.getType() == ReportItem.ReportItemType.ERROR)
-            .count();
+            .collect(Collectors.toList());
+        final long errorCount = errors.size();
         if (errorCount > 0) {
-            throw new ChangeLogLintingException(String.format("Linting failed with %d errors", errorCount));
+            final String errorList = errors.stream().map(ReportItem::getMessage).collect(joining("\n - ", "\n - ", ""));
+            throw new ChangeLogLintingException(
+                String.format("Linting failed with %d errors: %s", errorCount, errorList)
+            );
         }
     }
 }
