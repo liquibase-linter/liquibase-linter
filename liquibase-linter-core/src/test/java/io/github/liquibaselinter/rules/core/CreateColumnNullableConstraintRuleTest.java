@@ -24,7 +24,7 @@ class CreateColumnNullableConstraintRuleTest {
             AddColumnChange addColumnChange = addColumnChangeWithConstraints(null);
             assertThat(rule)
                 .checkingChange(addColumnChange)
-                .hasExactlyViolationsMessages("Add column must specify nullable constraint");
+                .hasExactlyViolationsMessages("Add column 'column_name' must specify nullable constraint");
         }
 
         @DisplayName("Null nullable attribute should be invalid")
@@ -35,7 +35,7 @@ class CreateColumnNullableConstraintRuleTest {
 
             assertThat(rule)
                 .checkingChange(addColumnChange)
-                .hasExactlyViolationsMessages("Add column must specify nullable constraint");
+                .hasExactlyViolationsMessages("Add column 'column_name' must specify nullable constraint");
         }
 
         @DisplayName("Not null nullable attribute should be valid")
@@ -72,7 +72,7 @@ class CreateColumnNullableConstraintRuleTest {
 
             assertThat(rule)
                 .checkingChange(change)
-                .hasExactlyViolationsMessages("Add column must specify nullable constraint");
+                .hasExactlyViolationsMessages("Add column 'column_name' must specify nullable constraint");
         }
 
         private CreateTableChange createTableWithConstraints(AddColumnConfig... columns) {

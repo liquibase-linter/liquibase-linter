@@ -1,29 +1,46 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import liquibase.change.Change;
 import liquibase.change.core.AbstractModifyDataChange;
 
 @AutoService(ChangeRule.class)
-public class ModifyDataStartsWithWhere extends AbstractLintRule implements ChangeRule {
+public class ModifyDataStartsWithWhere implements ChangeRule {
 
     private static final String NAME = "modify-data-starts-with-where";
-    private static final String MESSAGE = "Modify data where starts with where clause, that's probably a mistake";
+    private static final String DEFAULT_MESSAGE =
+        "Modify data where starts with where clause, that's probably a mistake";
 
-    public ModifyDataStartsWithWhere() {
-        super(NAME, MESSAGE);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public boolean supports(Change change) {
-        return change instanceof AbstractModifyDataChange;
+    public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
+        if (!(change instanceof AbstractModifyDataChange)) {
+            return Collections.emptyList();
+        }
+
+        AbstractModifyDataChange modifyDataChange = (AbstractModifyDataChange) change;
+        if (isInvalid(modifyDataChange)) {
+            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return Collections.singleton(
+                new RuleViolation(messageGenerator.formatMessage(modifyDataChange.getTableName()))
+            );
+        }
+
+        return Collections.emptyList();
     }
 
-    @Override
-    public boolean invalid(Change change) {
+    private static boolean isInvalid(Change change) {
         AbstractModifyDataChange modifyDataChange = (AbstractModifyDataChange) change;
         return (
             modifyDataChange.getWhere() != null &&

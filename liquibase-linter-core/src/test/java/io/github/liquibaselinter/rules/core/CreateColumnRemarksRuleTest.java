@@ -16,7 +16,7 @@ class CreateColumnRemarksRuleTest {
     void shouldNotAllowCreateColumnWithoutRemarks() {
         assertThat(rule)
             .checkingChange(addColumnChange(null))
-            .hasExactlyViolationsMessages("Add column must contain remarks");
+            .hasExactlyViolationsMessages("Add column 'column_name' must contain remarks");
     }
 
     @DisplayName("Should not allow create column with empty attribute")
@@ -24,7 +24,7 @@ class CreateColumnRemarksRuleTest {
     void shouldNotAllowCreateColumnWithEmptyRemarks() {
         assertThat(rule)
             .checkingChange(addColumnChange(""))
-            .hasExactlyViolationsMessages("Add column must contain remarks");
+            .hasExactlyViolationsMessages("Add column 'column_name' must contain remarks");
     }
 
     @DisplayName("Should allow create column with remarks attribute")

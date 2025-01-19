@@ -1,42 +1,49 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
+import io.github.liquibaselinter.rules.LintRuleChecker;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
 import liquibase.change.Change;
 import liquibase.change.core.CreateTableChange;
 import liquibase.change.core.RenameTableChange;
 
 @AutoService(ChangeRule.class)
-public class TableNameRule extends AbstractLintRule implements ChangeRule {
+public class TableNameRule implements ChangeRule {
 
     private static final String NAME = "table-name";
-    private static final String MESSAGE = "Table name does not follow pattern";
+    private static final String DEFAULT_MESSAGE = "Table name does not follow pattern";
 
-    public TableNameRule() {
-        super(NAME, MESSAGE);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public boolean supports(Change change) {
-        return change instanceof CreateTableChange || change instanceof RenameTableChange;
+    public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
+        LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
+        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+        return getTablesName(change)
+            .stream()
+            .filter(tableName -> ruleChecker.checkMandatoryPattern(tableName, change))
+            .map(tableName ->
+                new RuleViolation(messageGenerator.formatMessage(tableName, ruleConfig.getPatternString()))
+            )
+            .collect(Collectors.toList());
     }
 
-    @Override
-    public boolean invalid(Change change) {
-        return checkMandatoryPattern(getTableName(change), change);
-    }
-
-    @Override
-    public String getMessage(Change change) {
-        return formatMessage(getTableName(change), getConfig().getPatternString());
-    }
-
-    private String getTableName(Change change) {
+    private Collection<String> getTablesName(Change change) {
         if (change instanceof CreateTableChange) {
-            return ((CreateTableChange) change).getTableName();
-        } else {
-            return ((RenameTableChange) change).getNewTableName();
+            return Collections.singleton(((CreateTableChange) change).getTableName());
         }
+        if (change instanceof RenameTableChange) {
+            return Collections.singleton(((RenameTableChange) change).getNewTableName());
+        }
+        return Collections.emptyList();
     }
 }

@@ -8,7 +8,7 @@ class CreateColumnRemarksIntegrationTest extends LinterIntegrationTest {
             "Should fail when create column does not have populated remarks attribute",
             "create-column-remarks/create-column-remarks-fail.xml",
             "create-column-remarks/lqlint.json",
-            "Add column must contain remarks"
+            "Add column 'TEST_COLUMN' must contain remarks"
         );
 
         shouldPass(
@@ -21,7 +21,7 @@ class CreateColumnRemarksIntegrationTest extends LinterIntegrationTest {
             "Should fail when create column does not have populated remarks attribute",
             "create-column-remarks/create-column-remarks-create-table-fail.xml",
             "create-column-remarks/lqlint.json",
-            "Add column must contain remarks"
+            "Add column 'TEST_COLUMN' must contain remarks"
         );
     }
 }

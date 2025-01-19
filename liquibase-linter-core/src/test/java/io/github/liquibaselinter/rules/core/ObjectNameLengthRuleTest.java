@@ -173,7 +173,10 @@ class ObjectNameLengthRuleTest {
         assertThat(rule)
             .withConfig(ruleConfig)
             .checkingChange((getAddColumnChange("VALUE", "VALUE2")))
-            .hasExactlyViolationsMessages("Object name 'VALUE,VALUE2' must be less than 4 characters");
+            .hasExactlyViolationsMessages(
+                "Object name 'VALUE' must be less than 4 characters",
+                "Object name 'VALUE2' must be less than 4 characters"
+            );
     }
 
     private AddColumnChange getAddColumnChange(String... columnNames) {

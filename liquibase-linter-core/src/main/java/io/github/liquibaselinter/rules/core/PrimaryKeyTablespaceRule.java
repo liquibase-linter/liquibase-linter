@@ -1,8 +1,11 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
+import io.github.liquibaselinter.rules.LintRuleChecker;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -15,24 +18,29 @@ import liquibase.change.core.AddPrimaryKeyChange;
 import liquibase.change.core.CreateTableChange;
 
 @AutoService(ChangeRule.class)
-public class PrimaryKeyTablespaceRule extends AbstractLintRule implements ChangeRule {
+public class PrimaryKeyTablespaceRule implements ChangeRule {
 
     private static final String NAME = "primary-key-tablespace";
-    private static final String MESSAGE = "Tablespace '%s' is empty or does not follow pattern '%s'";
+    private static final String DEFAULT_MESSAGE = "Tablespace '%s' is empty or does not follow pattern '%s'";
 
-    public PrimaryKeyTablespaceRule() {
-        super(NAME, MESSAGE);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public boolean supports(Change change) {
-        if (change.getClass().isAssignableFrom(AddPrimaryKeyChange.class)) {
-            return true;
-        }
-        if (change.getClass().isAssignableFrom(CreateTableChange.class)) {
-            return !primaryKeyTablespacesFromCreateTable((CreateTableChange) change).isEmpty();
-        }
-        return false;
+    public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
+        LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
+        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+        return extractTablespacesFrom(change)
+            .stream()
+            .filter(tablespace -> ruleChecker.checkMandatoryPattern(tablespace, change))
+            .map(tablespace ->
+                new RuleViolation(
+                    messageGenerator.formatMessage(tablespace, messageGenerator.appliedPatternFor(change))
+                )
+            )
+            .collect(Collectors.toList());
     }
 
     private static List<String> primaryKeyTablespacesFromCreateTable(CreateTableChange change) {
@@ -53,13 +61,6 @@ public class PrimaryKeyTablespaceRule extends AbstractLintRule implements Change
             .collect(Collectors.toList());
     }
 
-    @Override
-    public boolean invalid(Change change) {
-        return extractTablespacesFrom(change)
-            .stream()
-            .anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
-    }
-
     private Collection<String> extractTablespacesFrom(Change change) {
         if (change instanceof AddPrimaryKeyChange) {
             return Collections.singleton(((AddPrimaryKeyChange) change).getTablespace());
@@ -67,16 +68,6 @@ public class PrimaryKeyTablespaceRule extends AbstractLintRule implements Change
         if (change instanceof CreateTableChange) {
             return primaryKeyTablespacesFromCreateTable((CreateTableChange) change);
         }
-        throw new IllegalStateException("Can't retrieve tablespace from " + change.getClass());
-    }
-
-    @Override
-    public String getMessage(Change change) {
-        String invalidTablespaces = extractTablespacesFrom(change)
-            .stream()
-            .filter(tablespace -> checkMandatoryPattern(tablespace, change))
-            .map(tablespace -> tablespace == null ? "" : tablespace)
-            .collect(Collectors.joining(","));
-        return formatMessage(invalidTablespaces, getPatternForMessage(change));
+        return Collections.emptyList();
     }
 }
