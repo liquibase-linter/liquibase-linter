@@ -23,7 +23,6 @@
           <username>SA</username>
           <password />
           <changeLogFile>changelog.xml</changeLogFile>
-          <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
         </configuration>
         <dependencies>
           <dependency>
