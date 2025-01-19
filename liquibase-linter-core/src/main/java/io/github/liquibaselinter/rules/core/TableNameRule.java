@@ -32,7 +32,7 @@ public class TableNameRule implements ChangeRule {
             .stream()
             .filter(tableName -> ruleChecker.checkMandatoryPattern(tableName, change))
             .map(tableName ->
-                new RuleViolation(messageGenerator.formatMessage(tableName, ruleConfig.getPatternString()))
+                new RuleViolation(messageGenerator.formattedMessage(tableName, ruleConfig.getPatternString()))
             )
             .collect(Collectors.toList());
     }

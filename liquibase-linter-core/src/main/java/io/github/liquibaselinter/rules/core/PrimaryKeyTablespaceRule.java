@@ -37,7 +37,7 @@ public class PrimaryKeyTablespaceRule implements ChangeRule {
             .filter(tablespace -> ruleChecker.checkMandatoryPattern(tablespace, change))
             .map(tablespace ->
                 new RuleViolation(
-                    messageGenerator.formatMessage(tablespace, messageGenerator.appliedPatternFor(change))
+                    messageGenerator.formattedMessage(tablespace, messageGenerator.appliedPatternFor(change))
                 )
             )
             .collect(Collectors.toList());

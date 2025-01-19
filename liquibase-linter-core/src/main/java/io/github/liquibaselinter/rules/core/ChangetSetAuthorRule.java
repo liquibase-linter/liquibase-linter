@@ -32,6 +32,6 @@ public class ChangetSetAuthorRule implements ChangeSetRule {
 
     private String getMessage(ChangeSet changeSet, RuleConfig ruleConfig) {
         LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
-        return messageGenerator.formatMessage(changeSet.getAuthor(), ruleConfig.getPatternString());
+        return messageGenerator.formattedMessage(changeSet.getAuthor(), ruleConfig.getPatternString());
     }
 }

@@ -36,6 +36,6 @@ public class ChangeLogFileNameRule implements ChangeLogRule {
 
     private String getMessage(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
         LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(MESSAGE, ruleConfig);
-        return messageGenerator.formatMessage(changeLog.getPhysicalFilePath(), ruleConfig.getPatternString());
+        return messageGenerator.formattedMessage(changeLog.getPhysicalFilePath(), ruleConfig.getPatternString());
     }
 }

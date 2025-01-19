@@ -34,7 +34,7 @@ public class IllegalChangeTypesRule implements ChangeRule {
         if (changeIsNotAllowed) {
             LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
             return Collections.singleton(
-                new RuleViolation(messageGenerator.formatMessage(change.getClass().getCanonicalName()))
+                new RuleViolation(messageGenerator.formattedMessage(change.getClass().getCanonicalName()))
             );
         }
 

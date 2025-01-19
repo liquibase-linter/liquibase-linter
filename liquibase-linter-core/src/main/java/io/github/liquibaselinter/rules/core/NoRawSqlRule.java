@@ -27,7 +27,7 @@ public class NoRawSqlRule implements ChangeRule {
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
         if (isInvalid(change)) {
             LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
-            return Collections.singleton(new RuleViolation(messageGenerator.getMessage()));
+            return Collections.singleton(new RuleViolation(messageGenerator.formattedMessage()));
         }
 
         return Collections.emptyList();

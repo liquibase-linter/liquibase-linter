@@ -33,7 +33,8 @@ public class TableNameLengthRule implements ChangeRule {
             .stream()
             .filter(Objects::nonNull)
             .filter(ruleChecker::checkMaxLength)
-            .map(tableName -> new RuleViolation(messageGenerator.formatMessage(tableName, ruleConfig.getMaxLength())))
+            .map(tableName -> new RuleViolation(messageGenerator.formattedMessage(tableName, ruleConfig.getMaxLength()))
+            )
             .collect(Collectors.toList());
     }
 

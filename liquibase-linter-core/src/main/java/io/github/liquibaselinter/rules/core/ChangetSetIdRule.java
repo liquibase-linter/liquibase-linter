@@ -31,7 +31,7 @@ public class ChangetSetIdRule implements ChangeSetRule {
     }
 
     private String getMessage(ChangeSet changeSet, RuleConfig ruleConfig) {
-        return new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig).formatMessage(
+        return new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig).formattedMessage(
             changeSet.getId(),
             ruleConfig.getPatternString()
         );

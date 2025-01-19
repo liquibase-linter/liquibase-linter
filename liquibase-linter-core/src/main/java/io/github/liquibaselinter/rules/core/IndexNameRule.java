@@ -33,7 +33,7 @@ public class IndexNameRule implements ChangeRule {
         if (ruleChecker.checkMandatoryPattern(createIndexChange.getIndexName(), change)) {
             LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
             return Collections.singleton(
-                new RuleViolation(messageGenerator.formatMessage(createIndexChange.getIndexName()))
+                new RuleViolation(messageGenerator.formattedMessage(createIndexChange.getIndexName()))
             );
         }
 

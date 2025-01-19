@@ -41,7 +41,7 @@ public class CreateColumnNoDefinePrimaryKeyRule implements ChangeRule {
             .map(ColumnConfig::getConstraints)
             .filter(Objects::nonNull)
             .filter(constraints -> Boolean.TRUE.equals(constraints.isPrimaryKey()))
-            .map(constraints -> new RuleViolation(messageGenerator.getMessage()))
+            .map(constraints -> new RuleViolation(messageGenerator.formattedMessage()))
             .collect(Collectors.toList());
     }
 

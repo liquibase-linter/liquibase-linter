@@ -20,17 +20,13 @@ public class LintRuleMessageGenerator {
             : ruleConfig.getPatternString();
     }
 
-    public String getMessage() {
-        return getMessageTemplate();
-    }
-
-    private String getMessageTemplate() {
+    private String errorMessageTemplate() {
         return Optional.ofNullable(ruleConfig.getErrorMessage()).orElse(defaultMessage);
     }
 
-    public String formatMessage(Object... stuff) {
+    public String formattedMessage(Object... stuff) {
         return String.format(
-            getMessageTemplate(),
+            errorMessageTemplate(),
             Arrays.stream(stuff).map(thing -> Optional.ofNullable(thing).orElse("")).toArray()
         );
     }

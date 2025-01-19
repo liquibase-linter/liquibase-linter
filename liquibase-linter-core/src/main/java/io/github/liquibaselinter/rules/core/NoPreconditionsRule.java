@@ -27,7 +27,7 @@ public class NoPreconditionsRule implements ChangeSetRule, ChangeLogRule {
     public Collection<RuleViolation> check(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
         if (isInvalid(changeLog)) {
             LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
-            return Collections.singleton(new RuleViolation(messageGenerator.getMessage()));
+            return Collections.singleton(new RuleViolation(messageGenerator.formattedMessage()));
         }
         return Collections.emptyList();
     }
@@ -36,7 +36,7 @@ public class NoPreconditionsRule implements ChangeSetRule, ChangeLogRule {
     public Collection<RuleViolation> check(ChangeSet changeSet, RuleConfig ruleConfig) {
         if (changeSet.getPreconditions() != null && !changeSet.getPreconditions().getNestedPreconditions().isEmpty()) {
             LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
-            return Collections.singleton(new RuleViolation(messageGenerator.getMessage()));
+            return Collections.singleton(new RuleViolation(messageGenerator.formattedMessage()));
         }
         return Collections.emptyList();
     }

@@ -83,7 +83,7 @@ public class ObjectNameRules {
                 .stream()
                 .filter(objectName -> ruleChecker.checkMandatoryPattern(objectName, change))
                 .map(objectName ->
-                    new RuleViolation(messageGenerator.formatMessage(objectName, ruleConfig.getPatternString()))
+                    new RuleViolation(messageGenerator.formattedMessage(objectName, ruleConfig.getPatternString()))
                 )
                 .collect(Collectors.toList());
         }
@@ -108,7 +108,7 @@ public class ObjectNameRules {
                 .stream()
                 .filter(ruleChecker::checkMaxLength)
                 .map(objectName ->
-                    new RuleViolation(messageGenerator.formatMessage(objectName, ruleConfig.getMaxLength()))
+                    new RuleViolation(messageGenerator.formattedMessage(objectName, ruleConfig.getMaxLength()))
                 )
                 .collect(Collectors.toList());
         }

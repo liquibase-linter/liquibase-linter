@@ -192,7 +192,7 @@ public class SchemaNameRules {
                 .filter(schemaName -> ruleChecker.checkMandatoryPattern(schemaName, change))
                 .distinct()
                 .map(schemaName ->
-                    new RuleViolation(messageGenerator.formatMessage(schemaName, ruleConfig.getPatternString()))
+                    new RuleViolation(messageGenerator.formattedMessage(schemaName, ruleConfig.getPatternString()))
                 )
                 .collect(Collectors.toList());
         }
@@ -217,7 +217,7 @@ public class SchemaNameRules {
                 .stream()
                 .filter(ruleChecker::checkBlank)
                 .distinct()
-                .map(schemaName -> new RuleViolation(messageGenerator.getMessage()))
+                .map(schemaName -> new RuleViolation(messageGenerator.formattedMessage()))
                 .collect(Collectors.toList());
         }
     }

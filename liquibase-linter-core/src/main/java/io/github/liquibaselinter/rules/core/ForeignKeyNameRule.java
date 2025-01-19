@@ -34,7 +34,7 @@ public class ForeignKeyNameRule implements ChangeRule {
             LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
             return Collections.singleton(
                 new RuleViolation(
-                    messageGenerator.formatMessage(
+                    messageGenerator.formattedMessage(
                         addForeignKeyConstraintChange.getConstraintName(),
                         ruleConfig.getPatternString()
                     )

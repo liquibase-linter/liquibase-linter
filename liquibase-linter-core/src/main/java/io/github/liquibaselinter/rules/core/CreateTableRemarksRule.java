@@ -31,7 +31,7 @@ public class CreateTableRemarksRule implements ChangeRule {
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         if (ruleChecker.checkNotBlank(createTableChange.getRemarks())) {
             LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
-            return Collections.singleton(new RuleViolation(messageGenerator.getMessage()));
+            return Collections.singleton(new RuleViolation(messageGenerator.formattedMessage()));
         }
 
         return Collections.emptyList();

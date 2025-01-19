@@ -37,7 +37,7 @@ public class PrimaryKeyNameRule implements ChangeRule {
             .filter(constraintName -> ruleChecker.checkMandatoryPattern(constraintName, change))
             .map(constraintName ->
                 new RuleViolation(
-                    messageGenerator.formatMessage(constraintName, messageGenerator.appliedPatternFor(change))
+                    messageGenerator.formattedMessage(constraintName, messageGenerator.appliedPatternFor(change))
                 )
             )
             .collect(Collectors.toList());

@@ -33,7 +33,7 @@ public class ModifyDataEnforceWhere implements ChangeRule {
         if (isInvalid(ruleConfig, modifyDataChange)) {
             LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
             return Collections.singleton(
-                new RuleViolation(messageGenerator.formatMessage(modifyDataChange.getTableName()))
+                new RuleViolation(messageGenerator.formattedMessage(modifyDataChange.getTableName()))
             );
         }
 

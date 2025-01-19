@@ -38,7 +38,7 @@ public class CreateColumnRemarksRule implements ChangeRule {
             .getColumns()
             .stream()
             .filter(column -> ruleChecker.checkNotBlank(column.getRemarks()))
-            .map(column -> new RuleViolation(messageGenerator.formatMessage(column.getName())))
+            .map(column -> new RuleViolation(messageGenerator.formattedMessage(column.getName())))
             .collect(Collectors.toList());
     }
 

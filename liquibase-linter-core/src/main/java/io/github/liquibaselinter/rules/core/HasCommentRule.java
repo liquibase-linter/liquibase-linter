@@ -41,6 +41,6 @@ public class HasCommentRule implements ChangeSetRule {
     }
 
     private String getMessage(RuleConfig ruleConfig) {
-        return new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig).getMessage();
+        return new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig).formattedMessage();
     }
 }

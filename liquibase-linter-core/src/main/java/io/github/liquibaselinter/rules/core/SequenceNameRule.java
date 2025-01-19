@@ -33,7 +33,7 @@ public class SequenceNameRule implements ChangeRule {
             .filter(sequenceName -> ruleChecker.checkMandatoryPattern(sequenceName, change))
             .map(sequenceName ->
                 new RuleViolation(
-                    messageGenerator.formatMessage(sequenceName, messageGenerator.appliedPatternFor(change))
+                    messageGenerator.formattedMessage(sequenceName, messageGenerator.appliedPatternFor(change))
                 )
             )
             .collect(Collectors.toList());

@@ -36,7 +36,7 @@ public class CreateColumnNullableConstraintRule implements ChangeRule {
             .getColumns()
             .stream()
             .filter(column -> column.getConstraints() == null || column.getConstraints().isNullable() == null)
-            .map(column -> new RuleViolation(messageGenerator.formatMessage(column.getName())))
+            .map(column -> new RuleViolation(messageGenerator.formattedMessage(column.getName())))
             .collect(Collectors.toList());
     }
 
