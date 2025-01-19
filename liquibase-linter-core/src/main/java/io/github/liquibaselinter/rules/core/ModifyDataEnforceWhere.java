@@ -1,46 +1,58 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
+import io.github.liquibaselinter.rules.LintRuleChecker;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.regex.Pattern;
 import liquibase.change.Change;
 import liquibase.change.core.AbstractModifyDataChange;
 
 @AutoService(ChangeRule.class)
-public class ModifyDataEnforceWhere extends AbstractLintRule implements ChangeRule {
+public class ModifyDataEnforceWhere implements ChangeRule {
 
     private static final String NAME = "modify-data-enforce-where";
-    private static final String MESSAGE = "Modify data on table '%s' must have a where condition";
+    private static final String DEFAULT_MESSAGE = "Modify data on table '%s' must have a where condition";
 
-    public ModifyDataEnforceWhere() {
-        super(NAME, MESSAGE);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public boolean supports(Change change) {
-        return change instanceof AbstractModifyDataChange;
-    }
+    public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
+        if (!(change instanceof AbstractModifyDataChange)) {
+            return Collections.emptyList();
+        }
 
-    @Override
-    public boolean invalid(Change change) {
         AbstractModifyDataChange modifyDataChange = (AbstractModifyDataChange) change;
+        if (isInvalid(ruleConfig, modifyDataChange)) {
+            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return Collections.singleton(
+                new RuleViolation(messageGenerator.formatMessage(modifyDataChange.getTableName()))
+            );
+        }
+
+        return Collections.emptyList();
+    }
+
+    private boolean isInvalid(RuleConfig ruleConfig, AbstractModifyDataChange modifyDataChange) {
+        LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         return (
-            matchesTableName(modifyDataChange.getTableName()) &&
-            (checkNotBlank(modifyDataChange.getWhere()) || checkPattern(modifyDataChange.getWhere(), modifyDataChange))
+            matchesTableName(ruleConfig, modifyDataChange.getTableName()) &&
+            (ruleChecker.checkNotBlank(modifyDataChange.getWhere()) ||
+                ruleChecker.checkPattern(modifyDataChange.getWhere(), modifyDataChange))
         );
     }
 
-    @Override
-    public String getMessage(Change change) {
-        AbstractModifyDataChange modifyDataChange = (AbstractModifyDataChange) change;
-        return formatMessage(modifyDataChange.getTableName());
-    }
-
-    private boolean matchesTableName(String tableName) {
-        if (getConfig().getValues() == null || getConfig().getValues().isEmpty()) {
+    private boolean matchesTableName(RuleConfig ruleConfig, String tableName) {
+        if (ruleConfig.getValues() == null) {
             return true;
         }
-        return getConfig().getValues().stream().anyMatch(value -> Pattern.compile(value).matcher(tableName).matches());
+        return ruleConfig.getValues().stream().anyMatch(value -> Pattern.compile(value).matcher(tableName).matches());
     }
 }

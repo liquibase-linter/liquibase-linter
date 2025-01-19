@@ -1,47 +1,51 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
+import java.util.Collection;
+import java.util.Collections;
 import liquibase.change.Change;
 import liquibase.change.DatabaseChange;
 
 @AutoService(ChangeRule.class)
-public class IllegalChangeTypesRule extends AbstractLintRule implements ChangeRule {
+public class IllegalChangeTypesRule implements ChangeRule {
 
     private static final String NAME = "illegal-change-types";
-    private static final String MESSAGE = "Change type '%s' is not allowed in this project";
+    private static final String DEFAULT_MESSAGE = "Change type '%s' is not allowed in this project";
 
-    public IllegalChangeTypesRule() {
-        super(NAME, MESSAGE);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public boolean supports(Change change) {
-        return true;
-    }
-
-    @Override
-    public boolean invalid(Change change) {
+    public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
         if (ruleConfig.getValues() == null) {
-            return false;
+            return Collections.emptyList();
         }
-        return ruleConfig
+
+        boolean changeIsNotAllowed = ruleConfig
             .getValues()
             .stream()
             .anyMatch(illegal -> getChangeName(change).equals(illegal) || getChangeClassName(change).equals(illegal));
+        if (changeIsNotAllowed) {
+            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return Collections.singleton(
+                new RuleViolation(messageGenerator.formatMessage(change.getClass().getCanonicalName()))
+            );
+        }
+
+        return Collections.emptyList();
     }
 
-    private String getChangeClassName(Change change) {
+    private static String getChangeClassName(Change change) {
         return change.getClass().getName();
     }
 
-    private String getChangeName(Change change) {
+    private static String getChangeName(Change change) {
         return change.getClass().getAnnotation(DatabaseChange.class).name();
-    }
-
-    @Override
-    public String getMessage(Change change) {
-        return formatMessage(change.getClass().getCanonicalName());
     }
 }

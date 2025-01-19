@@ -1,20 +1,28 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
+import io.github.liquibaselinter.rules.LintRuleChecker;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import liquibase.change.Change;
 import liquibase.change.ColumnConfig;
-import liquibase.change.core.*;
+import liquibase.change.core.AddColumnChange;
+import liquibase.change.core.AddForeignKeyConstraintChange;
+import liquibase.change.core.AddPrimaryKeyChange;
+import liquibase.change.core.AddUniqueConstraintChange;
+import liquibase.change.core.CreateIndexChange;
+import liquibase.change.core.CreateTableChange;
+import liquibase.change.core.CreateViewChange;
+import liquibase.change.core.MergeColumnChange;
+import liquibase.change.core.RenameColumnChange;
+import liquibase.change.core.RenameViewChange;
 
 public class ObjectNameRules {
-
-    private static boolean doesSupport(Change change) {
-        return !getObjectNames(change).isEmpty();
-    }
 
     private static Collection<String> getObjectNames(Change change) {
         if (change instanceof AddColumnChange) {
@@ -22,88 +30,87 @@ public class ObjectNameRules {
                 .stream()
                 .map(ColumnConfig::getName)
                 .collect(Collectors.toList());
-        } else if (change instanceof AddForeignKeyConstraintChange) {
+        }
+        if (change instanceof AddForeignKeyConstraintChange) {
             return Collections.singletonList(((AddForeignKeyConstraintChange) change).getConstraintName());
-        } else if (change instanceof AddPrimaryKeyChange) {
+        }
+        if (change instanceof AddPrimaryKeyChange) {
             return Collections.singletonList(((AddPrimaryKeyChange) change).getConstraintName());
-        } else if (change instanceof AddUniqueConstraintChange) {
+        }
+        if (change instanceof AddUniqueConstraintChange) {
             return Collections.singletonList(((AddUniqueConstraintChange) change).getConstraintName());
-        } else if (change instanceof CreateTableChange) {
+        }
+        if (change instanceof CreateTableChange) {
             return ((CreateTableChange) change).getColumns()
                 .stream()
                 .map(ColumnConfig::getName)
                 .collect(Collectors.toList());
-        } else if (change instanceof MergeColumnChange) {
+        }
+        if (change instanceof MergeColumnChange) {
             return Collections.singletonList(((MergeColumnChange) change).getFinalColumnName());
-        } else if (change instanceof RenameColumnChange) {
+        }
+        if (change instanceof RenameColumnChange) {
             return Collections.singletonList(((RenameColumnChange) change).getNewColumnName());
-        } else if (change instanceof RenameViewChange) {
+        }
+        if (change instanceof RenameViewChange) {
             return Collections.singletonList(((RenameViewChange) change).getNewViewName());
-        } else if (change instanceof CreateViewChange) {
+        }
+        if (change instanceof CreateViewChange) {
             return Collections.singletonList(((CreateViewChange) change).getViewName());
-        } else if (change instanceof CreateIndexChange) {
+        }
+        if (change instanceof CreateIndexChange) {
             return Collections.singletonList(((CreateIndexChange) change).getIndexName());
         }
         return Collections.emptyList();
     }
 
     @AutoService(ChangeRule.class)
-    public static class ObjectNameRule extends AbstractLintRule implements ChangeRule {
+    public static class ObjectNameRule implements ChangeRule {
 
         private static final String NAME = "object-name";
-        private static final String MESSAGE = "Object name does not follow pattern";
+        private static final String DEFAULT_MESSAGE = "Object name does not follow pattern";
 
-        public ObjectNameRule() {
-            super(NAME, MESSAGE);
+        @Override
+        public String getName() {
+            return NAME;
         }
 
         @Override
-        public boolean supports(Change change) {
-            return doesSupport(change);
-        }
-
-        @Override
-        public boolean invalid(Change change) {
-            return getObjectNames(change).stream().anyMatch(objectName -> checkMandatoryPattern(objectName, change));
-        }
-
-        @Override
-        public String getMessage(Change change) {
-            String joined = getObjectNames(change)
+        public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
+            LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
+            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return getObjectNames(change)
                 .stream()
-                .filter(objectName -> checkMandatoryPattern(objectName, change))
-                .collect(Collectors.joining(","));
-            return formatMessage(joined, getConfig().getPatternString());
+                .filter(objectName -> ruleChecker.checkMandatoryPattern(objectName, change))
+                .map(objectName ->
+                    new RuleViolation(messageGenerator.formatMessage(objectName, ruleConfig.getPatternString()))
+                )
+                .collect(Collectors.toList());
         }
     }
 
     @AutoService(ChangeRule.class)
-    public static class ObjectNameLengthRule extends AbstractLintRule implements ChangeRule {
+    public static class ObjectNameLengthRule implements ChangeRule {
 
         private static final String NAME = "object-name-length";
-        private static final String MESSAGE = "Object name '%s' must be less than %d characters";
+        private static final String DEFAULT_MESSAGE = "Object name '%s' must be less than %d characters";
 
-        public ObjectNameLengthRule() {
-            super(NAME, MESSAGE);
+        @Override
+        public String getName() {
+            return NAME;
         }
 
         @Override
-        public boolean supports(Change change) {
-            return doesSupport(change);
-        }
-
-        @Override
-        public boolean invalid(Change change) {
-            return getObjectNames(change).stream().anyMatch(this::checkMaxLength);
-        }
-
-        @Override
-        public String getMessage(Change change) {
-            String joined = getObjectNames(change)
+        public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
+            LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
+            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return getObjectNames(change)
                 .stream()
-                .filter(this::checkMaxLength)
-                .collect(Collectors.joining(","));
-            return formatMessage(joined, getConfig().getMaxLength());
+                .filter(ruleChecker::checkMaxLength)
+                .map(objectName ->
+                    new RuleViolation(messageGenerator.formatMessage(objectName, ruleConfig.getMaxLength()))
+                )
+                .collect(Collectors.toList());
         }
     }
 }

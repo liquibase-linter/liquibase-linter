@@ -130,7 +130,10 @@ class ObjectNameRuleTest {
         assertThat(rule)
             .withConfig(ruleConfig)
             .checkingChange(getAddColumnChange("&VALUE", "&VALUE2"))
-            .hasExactlyViolationsMessages("Object name '&VALUE,&VALUE2' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'");
+            .hasExactlyViolationsMessages(
+                "Object name '&VALUE' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'",
+                "Object name '&VALUE2' must follow pattern '^(?!_)[A-Z_0-9]+(?<!_)$'"
+            );
     }
 
     private AddColumnChange getAddColumnChange(String... columnNames) {

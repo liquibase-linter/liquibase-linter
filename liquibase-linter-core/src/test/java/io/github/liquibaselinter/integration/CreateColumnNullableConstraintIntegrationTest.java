@@ -8,7 +8,7 @@ class CreateColumnNullableConstraintIntegrationTest extends LinterIntegrationTes
             "Should fail when create column does not have a constraints tag with a populated nullable attribute",
             "create-column-nullable-constraint/create-column-nullable-constraint-fail.xml",
             "create-column-nullable-constraint/lqlint.json",
-            "Add column must specify nullable constraint"
+            "Add column 'TEST_COLUMN' must specify nullable constraint"
         );
 
         shouldPass(
@@ -21,7 +21,7 @@ class CreateColumnNullableConstraintIntegrationTest extends LinterIntegrationTes
             "Should fail when create table column does not have a constraints tag with a populated nullable attribute",
             "create-column-nullable-constraint/create-column-nullable-constraint-fail-create-table.xml",
             "create-column-nullable-constraint/lqlint.json",
-            "Add column must specify nullable constraint"
+            "Add column 'TEST_COLUMN' must specify nullable constraint"
         );
     }
 }

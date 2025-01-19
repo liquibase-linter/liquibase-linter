@@ -1,35 +1,47 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
+import io.github.liquibaselinter.rules.LintRuleChecker;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
+import java.util.Collection;
+import java.util.Collections;
 import liquibase.change.Change;
 import liquibase.change.core.AddUniqueConstraintChange;
 
 @AutoService(ChangeRule.class)
-public class UniqueConstraintNameRule extends AbstractLintRule implements ChangeRule {
+public class UniqueConstraintNameRule implements ChangeRule {
 
     private static final String NAME = "unique-constraint-name";
-    private static final String MESSAGE = "Unique constraint name does not follow pattern";
+    private static final String DEFAULT_MESSAGE = "Unique constraint name does not follow pattern";
 
-    public UniqueConstraintNameRule() {
-        super(NAME, MESSAGE);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public boolean supports(Change change) {
-        return change instanceof AddUniqueConstraintChange;
-    }
+    public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
+        if (!(change instanceof AddUniqueConstraintChange)) {
+            return Collections.emptyList();
+        }
 
-    @Override
-    public boolean invalid(Change change) {
+        LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         AddUniqueConstraintChange addUniqueConstraintChange = (AddUniqueConstraintChange) change;
-        return checkMandatoryPattern(addUniqueConstraintChange.getConstraintName(), change);
-    }
+        if (ruleChecker.checkMandatoryPattern(addUniqueConstraintChange.getConstraintName(), change)) {
+            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return Collections.singleton(
+                new RuleViolation(
+                    messageGenerator.formatMessage(
+                        addUniqueConstraintChange.getConstraintName(),
+                        messageGenerator.appliedPatternFor(change)
+                    )
+                )
+            );
+        }
 
-    @Override
-    public String getMessage(Change change) {
-        AddUniqueConstraintChange addUniqueConstraintChange = (AddUniqueConstraintChange) change;
-        return formatMessage(addUniqueConstraintChange.getConstraintName(), getConfig().getPatternString());
+        return Collections.emptyList();
     }
 }

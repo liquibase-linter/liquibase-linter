@@ -1,8 +1,11 @@
 package io.github.liquibaselinter.rules.core;
 
 import com.google.auto.service.AutoService;
-import io.github.liquibaselinter.rules.AbstractLintRule;
+import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
+import io.github.liquibaselinter.rules.LintRuleChecker;
+import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -15,24 +18,39 @@ import liquibase.change.core.AddPrimaryKeyChange;
 import liquibase.change.core.CreateTableChange;
 
 @AutoService(ChangeRule.class)
-public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule {
+public class PrimaryKeyNameRule implements ChangeRule {
 
     private static final String NAME = "primary-key-name";
-    private static final String MESSAGE = "Primary key name '%s' is missing or does not follow pattern '%s'";
+    private static final String DEFAULT_MESSAGE = "Primary key name '%s' is missing or does not follow pattern '%s'";
 
-    public PrimaryKeyNameRule() {
-        super(NAME, MESSAGE);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public boolean supports(Change change) {
-        if (change.getClass().isAssignableFrom(AddPrimaryKeyChange.class)) {
-            return true;
+    public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
+        LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
+        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+        return extractConstraintNamesFrom(change)
+            .stream()
+            .filter(constraintName -> ruleChecker.checkMandatoryPattern(constraintName, change))
+            .map(constraintName ->
+                new RuleViolation(
+                    messageGenerator.formatMessage(constraintName, messageGenerator.appliedPatternFor(change))
+                )
+            )
+            .collect(Collectors.toList());
+    }
+
+    private Collection<String> extractConstraintNamesFrom(Change change) {
+        if (change instanceof AddPrimaryKeyChange) {
+            return Collections.singleton(((AddPrimaryKeyChange) change).getConstraintName());
         }
-        if (change.getClass().isAssignableFrom(CreateTableChange.class)) {
-            return !primaryKeyNamesFromCreateTable((CreateTableChange) change).isEmpty();
+        if (change instanceof CreateTableChange) {
+            return primaryKeyNamesFromCreateTable((CreateTableChange) change);
         }
-        return false;
+        return Collections.emptyList();
     }
 
     private static List<String> primaryKeyNamesFromCreateTable(CreateTableChange change) {
@@ -50,32 +68,5 @@ public class PrimaryKeyNameRule extends AbstractLintRule implements ChangeRule {
             .map(ConstraintsConfig::getPrimaryKeyName)
             .distinct()
             .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean invalid(Change change) {
-        return extractConstraintNamesFrom(change)
-            .stream()
-            .anyMatch(constraintName -> checkMandatoryPattern(constraintName, change));
-    }
-
-    private Collection<String> extractConstraintNamesFrom(Change change) {
-        if (change instanceof AddPrimaryKeyChange) {
-            return Collections.singleton(((AddPrimaryKeyChange) change).getConstraintName());
-        }
-        if (change instanceof CreateTableChange) {
-            return primaryKeyNamesFromCreateTable((CreateTableChange) change);
-        }
-        throw new IllegalStateException("Can't retrieve constraint names from " + change.getClass());
-    }
-
-    @Override
-    public String getMessage(Change change) {
-        String invalidPrimaryKeys = extractConstraintNamesFrom(change)
-            .stream()
-            .filter(constraintName -> checkMandatoryPattern(constraintName, change))
-            .map(constraintName -> constraintName == null ? "" : constraintName)
-            .collect(Collectors.joining(","));
-        return formatMessage(invalidPrimaryKeys, getPatternForMessage(change));
     }
 }
