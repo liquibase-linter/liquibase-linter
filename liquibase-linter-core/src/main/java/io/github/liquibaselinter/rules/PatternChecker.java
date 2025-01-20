@@ -1,9 +1,9 @@
-package io.github.liquibaselinter.rules.checker;
+package io.github.liquibaselinter.rules;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.regex.Matcher;
 
-public class PatternChecker {
+class PatternChecker {
 
     private final RuleConfig ruleConfig;
 

@@ -9,7 +9,6 @@ import io.github.liquibaselinter.report.ReportItem;
 import io.github.liquibaselinter.rules.ChangeLogRule;
 import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.rules.ChangeSetRule;
-import io.github.liquibaselinter.rules.ConditionHelper;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.ArrayList;
 import java.util.Arrays;

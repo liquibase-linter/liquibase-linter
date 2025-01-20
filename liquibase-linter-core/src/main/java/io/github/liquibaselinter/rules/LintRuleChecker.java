@@ -1,7 +1,6 @@
 package io.github.liquibaselinter.rules;
 
 import io.github.liquibaselinter.config.RuleConfig;
-import io.github.liquibaselinter.rules.checker.PatternChecker;
 import java.util.Optional;
 
 public class LintRuleChecker {
