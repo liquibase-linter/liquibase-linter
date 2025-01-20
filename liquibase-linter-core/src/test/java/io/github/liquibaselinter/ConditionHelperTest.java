@@ -1,4 +1,4 @@
-package io.github.liquibaselinter.rules;
+package io.github.liquibaselinter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package io.github.liquibaselinter.rules;
+package io.github.liquibaselinter;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 
-public final class ConditionHelper {
+final class ConditionHelper {
 
     private ConditionHelper() {}
 
