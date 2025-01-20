@@ -3,7 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeSetRule;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,12 +23,9 @@ public class HasContextRule implements ChangeSetRule {
     @Override
     public Collection<RuleViolation> check(ChangeSet changeSet, RuleConfig ruleConfig) {
         if (changeSet.getContextFilter().isEmpty()) {
-            return Collections.singleton(new RuleViolation(getMessage(ruleConfig)));
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return Collections.singleton(violations.withFormattedMessage());
         }
         return Collections.emptyList();
-    }
-
-    private String getMessage(RuleConfig ruleConfig) {
-        return new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig).formattedMessage();
     }
 }

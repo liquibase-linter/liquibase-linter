@@ -3,7 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,13 +30,13 @@ public class CreateColumnNullableConstraintRule implements ChangeRule {
             return Collections.emptyList();
         }
 
-        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+        LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
         ChangeWithColumns<?> changeWithColumns = (ChangeWithColumns<?>) change;
         return changeWithColumns
             .getColumns()
             .stream()
             .filter(column -> column.getConstraints() == null || column.getConstraints().isNullable() == null)
-            .map(column -> new RuleViolation(messageGenerator.formattedMessage(column.getName())))
+            .map(column -> violations.withFormattedMessage(column.getName()))
             .collect(Collectors.toList());
     }
 

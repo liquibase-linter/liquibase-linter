@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,15 +27,11 @@ public class SequenceNameRule implements ChangeRule {
     @Override
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
-        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+        LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
         return getSequencesName(change)
             .stream()
             .filter(sequenceName -> ruleChecker.checkMandatoryPattern(sequenceName, change))
-            .map(sequenceName ->
-                new RuleViolation(
-                    messageGenerator.formattedMessage(sequenceName, ruleConfig.effectivePatternFor(change))
-                )
-            )
+            .map(sequenceName -> violations.withFormattedMessage(sequenceName, ruleConfig.effectivePatternFor(change)))
             .collect(Collectors.toList());
     }
 

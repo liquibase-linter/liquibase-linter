@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeSetRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,13 +25,11 @@ public class ChangetSetAuthorRule implements ChangeSetRule {
     public Collection<RuleViolation> check(ChangeSet changeSet, RuleConfig ruleConfig) {
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         if (ruleChecker.checkMandatoryPattern(changeSet.getAuthor(), changeSet)) {
-            return Collections.singleton(new RuleViolation(getMessage(changeSet, ruleConfig)));
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return Collections.singleton(
+                violations.withFormattedMessage(changeSet.getAuthor(), ruleConfig.getPatternString())
+            );
         }
         return Collections.emptyList();
-    }
-
-    private String getMessage(ChangeSet changeSet, RuleConfig ruleConfig) {
-        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
-        return messageGenerator.formattedMessage(changeSet.getAuthor(), ruleConfig.getPatternString());
     }
 }

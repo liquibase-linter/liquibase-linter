@@ -3,7 +3,7 @@ package io.github.liquibaselinter.rules.core;
 import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,10 +32,8 @@ public class IllegalChangeTypesRule implements ChangeRule {
             .stream()
             .anyMatch(illegal -> getChangeName(change).equals(illegal) || getChangeClassName(change).equals(illegal));
         if (changeIsNotAllowed) {
-            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
-            return Collections.singleton(
-                new RuleViolation(messageGenerator.formattedMessage(change.getClass().getCanonicalName()))
-            );
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return Collections.singleton(violations.withFormattedMessage(change.getClass().getCanonicalName()));
         }
 
         return Collections.emptyList();

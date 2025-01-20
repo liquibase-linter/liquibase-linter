@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Arrays;
 import java.util.Collection;
@@ -186,14 +186,12 @@ public class SchemaNameRules {
         @Override
         public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
             LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
-            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
             return getSchemaName(change)
                 .stream()
                 .filter(schemaName -> ruleChecker.checkMandatoryPattern(schemaName, change))
                 .distinct()
-                .map(schemaName ->
-                    new RuleViolation(messageGenerator.formattedMessage(schemaName, ruleConfig.getPatternString()))
-                )
+                .map(schemaName -> violations.withFormattedMessage(schemaName, ruleConfig.getPatternString()))
                 .collect(Collectors.toList());
         }
     }
@@ -212,12 +210,12 @@ public class SchemaNameRules {
         @Override
         public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
             LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
-            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
             return getSchemaName(change)
                 .stream()
                 .filter(ruleChecker::checkBlank)
                 .distinct()
-                .map(schemaName -> new RuleViolation(messageGenerator.formattedMessage()))
+                .map(schemaName -> violations.withFormattedMessage())
                 .collect(Collectors.toList());
         }
     }

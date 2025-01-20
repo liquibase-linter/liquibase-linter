@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,13 +31,11 @@ public class UniqueConstraintNameRule implements ChangeRule {
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         AddUniqueConstraintChange addUniqueConstraintChange = (AddUniqueConstraintChange) change;
         if (ruleChecker.checkMandatoryPattern(addUniqueConstraintChange.getConstraintName(), change)) {
-            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
             return Collections.singleton(
-                new RuleViolation(
-                    messageGenerator.formattedMessage(
-                        addUniqueConstraintChange.getConstraintName(),
-                        ruleConfig.effectivePatternFor(change)
-                    )
+                violations.withFormattedMessage(
+                    addUniqueConstraintChange.getConstraintName(),
+                    ruleConfig.effectivePatternFor(change)
                 )
             );
         }
