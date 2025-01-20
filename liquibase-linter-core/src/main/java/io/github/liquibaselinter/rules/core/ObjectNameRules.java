@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -78,13 +78,11 @@ public class ObjectNameRules {
         @Override
         public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
             LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
-            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
             return getObjectNames(change)
                 .stream()
                 .filter(objectName -> ruleChecker.checkMandatoryPattern(objectName, change))
-                .map(objectName ->
-                    new RuleViolation(messageGenerator.formatMessage(objectName, ruleConfig.getPatternString()))
-                )
+                .map(objectName -> violations.withFormattedMessage(objectName, ruleConfig.getPatternString()))
                 .collect(Collectors.toList());
         }
     }
@@ -103,13 +101,11 @@ public class ObjectNameRules {
         @Override
         public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
             LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
-            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
             return getObjectNames(change)
                 .stream()
                 .filter(ruleChecker::checkMaxLength)
-                .map(objectName ->
-                    new RuleViolation(messageGenerator.formatMessage(objectName, ruleConfig.getMaxLength()))
-                )
+                .map(objectName -> violations.withFormattedMessage(objectName, ruleConfig.getMaxLength()))
                 .collect(Collectors.toList());
         }
     }

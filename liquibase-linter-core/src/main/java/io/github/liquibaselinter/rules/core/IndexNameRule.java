@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,10 +31,8 @@ public class IndexNameRule implements ChangeRule {
         CreateIndexChange createIndexChange = (CreateIndexChange) change;
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         if (ruleChecker.checkMandatoryPattern(createIndexChange.getIndexName(), change)) {
-            LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
-            return Collections.singleton(
-                new RuleViolation(messageGenerator.formatMessage(createIndexChange.getIndexName()))
-            );
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
+            return Collections.singleton(violations.withFormattedMessage(createIndexChange.getIndexName()));
         }
 
         return Collections.emptyList();

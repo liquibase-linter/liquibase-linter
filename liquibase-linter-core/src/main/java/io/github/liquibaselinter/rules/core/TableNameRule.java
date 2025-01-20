@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,13 +27,11 @@ public class TableNameRule implements ChangeRule {
     @Override
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
-        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(DEFAULT_MESSAGE, ruleConfig);
+        LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
         return getTablesName(change)
             .stream()
             .filter(tableName -> ruleChecker.checkMandatoryPattern(tableName, change))
-            .map(tableName ->
-                new RuleViolation(messageGenerator.formatMessage(tableName, ruleConfig.getPatternString()))
-            )
+            .map(tableName -> violations.withFormattedMessage(tableName, ruleConfig.getPatternString()))
             .collect(Collectors.toList());
     }
 

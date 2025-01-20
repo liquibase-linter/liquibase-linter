@@ -4,7 +4,7 @@ import com.google.auto.service.AutoService;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.rules.ChangeLogRule;
 import io.github.liquibaselinter.rules.LintRuleChecker;
-import io.github.liquibaselinter.rules.LintRuleMessageGenerator;
+import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +24,10 @@ public class ChangeLogFileNameRule implements ChangeLogRule {
     @Override
     public Collection<RuleViolation> check(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
         if (isInvalid(changeLog, ruleConfig)) {
-            return Collections.singleton(new RuleViolation(getMessage(changeLog, ruleConfig)));
+            LintRuleViolationGenerator violations = new LintRuleViolationGenerator(MESSAGE, ruleConfig);
+            return Collections.singleton(
+                violations.withFormattedMessage(changeLog.getPhysicalFilePath(), ruleConfig.getPatternString())
+            );
         }
         return Collections.emptyList();
     }
@@ -32,10 +35,5 @@ public class ChangeLogFileNameRule implements ChangeLogRule {
     private boolean isInvalid(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         return ruleChecker.checkMandatoryPattern(changeLog.getPhysicalFilePath(), changeLog);
-    }
-
-    private String getMessage(DatabaseChangeLog changeLog, RuleConfig ruleConfig) {
-        LintRuleMessageGenerator messageGenerator = new LintRuleMessageGenerator(MESSAGE, ruleConfig);
-        return messageGenerator.formatMessage(changeLog.getPhysicalFilePath(), ruleConfig.getPatternString());
     }
 }
