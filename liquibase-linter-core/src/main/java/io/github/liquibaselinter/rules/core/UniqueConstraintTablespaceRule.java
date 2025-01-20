@@ -38,7 +38,7 @@ public class UniqueConstraintTablespaceRule implements ChangeRule {
                     messageGenerator.formattedMessage(
                         addUniqueConstraintChange.getTablespace(),
                         addUniqueConstraintChange.getConstraintName(),
-                        messageGenerator.appliedPatternFor(change)
+                        ruleConfig.effectivePatternFor(change)
                     )
                 )
             );

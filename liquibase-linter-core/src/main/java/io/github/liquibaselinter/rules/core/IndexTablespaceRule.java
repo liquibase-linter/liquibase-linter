@@ -38,7 +38,7 @@ public class IndexTablespaceRule implements ChangeRule {
                     messageGenerator.formattedMessage(
                         createIndexChange.getTablespace(),
                         createIndexChange.getIndexName(),
-                        messageGenerator.appliedPatternFor(change)
+                        ruleConfig.effectivePatternFor(change)
                     )
                 )
             );

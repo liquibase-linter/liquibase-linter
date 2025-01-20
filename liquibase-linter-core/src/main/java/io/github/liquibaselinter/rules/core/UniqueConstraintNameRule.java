@@ -36,7 +36,7 @@ public class UniqueConstraintNameRule implements ChangeRule {
                 new RuleViolation(
                     messageGenerator.formattedMessage(
                         addUniqueConstraintChange.getConstraintName(),
-                        messageGenerator.appliedPatternFor(change)
+                        ruleConfig.effectivePatternFor(change)
                     )
                 )
             );

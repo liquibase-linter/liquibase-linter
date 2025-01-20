@@ -125,6 +125,13 @@ public final class RuleConfig {
         return enableAfter != null && !enableAfter.isEmpty();
     }
 
+    public String effectivePatternFor(Object subject) {
+        if (!hasDynamicPattern()) {
+            return getPatternString();
+        }
+        return getDynamicPattern(getDynamicValue(subject)).pattern();
+    }
+
     public static class RuleConfigBuilder {
 
         private boolean enabled = true;

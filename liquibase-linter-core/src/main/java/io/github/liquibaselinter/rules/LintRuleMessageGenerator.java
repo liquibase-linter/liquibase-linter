@@ -14,12 +14,6 @@ public class LintRuleMessageGenerator {
         this.ruleConfig = ruleConfig;
     }
 
-    public String appliedPatternFor(Object subject) {
-        return ruleConfig.hasDynamicPattern()
-            ? ruleConfig.getDynamicPattern(ruleConfig.getDynamicValue(subject)).pattern()
-            : ruleConfig.getPatternString();
-    }
-
     private String errorMessageTemplate() {
         return Optional.ofNullable(ruleConfig.getErrorMessage()).orElse(defaultMessage);
     }
