@@ -8,7 +8,7 @@ class AggregateErrorsIntegrationTest extends LinterIntegrationTest {
             "Should aggregate errors",
             "aggregate-errors/aggregate-errors.xml",
             "aggregate-errors/aggregate-errors.json",
-            "Linting failed with 3 errors"
+            "Linting failed with 3 errors: \n - Change set must have a comment\n - Should have at least one context on the change set\n - Preconditions are not allowed in this project"
         );
     }
 }
