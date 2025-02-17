@@ -14,7 +14,7 @@
   <artifactId>liquibase-linter-core</artifactId>
 
   <properties>
-    <commons-beanutils.version>1.10.0</commons-beanutils.version>
+    <commons-beanutils.version>1.10.1</commons-beanutils.version>
     <commons-lang3.version>3.17.0</commons-lang3.version>
     <jackson.version>2.18.2</jackson.version>
     <jansi.version>2.4.1</jansi.version>
