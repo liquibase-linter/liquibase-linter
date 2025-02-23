@@ -1,10 +1,13 @@
 {
-  "fail-fast": true,
   "rules": {
     "column-type": [
       {
-        "enabled": true,
-        "pattern": "^varchar2$"
+        "columnCondition": "name == 'reference'",
+        "pattern": "^varchar2\\(30\\)$"
+      },
+      {
+        "columnCondition": "name == 'id'",
+        "pattern": "^int$"
       }
     ]
   }

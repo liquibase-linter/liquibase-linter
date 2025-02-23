@@ -19,6 +19,7 @@ public final class RuleConfig {
     private final boolean enabled;
     private final String condition;
     private final String patternString;
+    private final String columnCondition;
     private final String dynamicValue;
     private final List<String> values;
     private final Integer maxLength;
@@ -26,12 +27,14 @@ public final class RuleConfig {
     private final String enableAfter;
     private Pattern pattern;
     private Expression conditionExpression;
+    private Expression columnConditionExpression;
     private Expression dynamicValueExpression;
 
     private RuleConfig(RuleConfigBuilder builder) {
         this.enabled = builder.enabled;
         this.errorMessage = builder.errorMessage;
         this.condition = builder.condition;
+        this.columnCondition = builder.columnCondition;
         this.patternString = builder.pattern;
         this.dynamicValue = builder.dynamicValue;
         this.values = builder.values;
@@ -73,6 +76,16 @@ public final class RuleConfig {
 
     public String getPatternString() {
         return patternString;
+    }
+
+    public Optional<Expression> getConditionalColumnExpression() {
+        if (columnCondition == null) {
+            return Optional.empty();
+        }
+        if (columnConditionExpression == null) {
+            columnConditionExpression = new SpelExpressionParser().parseExpression(columnCondition);
+        }
+        return Optional.of(columnConditionExpression);
     }
 
     public Optional<Expression> getConditionalExpression() {
@@ -137,6 +150,7 @@ public final class RuleConfig {
         private boolean enabled = true;
         private String errorMessage;
         private String condition;
+        private String columnCondition;
         private String pattern;
         private String dynamicValue;
         private List<String> values;
@@ -158,6 +172,12 @@ public final class RuleConfig {
         @JsonProperty("condition")
         public RuleConfigBuilder withCondition(String condition) {
             this.condition = condition;
+            return this;
+        }
+
+        @JsonProperty("columnCondition")
+        public RuleConfigBuilder withColumnCondition(String columnCondition) {
+            this.columnCondition = columnCondition;
             return this;
         }
 

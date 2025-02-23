@@ -2,6 +2,7 @@ package io.github.liquibaselinter.rules;
 
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.Optional;
+import liquibase.change.ColumnConfig;
 
 public class LintRuleChecker {
 
@@ -35,5 +36,12 @@ public class LintRuleChecker {
 
     public boolean checkMaxLength(String value) {
         return value != null && value.length() > ruleConfig.getMaxLength();
+    }
+
+    public boolean columnConditionIsSatisfied(ColumnConfig column) {
+        return ruleConfig
+            .getConditionalColumnExpression()
+            .map(expression -> expression.getValue(column, boolean.class))
+            .orElse(true);
     }
 }

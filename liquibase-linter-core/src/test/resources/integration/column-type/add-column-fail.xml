@@ -5,7 +5,8 @@
 >
   <changeSet author="liquibase-linter" context="" id="201811070940">
     <addColumn tableName="TEST_TABLE">
-      <column name="reference" type="int" />
+      <column name="reference" type="varchar2(50)" />
+      <column name="id" type="uuid" />
     </addColumn>
   </changeSet>
 </databaseChangeLog>

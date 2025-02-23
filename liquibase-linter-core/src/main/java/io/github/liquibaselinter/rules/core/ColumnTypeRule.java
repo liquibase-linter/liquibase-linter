@@ -38,6 +38,7 @@ public class ColumnTypeRule implements ChangeRule {
 
         return getColumns(change)
             .stream()
+            .filter(ruleChecker::columnConditionIsSatisfied)
             .filter(column -> ruleChecker.checkMandatoryPattern(column.getType(), change))
             .map(column ->
                 violations.withFormattedMessage(column.getType(), column.getName(), ruleConfig.getPatternString())
