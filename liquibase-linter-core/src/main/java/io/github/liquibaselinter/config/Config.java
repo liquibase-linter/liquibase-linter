@@ -269,7 +269,7 @@ public final class Config {
             final ImmutableListMultimap.Builder<String, RuleConfig> ruleConfigs = new ImmutableListMultimap.Builder<>();
             config.forEach((key, value) -> {
                 if (value instanceof List) {
-                    ((List) value).forEach(item -> populateConfigValue(ruleConfigs, key, item));
+                    ((List<?>) value).forEach(item -> populateConfigValue(ruleConfigs, key, item));
                 } else {
                     populateConfigValue(ruleConfigs, key, value);
                 }
