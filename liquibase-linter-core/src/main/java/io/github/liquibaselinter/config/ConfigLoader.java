@@ -8,12 +8,12 @@ import io.github.liquibaselinter.report.ConsoleReporter;
 import io.github.liquibaselinter.report.Reporter;
 import io.github.liquibaselinter.report.ReporterConfig;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import liquibase.exception.UnexpectedLiquibaseException;
+import liquibase.resource.Resource;
 import liquibase.resource.ResourceAccessor;
 
 public final class ConfigLoader {
@@ -52,13 +52,17 @@ public final class ConfigLoader {
     }
 
     public static Config loadConfig(ResourceAccessor resourceAccessor, String path) throws IOException {
-        try (InputStream stream = resourceAccessor.openStream(null, path)) {
-            if (stream != null) {
-                final Config config = Config.fromInputStream(stream);
-                if (config != null) {
-                    return loadImports(resourceAccessor, config);
-                }
+        try {
+            Resource resource = resourceAccessor.get(path);
+            if (resource == null || !resource.exists()) {
+                return null;
             }
+            Config config = Config.fromInputStream(resource.openInputStream());
+            if (config != null) {
+                return loadImports(resourceAccessor, config);
+            }
+        } catch (IOException e) {
+            return null;
         }
         return null;
     }

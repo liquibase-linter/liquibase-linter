@@ -10,13 +10,18 @@ import io.github.liquibaselinter.config.ConfigLoader;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.ReportItem;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import liquibase.ContextExpression;
 import liquibase.Scope;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
+import liquibase.resource.Resource;
 import liquibase.resource.ResourceAccessor;
 import org.apache.commons.lang3.StringUtils;
 
@@ -129,8 +134,9 @@ public class ChangeLogLinter {
             for (String path : paths) {
                 try {
                     final String unparsedFiles = resourceAccessor
-                        .list(null, path, true, true, false)
+                        .search(path, true)
                         .stream()
+                        .map(Resource::getPath)
                         .filter(file -> fileExtensions.contains(Files.getFileExtension(file)))
                         .filter(file -> !ruleRunner.getFilesParsed().contains(file))
                         .collect(joining(","));
