@@ -1,0 +1,11 @@
+{
+  "fail-fast": true,
+  "rules": {
+    "column-type": [
+      {
+        "enabled": true,
+        "pattern": "^varchar2$"
+      }
+    ]
+  }
+}

@@ -25,4 +25,4 @@ This rule will fail if the given regex does not match against the name when crea
 }
 ```
 
-(The above example just ensures that columns should not be named `id`.)
+(The above example just ensures that columns should have a lowercased name.)
