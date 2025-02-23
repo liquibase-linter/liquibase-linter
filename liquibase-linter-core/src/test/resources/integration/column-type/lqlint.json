@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "column-type": [
+      {
+        "columnCondition": "name == 'reference'",
+        "pattern": "^varchar2\\(30\\)$"
+      },
+      {
+        "columnCondition": "name == 'id'",
+        "pattern": "^int$"
+      }
+    ]
+  }
+}
