@@ -6,14 +6,17 @@ import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_PATH_P
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.github.liquibaselinter.report.Reporter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import liquibase.exception.UnexpectedLiquibaseException;
+import liquibase.resource.PathResource;
+import liquibase.resource.Resource;
 import liquibase.resource.ResourceAccessor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
@@ -32,18 +35,20 @@ class ConfigLoaderTest {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
         String customPath = "/test-lqlint.json";
         System.setProperty(LQLINT_CONFIG_PATH_PROPERTY, customPath);
-        when(resourceAccessor.openStream(null, customPath)).thenReturn(getInputStream());
-        when(resourceAccessor.openStream(null, LQLINT_CONFIG)).thenReturn(getInputStream());
+        when(resourceAccessor.get(customPath)).thenReturn(pathResource("lqlint.test.json"));
+        when(resourceAccessor.get(LQLINT_CONFIG)).thenReturn(pathResource("lqlint.test.json"));
+
         Config config = ConfigLoader.load(resourceAccessor);
+
         assertThat(config).isNotNull();
-        verify(resourceAccessor, times(0)).openStreams(null, LQLINT_CONFIG);
+        verify(resourceAccessor, never()).get(LQLINT_CONFIG);
     }
 
     @DisplayName("Should throw if cannot load config")
     @Test
     void shouldThrowIfCannotLoadConfig() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
-        when(resourceAccessor.openStreams(null, LQLINT_CONFIG)).thenReturn(null);
+        when(resourceAccessor.get(LQLINT_CONFIG)).thenReturn(null);
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
@@ -54,7 +59,7 @@ class ConfigLoaderTest {
     @Test
     void shouldThrowOnIoException() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
-        when(resourceAccessor.openStreams(null, LQLINT_CONFIG)).thenThrow(new IOException());
+        when(resourceAccessor.get(LQLINT_CONFIG)).thenThrow(new IOException());
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
@@ -65,14 +70,11 @@ class ConfigLoaderTest {
     @Test
     void shouldImportConfig() throws IOException {
         ResourceAccessor resourceAccessor = mockResourceAccessor();
-        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json")).thenReturn(
-            getInputStream("lqlint-import-a.test.json")
-        );
-        when(resourceAccessor.openStream(null, "lqlint-import-b.test.json")).thenReturn(
-            getInputStream("lqlint-import-b.test.json")
-        );
+        when(resourceAccessor.get("lqlint-import-a.test.json")).thenReturn(pathResource("lqlint-import-a.test.json"));
+        when(resourceAccessor.get("lqlint-import-b.test.json")).thenReturn(pathResource("lqlint-import-b.test.json"));
 
         Config config = ConfigLoader.load(resourceAccessor);
+
         assertThat(config.getRules().asMap()).containsOnlyKeys(
             "isolate-ddl-changes",
             "no-preconditions",
@@ -91,14 +93,11 @@ class ConfigLoaderTest {
     @Test
     void shouldOverrideImportedConfig() throws IOException {
         ResourceAccessor resourceAccessor = mockResourceAccessor();
-        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json")).thenReturn(
-            getInputStream("lqlint-import-a.test.json")
-        );
-        when(resourceAccessor.openStream(null, "lqlint-import-b.test.json")).thenReturn(
-            getInputStream("lqlint-import-b.test.json")
-        );
+        when(resourceAccessor.get("lqlint-import-a.test.json")).thenReturn(pathResource("lqlint-import-a.test.json"));
+        when(resourceAccessor.get("lqlint-import-b.test.json")).thenReturn(pathResource("lqlint-import-b.test.json"));
 
         Config config = ConfigLoader.load(resourceAccessor);
+
         assertThat(config.getReporting().asMap()).containsOnlyKeys("console", "markdown");
         assertThat(config.getReporting().get("console")).extracting(Reporter::isEnabled).containsExactly(false);
     }
@@ -117,7 +116,7 @@ class ConfigLoaderTest {
     @Test
     void shouldThrowOnImportedIoException() throws IOException {
         ResourceAccessor resourceAccessor = mockResourceAccessor();
-        when(resourceAccessor.openStream(null, "lqlint-import-a.test.json")).thenThrow(new IOException());
+        when(resourceAccessor.get("lqlint-import-a.test.json")).thenThrow(new IOException());
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
@@ -126,17 +125,15 @@ class ConfigLoaderTest {
 
     private ResourceAccessor mockResourceAccessor() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
-        when(resourceAccessor.openStream(null, LQLINT_CONFIG_CLASSPATH)).thenReturn(
-            getInputStream("lqlint-importing.test.json")
-        );
+        when(resourceAccessor.get(LQLINT_CONFIG_CLASSPATH)).thenReturn(pathResource("lqlint-importing.test.json"));
         return resourceAccessor;
     }
 
-    private InputStream getInputStream() {
-        return getInputStream("lqlint.test.json");
-    }
-
-    private InputStream getInputStream(String path) {
-        return getClass().getClassLoader().getResourceAsStream(path);
+    private Resource pathResource(String path) {
+        try {
+            return new PathResource(path, Paths.get(getClass().getClassLoader().getResource(path).toURI()));
+        } catch (URISyntaxException e) {
+            throw new AssertionError(e);
+        }
     }
 }
