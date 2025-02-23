@@ -29,7 +29,7 @@ If you're already using the `liquibase-maven-plugin`, you can add `liquibase-par
     <dependency>
       <groupId>io.github.liquibase-linter</groupId>
       <artifactId>liquibase-parser-extension</artifactId>
-      <version>0.9.1</version>
+      <version>0.11.0</version>
     </dependency>
   </dependencies>
   <executions>...</executions>
@@ -46,7 +46,7 @@ If you're already using the `liquibase-maven-plugin`, you can add `liquibase-par
 <plugin>
   <groupId>io.github.liquibase-linter</groupId>
   <artifactId>liquibase-linter-maven-plugin</artifactId>
-  <version>0.9.1</version>
+  <version>0.11.0</version>
   <configuration>
     <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
     <!-- This is the default value for configurationFile -->
