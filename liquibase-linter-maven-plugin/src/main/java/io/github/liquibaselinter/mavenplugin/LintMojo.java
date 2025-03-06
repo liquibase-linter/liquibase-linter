@@ -24,7 +24,7 @@ import liquibase.changelog.DatabaseChangeLog;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.OfflineConnection;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.integration.spring.SpringResourceAccessor;
 import liquibase.resource.CompositeResourceAccessor;
 import liquibase.resource.DirectoryResourceAccessor;
 import liquibase.resource.ResourceAccessor;
@@ -36,6 +36,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.springframework.core.io.DefaultResourceLoader;
 
 @Mojo(
     name = "lint",
@@ -108,12 +109,12 @@ public class LintMojo extends AbstractMojo {
 
     private ResourceAccessor buildResourceAccessor() throws MojoExecutionException {
         try (
+            SpringResourceAccessor springResourceAccessor = new SpringResourceAccessor(
+                new DefaultResourceLoader(classLoaderIncludingProjectClasspath())
+            );
             ResourceAccessor baseDirResourceAccessor = new DirectoryResourceAccessor(mavenProject.getBasedir());
-            ResourceAccessor projectClasspathResourceAccessor = new ClassLoaderResourceAccessor(
-                classLoaderIncludingProjectClasspath()
-            )
         ) {
-            return new CompositeResourceAccessor(baseDirResourceAccessor, projectClasspathResourceAccessor);
+            return new CompositeResourceAccessor(springResourceAccessor, baseDirResourceAccessor);
         } catch (Exception exception) {
             throw new MojoExecutionException(exception);
         }

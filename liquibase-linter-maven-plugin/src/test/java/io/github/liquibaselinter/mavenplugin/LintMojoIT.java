@@ -37,7 +37,7 @@ class LintMojoIT {
     @MavenTest
     @MavenGoal("test")
     void detect_and_parse_all_changelogs(MavenExecutionResult result) {
-        assertThatLintIssueIsDetectedAndReported(result, "config/liquibase/changelog/001_create_table_example.xml");
+        assertThatLintIssueIsDetectedAndReported(result, "config/liquibase/changelog/002_create_index_example.xml");
     }
 
     private static void assertThatLintIssueIsDetectedAndReported(MavenExecutionResult result, String faultyChangelog) {
