@@ -5,4 +5,5 @@
 >
   <include file="config/liquibase/changelog/001_create_table_example.xml" relativeToChangelogFile="false" />
   <include file="classpath:config/liquibase/changelog/002_create_index_example.xml" />
+  <include file="changelog/003_create_spring_batch_schema.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
