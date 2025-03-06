@@ -23,6 +23,7 @@ jobs:
           - java-version: 8
           - os: macos-latest
             java-version: 11
+    name: build (${{ matrix.os }} with java ${{ matrix.java-version }})
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
