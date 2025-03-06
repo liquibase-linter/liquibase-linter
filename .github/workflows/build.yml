@@ -12,14 +12,25 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+          - ubuntu-24.04-arm
+        include:
+          - java-version: 8
+          - os: macos-latest
+            java-version: 11
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '8'
+          java-version: ${{ matrix.java-version }}
           cache: 'maven'
       - name: Setup Node
         uses: actions/setup-node@v4
