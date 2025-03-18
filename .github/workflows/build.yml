@@ -30,7 +30,7 @@ jobs:
           npm ci
           npm run prettier:check
       - name: Build
-        run: mvn --no-transfer-progress --batch-mode clean package
+        run: mvn --no-transfer-progress --batch-mode clean verify
 
   build-website:
     runs-on: ubuntu-latest
