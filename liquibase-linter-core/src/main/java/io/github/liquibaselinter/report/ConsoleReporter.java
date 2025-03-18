@@ -19,10 +19,9 @@ public class ConsoleReporter extends TextReporter {
     @Override
     protected void process(Report report, List<ReportItem> items) {
         installAnsi();
-        try (PrintWriter writer = new PrintWriter(System.out)) {
-            printReport(writer, report, items);
-            writer.flush();
-        }
+        PrintWriter writer = new PrintWriter(System.out);
+        printReport(writer, report, items);
+        writer.flush();
         uninstallAnsi();
     }
 
