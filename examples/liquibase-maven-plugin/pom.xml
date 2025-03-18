@@ -33,7 +33,7 @@
           <dependency>
             <groupId>io.github.liquibase-linter</groupId>
             <artifactId>liquibase-parser-extension</artifactId>
-            <version>0.12.0</version>
+            <version>0.12.1</version>
           </dependency>
         </dependencies>
         <executions>
