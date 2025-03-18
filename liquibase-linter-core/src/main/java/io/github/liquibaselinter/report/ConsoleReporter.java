@@ -17,6 +17,7 @@ public class ConsoleReporter extends TextReporter {
     }
 
     @Override
+    @SuppressWarnings("PMD.CloseResource")
     protected void process(Report report, List<ReportItem> items) {
         installAnsi();
         PrintWriter writer = new PrintWriter(System.out);
