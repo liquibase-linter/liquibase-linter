@@ -10,7 +10,7 @@ import java.io.PrintStream;
 import org.fusesource.jansi.io.HtmlAnsiOutputStream;
 import org.junit.jupiter.api.Test;
 
-class ConsoleReporterTest {
+class AnsiConsoleReporterTest {
 
     @Test
     void emptyReport() {
@@ -54,10 +54,27 @@ class ConsoleReporterTest {
             ByteArrayOutputStream outContent = new ByteArrayOutputStream();
             PrintStream out = new PrintStream(new HtmlAnsiOutputStream(outContent));
             System.setOut(out);
-            new ConsoleReporter(reporterConfig).processReport(report);
+            new TestAnsiConsoleReporter(reporterConfig).processReport(report);
             return outContent.toString();
         } finally {
             System.setOut(originalOut);
+        }
+    }
+
+    private static class TestAnsiConsoleReporter extends AnsiConsoleReporter {
+
+        TestAnsiConsoleReporter(ReporterConfig config) {
+            super(config);
+        }
+
+        @Override
+        protected void installAnsi() {
+            // ansi is difficult to test with so noop installing makes it easier
+        }
+
+        @Override
+        protected void uninstallAnsi() {
+            // ansi is difficult to test with so noop uninstalling makes it easier
         }
     }
 }
