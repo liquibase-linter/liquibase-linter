@@ -87,6 +87,19 @@
       <version>${itf.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.github.liquibase-linter</groupId>
+      <artifactId>liquibase-linter-core</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.approvaltests</groupId>
+      <artifactId>approvaltests</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

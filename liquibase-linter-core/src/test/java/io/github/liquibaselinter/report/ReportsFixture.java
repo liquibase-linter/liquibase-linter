@@ -53,7 +53,7 @@ public final class ReportsFixture {
         return new Report(config, items);
     }
 
-    static Report emptyReport() {
+    public static Report emptyReport() {
         return new Report(new Config.Builder().withRules(ImmutableListMultimap.of()).build(), ImmutableList.of());
     }
 }

@@ -9,6 +9,7 @@ import io.github.liquibaselinter.report.Report;
 import io.github.liquibaselinter.report.ReportItem;
 import io.github.liquibaselinter.report.Reporter;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -73,7 +74,10 @@ class MavenConsoleReporter implements Reporter {
 
     private void printChangeSet(String changeSetId, List<ReportItem> items) {
         printChangeSetHeader(changeSetId);
-        items.forEach(this::printItemDetail);
+        items
+            .stream()
+            .sorted(Comparator.comparing(ReportItem::getRule).thenComparing(ReportItem::getMessage))
+            .forEach(this::printItemDetail);
     }
 
     private void printChangeSetHeader(String changeSetId) {
