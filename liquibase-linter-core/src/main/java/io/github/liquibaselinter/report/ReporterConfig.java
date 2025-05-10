@@ -23,6 +23,10 @@ public class ReporterConfig {
         filter = builder.getFilter();
     }
 
+    public static ReporterConfig defaultConfig() {
+        return builder().build();
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
