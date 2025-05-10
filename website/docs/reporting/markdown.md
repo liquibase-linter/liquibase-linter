@@ -2,6 +2,10 @@
 title: Markdown
 ---
 
+## Name
+
+`markdown`
+
 ## Format
 
 Displays the linting results to a standard Markdown `.md` file. By default, the report

@@ -9,7 +9,7 @@ Liquibase Linter has several types of reporters that you can turn on and configu
 
 By default, only the [`console`](console.md) reporter is enabled.
 
-The simmplest way to use a reporter is to simply enable it:
+The simplest way to use a reporter is to simply enable it:
 
 ```json
 {
