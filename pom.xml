@@ -63,6 +63,7 @@
     <assertj.version>3.27.3</assertj.version>
     <junit.version>5.12.2</junit.version>
     <mockito.version>4.11.0</mockito.version>
+    <approvaltests.version>24.21.0</approvaltests.version>
     <!-- plugins -->
     <maven.surefire.plugin.version>3.5.3</maven.surefire.plugin.version>
     <maven.compiler.plugin.version>3.14.0</maven.compiler.plugin.version>
@@ -103,6 +104,12 @@
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>${assertj.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.approvaltests</groupId>
+        <artifactId>approvaltests</artifactId>
+        <version>${approvaltests.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

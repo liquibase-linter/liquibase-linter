@@ -1,0 +1,14 @@
+[ERROR] 6 violation(s) found
+[ERROR] src/main/resources/ddl/first.xml
+[ERROR] 		'error-rule': Error message 1
+[ERROR] 	changeSet '2020010101'
+[ERROR] 		'error-rule': Error message 2
+[ERROR] 	changeSet '2020010102'
+[ERROR] 		'error-rule': Error message 3.1
+[ERROR] 		'error-rule': Error message 3.2
+[ERROR] src/main/resources/ddl/second.xml
+[ERROR] 	changeSet '2020010103'
+[ERROR] 		'error-rule': Error message 4
+		with newline
+[ERROR] Other
+[ERROR] 		'error-rule': No change log
