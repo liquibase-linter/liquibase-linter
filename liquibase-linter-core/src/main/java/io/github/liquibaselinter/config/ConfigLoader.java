@@ -47,7 +47,10 @@ public final class ConfigLoader {
 
     private static Config defaultConfig() {
         ImmutableListMultimap.Builder<String, Reporter> reportingConfigBuilder = new ImmutableListMultimap.Builder<>();
-        reportingConfigBuilder.put("console", new ConsoleReporter(ReporterConfig.builder().withEnabled(true).build()));
+        reportingConfigBuilder.put(
+            ConsoleReporter.NAME,
+            new ConsoleReporter(ReporterConfig.builder().withEnabled(true).build())
+        );
         return new Config.Builder().withReporting(reportingConfigBuilder.build()).build();
     }
 

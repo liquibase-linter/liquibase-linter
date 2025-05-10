@@ -55,7 +55,7 @@
       {
         "type": "category",
         "label": "Core Reporters",
-        "items": ["reporting/console", "reporting/markdown", "reporting/text"]
+        "items": ["reporting/console", "reporting/ansi-console", "reporting/markdown", "reporting/text"]
       },
       {
         "type": "category",

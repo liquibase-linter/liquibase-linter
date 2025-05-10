@@ -2,9 +2,13 @@
 title: Console
 ---
 
+## Name
+
+`console`
+
 ## Format
 
-Displays the linting results to the system console, including coloring violations.
+Displays the linting results to the system console.
 
 ## Options
 
