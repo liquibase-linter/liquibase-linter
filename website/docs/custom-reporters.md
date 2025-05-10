@@ -23,12 +23,12 @@ exist as inner classes to the main `Reporter` implementation.
 ```java
 package com.fake.fancyapp.liquibase;
 
+import io.github.liquibaselinter.report.AbstractReporter;
+import io.github.liquibaselinter.report.Report;
+import io.github.liquibaselinter.report.ReportItem;
+import io.github.liquibaselinter.report.ReporterConfig;
 import java.io.PrintWriter;
 import java.util.List;
-import report.io.github.liquibaselinter.AbstractReporter;
-import report.io.github.liquibaselinter.Report;
-import report.io.github.liquibaselinter.ReportItem;
-import report.io.github.liquibaselinter.ReporterConfig;
 
 public class CustomReporter extends AbstractReporter {
 
@@ -76,7 +76,7 @@ approaches like that used by Spring.
 
 In our newly-created project, we'll create a new file at:
 
-`src/main/resources/META-INF/services/report.io.github.liquibaselinter.Reporter.Factory`
+`src/main/resources/META-INF/services/io.github.liquibaselinter.report.Reporter.Factory`
 
 And in the file, we'll write:
 
@@ -121,12 +121,12 @@ adding in the `Config` class to the generic type declaration. Add `@JsonDeserial
 package com.fake.fancyapp.liquibase;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.github.liquibaselinter.report.AbstractReporter;
+import io.github.liquibaselinter.report.Report;
+import io.github.liquibaselinter.report.ReportItem;
+import io.github.liquibaselinter.report.ReporterConfig;
 import java.io.PrintWriter;
 import java.util.List;
-import report.io.github.liquibaselinter.AbstractReporter;
-import report.io.github.liquibaselinter.Report;
-import report.io.github.liquibaselinter.ReportItem;
-import report.io.github.liquibaselinter.ReporterConfig;
 
 public class CustomReporter extends AbstractReporter {
 
