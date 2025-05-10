@@ -10,10 +10,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import io.github.liquibaselinter.report.ReportItem.ReportItemType;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.stream.Stream;
-import org.fusesource.jansi.io.HtmlAnsiOutputStream;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.ThrowingConsumer;
@@ -29,8 +26,6 @@ import org.junit.jupiter.api.function.ThrowingConsumer;
 class ReporterTest {
 
     private static final Map<String, String> REPORT_TYPES = ImmutableMap.of(
-        ConsoleReporter.NAME,
-        "out",
         TextReporter.NAME,
         "txt",
         MarkdownReporter.NAME,
@@ -49,29 +44,10 @@ class ReporterTest {
         });
 
         ThrowingConsumer<ReportingTestConfig> testExecutor = running -> {
-            String output;
-
-            if (running.reportType.equalsIgnoreCase(ConsoleReporter.NAME)) {
-                output = runConsoleTest(running);
-            } else {
-                output = runFileReport(running);
-            }
+            String output = runFileReport(running);
             assertThat(output).isEqualTo(running.getExpectedOutput());
         };
         return DynamicTest.stream(tests.iterator(), ReportingTestConfig::getDisplayName, testExecutor);
-    }
-
-    private String runConsoleTest(ReportingTestConfig running) {
-        PrintStream originalOut = System.out;
-        try {
-            ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-            PrintStream out = new PrintStream(new HtmlAnsiOutputStream(outContent));
-            System.setOut(out);
-            new TestConsoleReporter(running.config).processReport(running.report);
-            return outContent.toString();
-        } finally {
-            System.setOut(originalOut);
-        }
     }
 
     private String runFileReport(ReportingTestConfig running) throws IOException {
@@ -198,23 +174,6 @@ class ReporterTest {
         public String getExpectedOutput() throws IOException {
             final URL expectedOutputUrl = Resources.getResource("reports/" + expectedResourceName);
             return Resources.toString(expectedOutputUrl, StandardCharsets.UTF_8);
-        }
-    }
-
-    private static class TestConsoleReporter extends ConsoleReporter {
-
-        TestConsoleReporter(ReporterConfig config) {
-            super(config);
-        }
-
-        @Override
-        protected void installAnsi() {
-            // ansi is difficult to test with so noop installing makes it easier
-        }
-
-        @Override
-        protected void uninstallAnsi() {
-            // ansi is difficult to test with so noop uninstalling makes it easier
         }
     }
 }
