@@ -52,18 +52,20 @@ class ConfigLoaderTest {
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
-            .withMessageContaining("Failed to load lq lint config file");
+            .withMessageContaining(
+                "Failed to load any liquibase-linter configuration from locations: /lqlint.json, lqlint.json"
+            );
     }
 
     @DisplayName("Should throw on io exception")
     @Test
     void shouldThrowOnIoException() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
-        when(resourceAccessor.get(LQLINT_CONFIG)).thenThrow(new IOException());
+        when(resourceAccessor.get(LQLINT_CONFIG)).thenThrow(new IOException("file not found"));
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
-            .withMessageContaining("Failed to load lq lint config file");
+            .withMessageContaining("Failed to load liquibase-linter config file: /lqlint.json");
     }
 
     @DisplayName("Should import config")
@@ -109,7 +111,7 @@ class ConfigLoaderTest {
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
-            .withMessageContaining("Failed to load imported lq lint config file");
+            .withMessageContaining("Failed to load imported liquibase-linter config file: lqlint-import-a.test.json");
     }
 
     @DisplayName("Should throw io exception when imported config fails with io exception")
@@ -120,7 +122,7 @@ class ConfigLoaderTest {
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
-            .withMessageContaining("Failed to load imported lq lint config file");
+            .withMessageContaining("Failed to load liquibase-linter config file: lqlint-import-a.test.json");
     }
 
     private ResourceAccessor mockResourceAccessor() throws IOException {

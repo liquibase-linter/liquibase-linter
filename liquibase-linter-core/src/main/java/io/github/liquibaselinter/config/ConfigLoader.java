@@ -32,17 +32,15 @@ public final class ConfigLoader {
         )
             .filter(Objects::nonNull)
             .collect(toList());
-        try {
-            for (String configPath : configPaths) {
-                final Config config = loadConfig(resourceAccessor, configPath);
-                if (config != null) {
-                    return config.combineWith(defaultConfig());
-                }
+        for (String configPath : configPaths) {
+            final Config config = loadConfig(resourceAccessor, configPath);
+            if (config != null) {
+                return config.combineWith(defaultConfig());
             }
-        } catch (IOException e) {
-            throw new UnexpectedLiquibaseException("Failed to load lq lint config file", e);
         }
-        throw new UnexpectedLiquibaseException("Failed to load lq lint config file");
+        throw new UnexpectedLiquibaseException(
+            "Failed to load any liquibase-linter configuration from locations: " + String.join(", ", configPaths)
+        );
     }
 
     private static Config defaultConfig() {
@@ -54,7 +52,7 @@ public final class ConfigLoader {
         return new Config.Builder().withReporting(reportingConfigBuilder.build()).build();
     }
 
-    public static Config loadConfig(ResourceAccessor resourceAccessor, String path) throws IOException {
+    public static Config loadConfig(ResourceAccessor resourceAccessor, String path) {
         try {
             Resource resource = resourceAccessor.get(path);
             if (resource == null || !resource.exists()) {
@@ -64,8 +62,8 @@ public final class ConfigLoader {
             if (config != null) {
                 return loadImports(resourceAccessor, config);
             }
-        } catch (IOException e) {
-            return null;
+        } catch (IOException exception) {
+            throw new UnexpectedLiquibaseException("Failed to load liquibase-linter config file: " + path, exception);
         }
         return null;
     }
@@ -74,12 +72,13 @@ public final class ConfigLoader {
         List<String> imports = Collections.unmodifiableList(config.getImports());
         Config combinedImportConfig = new Config.Builder().build();
         for (String importPath : imports) {
-            try {
-                final Config importedConfig = loadConfig(resourceAccessor, importPath);
-                combinedImportConfig = combinedImportConfig.mergeWith(importedConfig);
-            } catch (IOException | NullPointerException e) {
-                throw new UnexpectedLiquibaseException("Failed to load imported lq lint config file: " + importPath, e);
+            final Config importedConfig = loadConfig(resourceAccessor, importPath);
+            if (importedConfig == null) {
+                throw new UnexpectedLiquibaseException(
+                    "Failed to load imported liquibase-linter config file: " + importPath
+                );
             }
+            combinedImportConfig = combinedImportConfig.mergeWith(importedConfig);
         }
         return config.combineWith(combinedImportConfig);
     }

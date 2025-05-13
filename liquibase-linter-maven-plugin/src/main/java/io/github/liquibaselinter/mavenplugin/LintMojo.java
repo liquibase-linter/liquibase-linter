@@ -9,7 +9,6 @@ import io.github.liquibaselinter.report.ConsoleReporter;
 import io.github.liquibaselinter.report.Reporter;
 import io.github.liquibaselinter.report.ReporterConfig;
 import java.io.File;
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -64,7 +63,7 @@ public class LintMojo extends AbstractMojo {
                 Liquibase liquibase = createLiquibase(relativePathOf(changeLogFile), resourceAccessor);
                 DatabaseChangeLog databaseChangeLog = liquibase.getDatabaseChangeLog();
 
-                Config linterConfig = linterConfiguration(resourceAccessor, configurationFile);
+                Config linterConfig = linterConfiguration(resourceAccessor);
                 new ChangeLogLinter(resourceAccessor, linterConfig).lintChangeLog(databaseChangeLog);
             });
         } catch (ChangeLogLintingException lintingException) {
@@ -80,18 +79,13 @@ public class LintMojo extends AbstractMojo {
         return scopeAttrs;
     }
 
-    private Config linterConfiguration(ResourceAccessor resourceAccessor, String configurationFile1)
-        throws MojoExecutionException {
+    private Config linterConfiguration(ResourceAccessor resourceAccessor) throws MojoExecutionException {
         Config linterConfig;
-        try {
-            Config userConfig = ConfigLoader.loadConfig(resourceAccessor, relativePathOf(configurationFile1));
-            if (userConfig == null) {
-                throw new MojoExecutionException("Unable to load lq-linter configuration at " + configurationFile1);
-            }
-            linterConfig = userConfig.mergeWith(defaultMavenLinterConfig());
-        } catch (IOException exception) {
-            throw new MojoExecutionException("ConfigurationFile " + configurationFile1 + " cannot be read", exception);
+        Config userConfig = ConfigLoader.loadConfig(resourceAccessor, relativePathOf(configurationFile));
+        if (userConfig == null) {
+            throw new MojoExecutionException("Unable to load liquibase-linter configuration at " + configurationFile);
         }
+        linterConfig = userConfig.mergeWith(defaultMavenLinterConfig());
         return linterConfig;
     }
 
