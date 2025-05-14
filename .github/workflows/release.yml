@@ -14,7 +14,7 @@ on:
 
 jobs:
   release:
-    name: Release on Sonatype OSS
+    name: Release on Maven Central
     if: github.repository == 'liquibase-linter/liquibase-linter'
     runs-on: ubuntu-latest
     permissions:
@@ -40,12 +40,34 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
+      - name: Extract last released version
+        id: last_released_version
+        run: |
+          version=$(grep -oP '<version>\K[0-9]+\.[0-9]+\.[0-9]+' pom.xml | head -n 1)
+          echo "$version" >> $GITHUB_OUTPUT
+
       - name: Prepare and perform release
         run: mvn release:prepare release:perform --no-transfer-progress --batch-mode -DreleaseVersion=${{ github.event.inputs.releaseVersion }} -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Update version in documentation
+        run: |
+          docFiles=(\
+            README.md \
+            website/docs/install.md \
+            examples/gradle/build.gradle \
+            examples/liquibase-linter-maven-plugin/pom.xml \
+            examples/liquibase-maven-plugin/pom.xml \
+          )
+          for docFile in "${docFiles[@]}"; do
+            sed -i "s/${{ steps.last_released_version.outputs.message }}/${{ github.event.inputs.releaseVersion }}/g" "$docFile"
+            git add "$docFile"
+          done
+          git commit -m "Update version in documentation to ${{ github.event.inputs.releaseVersion }}"
+          git push origin main
 
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
