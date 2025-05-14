@@ -53,6 +53,14 @@ jobs:
           CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.event.inputs.releaseVersion }}
+          name: v${{ github.event.inputs.releaseVersion }}
+          generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Update version in documentation
         run: |
           docFiles=(\
@@ -68,11 +76,3 @@ jobs:
           done
           git commit -m "Update version in documentation to ${{ github.event.inputs.releaseVersion }}"
           git push origin main
-
-      - name: Create GitHub release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ github.event.inputs.releaseVersion }}
-          name: v${{ github.event.inputs.releaseVersion }}
-          generateReleaseNotes: true
-          token: ${{ secrets.GITHUB_TOKEN }}
