@@ -63,8 +63,8 @@ jobs:
             examples/liquibase-maven-plugin/pom.xml \
           )
           for docFile in "${docFiles[@]}"; do
-            sed -i "s/${{ steps.detect_versions.outputs.previousVersion }}/${{ github.event.inputs.releaseVersion }}/g" "$docFile"
-            git add "$docFile"
+            sed -i "s/${{ steps.detect_versions.outputs.previousVersion }}/${{ github.event.inputs.releaseVersion }}/g" "$docFile";
+            git add "$docFile";
           done
           git commit -m "Update version in documentation to ${{ github.event.inputs.releaseVersion }}"
           git push origin main
