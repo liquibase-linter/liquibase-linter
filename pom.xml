@@ -57,7 +57,7 @@
     <yaml.version>2.4</yaml.version>
     <!-- test libraries -->
     <assertj.version>3.27.3</assertj.version>
-    <junit.version>5.13.0</junit.version>
+    <junit.version>5.13.1</junit.version>
     <mockito.version>4.11.0</mockito.version>
     <approvaltests.version>24.22.0</approvaltests.version>
     <!-- plugins -->
