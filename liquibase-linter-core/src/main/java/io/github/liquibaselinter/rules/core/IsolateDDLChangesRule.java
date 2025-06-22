@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import liquibase.changelog.ChangeSet;
 
-@AutoService({ ChangeSetRule.class })
+@AutoService(ChangeSetRule.class)
 public class IsolateDDLChangesRule implements ChangeSetRule {
 
     private static final String NAME = "isolate-ddl-changes";

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import liquibase.ContextExpression;
 import liquibase.changelog.ChangeSet;
 
-@AutoService({ ChangeSetRule.class })
+@AutoService(ChangeSetRule.class)
 public class ValidContextRule implements ChangeSetRule {
 
     private static final String NAME = "valid-context";

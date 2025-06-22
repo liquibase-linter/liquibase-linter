@@ -11,7 +11,7 @@ import java.util.Collections;
 import liquibase.change.core.TagDatabaseChange;
 import liquibase.changelog.ChangeSet;
 
-@AutoService({ ChangeSetRule.class })
+@AutoService(ChangeSetRule.class)
 public class HasCommentRule implements ChangeSetRule {
 
     private static final String NAME = "has-comment";

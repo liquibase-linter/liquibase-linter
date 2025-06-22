@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import liquibase.changelog.DatabaseChangeLog;
 
-@AutoService({ ChangeLogRule.class })
+@AutoService(ChangeLogRule.class)
 public class ChangeLogFileNameRule implements ChangeLogRule {
 
     private static final String NAME = "changelog-file-name";

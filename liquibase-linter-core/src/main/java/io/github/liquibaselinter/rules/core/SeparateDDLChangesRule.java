@@ -12,7 +12,7 @@ import liquibase.ContextExpression;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 
-@AutoService({ ChangeSetRule.class })
+@AutoService(ChangeSetRule.class)
 public class SeparateDDLChangesRule implements ChangeSetRule {
 
     private static final String NAME = "separate-ddl-context";
