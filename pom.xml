@@ -56,7 +56,7 @@
     <liquibase.version>[4.0.0,5.0.0)</liquibase.version>
     <yaml.version>2.4</yaml.version>
     <!-- test libraries -->
-    <assertj.version>3.27.3</assertj.version>
+    <assertj.version>3.27.4</assertj.version>
     <junit.version>5.13.4</junit.version>
     <mockito.version>4.11.0</mockito.version>
     <approvaltests.version>25.0.23</approvaltests.version>
