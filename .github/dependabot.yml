@@ -12,6 +12,7 @@ updates:
     directory: '/website'
     schedule:
       interval: 'weekly'
+    versioning-strategy: increase
     groups:
       docusaurus:
         patterns:
