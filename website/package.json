@@ -7,8 +7,8 @@
     "swizzle": "docusaurus swizzle"
   },
   "dependencies": {
-    "@docusaurus/core": "3.8.1",
-    "@docusaurus/preset-classic": "3.8.1",
+    "@docusaurus/core": "3.9.1",
+    "@docusaurus/preset-classic": "3.9.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-github-btn": "1.4.0"
