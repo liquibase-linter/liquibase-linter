@@ -24,7 +24,7 @@
           <execution>
             <id>default</id>
             <goals>
-              <goal>lint</goal>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>

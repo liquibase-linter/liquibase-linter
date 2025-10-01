@@ -10,14 +10,6 @@
   <artifactId>liquibase-linter-maven-plugin-test</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework.batch</groupId>
-      <artifactId>spring-batch-core</artifactId>
-      <version>5.2.1</version>
-    </dependency>
-  </dependencies>
-
   <build>
     <plugins>
       <plugin>
@@ -26,12 +18,13 @@
         <version>@project.version@</version>
         <configuration>
           <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
+          <configurationFile>src/test/resources/liquibase-linter/lqlint.jsonc</configurationFile>
         </configuration>
         <executions>
           <execution>
             <id>default</id>
             <goals>
-              <goal>lint</goal>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
