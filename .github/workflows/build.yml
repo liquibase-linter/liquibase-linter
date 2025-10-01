@@ -56,7 +56,6 @@ jobs:
       matrix:
         liquibase-minor-version:
           - '4.23'
-          - '4.26'
           - '4.33'
           - '5.0'
         include:
