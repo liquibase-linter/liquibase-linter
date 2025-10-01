@@ -4,6 +4,9 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    ignore:
+      - dependency-name: 'org.liquibase:liquibase-core'
+        version: '[5.0.0,)' # Liquibase 5+ is no longer open-source
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
