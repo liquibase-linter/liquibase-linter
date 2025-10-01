@@ -56,7 +56,7 @@ If you're already using the `liquibase-maven-plugin`, you can add `liquibase-par
     <execution>
       <id>lint-liquibase-scripts</id>
       <goals>
-        <goal>lint</goal>
+        <goal>check</goal>
       </goals>
     </execution>
   </executions>

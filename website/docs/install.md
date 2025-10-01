@@ -29,7 +29,7 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
     <execution>
       <id>lint-liquibase-scripts</id>
       <goals>
-        <goal>lint</goal>
+        <goal>check</goal>
       </goals>
     </execution>
   </executions>

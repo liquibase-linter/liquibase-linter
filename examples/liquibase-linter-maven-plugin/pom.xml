@@ -25,7 +25,7 @@
           <execution>
             <id>lint-liquibase-scripts</id>
             <goals>
-              <goal>lint</goal>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
