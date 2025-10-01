@@ -18,13 +18,13 @@
         <version>@project.version@</version>
         <configuration>
           <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
-          <configurationFile>src/test/resources/liquibase-linter/lqlint.jsonc</configurationFile>
+          <configurationFile>src/test/resources/liquibase-linter/lqlint.json</configurationFile>
         </configuration>
         <executions>
           <execution>
             <id>default</id>
             <goals>
-              <goal>lint</goal>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>

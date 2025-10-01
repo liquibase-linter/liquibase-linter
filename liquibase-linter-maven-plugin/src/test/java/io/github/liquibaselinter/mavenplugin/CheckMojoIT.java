@@ -8,19 +8,36 @@ import com.soebes.itf.jupiter.extension.MavenTest;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
 
 @MavenJupiterExtension
-class LintMojoIT {
+class CheckMojoIT {
 
     @MavenTest
     @MavenGoal("test")
-    void support_former_lint_goal(MavenExecutionResult result) {
+    void detect_lint_issue_with_configuration_using_relative_path(MavenExecutionResult result) {
         assertThatLintIssueIsDetectedAndReported(result, "src/main/resources/config/liquibase/master.xml");
+    }
 
-        assertThat(result)
-            .out()
-            .plain()
-            .contains(
-                "[WARNING] The 'lint' goal is deprecated and will be removed in a future release. Please use the 'check' goal instead."
-            );
+    @MavenTest
+    @MavenGoal("test")
+    void detect_lint_issue_with_configuration_using_absolute_path(MavenExecutionResult result) {
+        assertThatLintIssueIsDetectedAndReported(result, "src/main/resources/config/liquibase/master.xml");
+    }
+
+    @MavenTest
+    @MavenGoal("test")
+    void detect_lint_issue_with_configuration_using_jsonc(MavenExecutionResult result) {
+        assertThatLintIssueIsDetectedAndReported(result, "src/main/resources/config/liquibase/master.xml");
+    }
+
+    @MavenTest
+    @MavenGoal("test")
+    void detect_lint_issue_with_default_configuration_file(MavenExecutionResult result) {
+        assertThatLintIssueIsDetectedAndReported(result, "src/main/resources/config/liquibase/master.xml");
+    }
+
+    @MavenTest
+    @MavenGoal("test")
+    void detect_and_parse_all_changelogs(MavenExecutionResult result) {
+        assertThatLintIssueIsDetectedAndReported(result, "config/liquibase/changelog/002_create_index_example.xml");
     }
 
     private static void assertThatLintIssueIsDetectedAndReported(MavenExecutionResult result, String faultyChangelog) {
