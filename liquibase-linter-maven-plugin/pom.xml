@@ -13,6 +13,8 @@
 
   <artifactId>liquibase-linter-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
+  <name>liquibase-linter: Maven plugin</name>
+  <description>Maven plugin to check your Liquibase changelogs against configured lint rules</description>
 
   <properties>
     <!-- libraries -->

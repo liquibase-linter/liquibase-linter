@@ -12,6 +12,11 @@
   </parent>
 
   <artifactId>liquibase-parser-extension</artifactId>
+  <name>liquibase-linter: Liquibase extension</name>
+  <description>
+    Liquibase extension that will hook into the parsing of the changelogs made by Liquibase, that will fail if the
+    changelogs don't conform to configured lint rules
+  </description>
 
   <dependencies>
     <dependency>

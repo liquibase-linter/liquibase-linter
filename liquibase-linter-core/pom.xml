@@ -12,6 +12,7 @@
   </parent>
 
   <artifactId>liquibase-linter-core</artifactId>
+  <name>liquibase-linter: core library</name>
 
   <properties>
     <commons-beanutils.version>1.11.0</commons-beanutils.version>
