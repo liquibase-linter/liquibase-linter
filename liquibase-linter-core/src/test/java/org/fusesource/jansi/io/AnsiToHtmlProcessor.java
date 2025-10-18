@@ -2,6 +2,7 @@ package org.fusesource.jansi.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import org.jline.jansi.io.AnsiProcessor;
 
 class AnsiToHtmlProcessor extends AnsiProcessor {
 

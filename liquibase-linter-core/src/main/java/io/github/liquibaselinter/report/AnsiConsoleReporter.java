@@ -1,12 +1,12 @@
 package io.github.liquibaselinter.report;
 
-import static org.fusesource.jansi.Ansi.ansi;
+import static org.jline.jansi.Ansi.ansi;
 
 import com.google.auto.service.AutoService;
 import java.io.PrintWriter;
 import java.util.List;
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.AnsiConsole;
+import org.jline.jansi.Ansi;
+import org.jline.jansi.AnsiConsole;
 
 public class AnsiConsoleReporter extends ConsoleReporter {
 
