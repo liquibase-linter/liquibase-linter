@@ -22,9 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.fusesource.jansi.AnsiColors;
-import org.fusesource.jansi.AnsiMode;
-import org.fusesource.jansi.AnsiType;
+import org.jline.jansi.AnsiColors;
+import org.jline.jansi.AnsiMode;
+import org.jline.jansi.AnsiType;
+import org.jline.jansi.io.AnsiOutputStream;
 
 /**
  * An optimized/edited {@link HtmlAnsiOutputStream} for ansi 2.x and above. <br>
