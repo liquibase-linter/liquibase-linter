@@ -5,6 +5,7 @@ useTabs: false
 
 plugins:
   - '@prettier/plugin-xml'
+  - prettier-plugin-gherkin
   - prettier-plugin-java
   - prettier-plugin-packagejson
 
