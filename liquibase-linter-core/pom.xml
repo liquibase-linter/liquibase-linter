@@ -16,7 +16,7 @@
 
   <properties>
     <commons-beanutils.version>1.11.0</commons-beanutils.version>
-    <commons-lang3.version>3.19.0</commons-lang3.version>
+    <commons-lang3.version>3.20.0</commons-lang3.version>
     <jackson.version>2.20.1</jackson.version>
     <jansi.version>3.30.6</jansi.version>
     <guava.version>33.5.0-jre</guava.version>
