@@ -58,7 +58,7 @@
     <!-- test libraries -->
     <assertj.version>3.27.6</assertj.version>
     <junit.version>5.13.4</junit.version>
-    <mockito.version>4.11.0</mockito.version>
+    <mockito.version>5.21.0</mockito.version>
     <approvaltests.version>25.10.0</approvaltests.version>
     <!-- plugins -->
     <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
