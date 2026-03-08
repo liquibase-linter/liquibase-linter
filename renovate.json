@@ -1,0 +1,28 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "npm:unpublishSafe",
+    "schedule:weekly",
+    ":maintainLockFilesWeekly",
+    ":disableDependencyDashboard",
+    ":automergeMinor",
+    ":automergePr",
+    ":automergeRequireAllStatusChecks",
+    ":label(dependencies)"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["org.liquibase:liquibase-core"],
+      "allowedVersions": "< 5.0.0"
+    },
+    {
+      "matchPackageNames": ["org.springframework:spring-expression"],
+      "allowedVersions": "< 6.0.0"
+    },
+    {
+      "matchPackageNames": ["org.junit:junit-bom"],
+      "allowedVersions": "< 6.0.0"
+    }
+  ]
+}
