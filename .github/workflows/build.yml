@@ -93,14 +93,18 @@ jobs:
   # This job is used as a required status check to pass before merging to the main branch
   status-checks:
     name: status-checks
-    needs: [build, build-website, liquibase-compatibility]
+    needs: [liquibase-compatibility]
     permissions:
       contents: none
     runs-on: ubuntu-latest
+    if: always()
     timeout-minutes: 5
     steps:
       - name: Validation Status checks
         run: |
           echo 'Configuration for Status checks that are required'
           echo '${{ toJSON(needs) }}'
-          exit 0
+          if [[ ('${{ needs.liquibase-compatibility.result }}' == 'success') ]]; then
+            exit 0
+          fi
+          exit 1
