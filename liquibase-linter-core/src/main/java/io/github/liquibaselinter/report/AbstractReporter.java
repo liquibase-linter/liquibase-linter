@@ -57,11 +57,19 @@ public abstract class AbstractReporter implements Reporter {
     protected abstract void printReport(PrintWriter output, Report report, List<ReportItem> items);
 
     protected static long countDisabledRules(Report report) {
-        return report.getConfig().getRules().values().stream().filter(rule -> !rule.isEnabled()).count();
+        return report
+            .getConfig()
+            .getRules()
+            .values()
+            .stream()
+            .filter(rule -> !rule.isEnabled())
+            .count();
     }
 
-    public abstract static class BaseFactory<R extends Reporter, C extends ReporterConfig>
-        implements Reporter.Factory<R, C> {
+    public abstract static class BaseFactory<
+        R extends Reporter,
+        C extends ReporterConfig
+    > implements Reporter.Factory<R, C> {
 
         private final String name;
         private final Class<? extends R> reporterClass;

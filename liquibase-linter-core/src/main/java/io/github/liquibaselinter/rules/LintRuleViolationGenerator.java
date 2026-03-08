@@ -27,7 +27,9 @@ public class LintRuleViolationGenerator {
         return new RuleViolation(
             String.format(
                 errorMessageTemplate(),
-                Arrays.stream(args).map(arg -> Optional.ofNullable(arg).orElse("")).toArray()
+                Arrays.stream(args)
+                    .map(arg -> Optional.ofNullable(arg).orElse(""))
+                    .toArray()
             )
         );
     }

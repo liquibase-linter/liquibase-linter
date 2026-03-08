@@ -55,7 +55,8 @@ public class FormLayoutContextRuleImpl extends AbstractLintRule implements Chang
       .getChanges()
       .stream()
       .anyMatch(
-        change -> change instanceof UpdateDataChange && "FORM_LAYOUT".equals(((UpdateDataChange) change).getTableName())
+        (change) ->
+          change instanceof UpdateDataChange && "FORM_LAYOUT".equals(((UpdateDataChange) change).getTableName())
       );
   }
 
@@ -63,7 +64,6 @@ public class FormLayoutContextRuleImpl extends AbstractLintRule implements Chang
     return changeSet.getContextFilter().getContexts().stream().anyMatch("core"::equals);
   }
 }
-
 ```
 
 Some notes about how we've done this:

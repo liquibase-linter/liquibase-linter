@@ -52,7 +52,6 @@ public class CustomReporter extends AbstractReporter {
     }
   }
 }
-
 ```
 
 Some notes about how we've done this:
@@ -179,5 +178,4 @@ public class CustomReporter extends AbstractReporter {
     }
   }
 }
-
 ```

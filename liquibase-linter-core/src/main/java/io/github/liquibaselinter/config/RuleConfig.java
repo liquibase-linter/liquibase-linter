@@ -116,7 +116,9 @@ public final class RuleConfig {
     }
 
     public String getDynamicValue(Object subject) {
-        return getDynamicValueExpression().map(expression -> expression.getValue(subject, String.class)).orElse(null);
+        return getDynamicValueExpression()
+            .map(expression -> expression.getValue(subject, String.class))
+            .orElse(null);
     }
 
     public Optional<Pattern> getPattern() {

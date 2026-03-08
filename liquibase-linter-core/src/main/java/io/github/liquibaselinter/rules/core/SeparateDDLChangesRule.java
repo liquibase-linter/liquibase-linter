@@ -41,13 +41,23 @@ public class SeparateDDLChangesRule implements ChangeSetRule {
         for (Change change : changeSet.getChanges()) {
             if (Changes.isDDL(change)) {
                 for (String context : contexts) {
-                    if (!ruleConfig.getPattern().map(pattern -> pattern.matcher(context).matches()).orElse(true)) {
+                    if (
+                        !ruleConfig
+                            .getPattern()
+                            .map(pattern -> pattern.matcher(context).matches())
+                            .orElse(true)
+                    ) {
                         return true;
                     }
                 }
             } else if (Changes.isDML(change)) {
                 for (String context : contexts) {
-                    if (ruleConfig.getPattern().map(pattern -> pattern.matcher(context).matches()).orElse(false)) {
+                    if (
+                        ruleConfig
+                            .getPattern()
+                            .map(pattern -> pattern.matcher(context).matches())
+                            .orElse(false)
+                    ) {
                         return true;
                     }
                 }

@@ -89,7 +89,10 @@ public class MarkdownReporter extends TextReporter {
     }
 
     private static String tableCellFormat(String value) {
-        return ofNullable(value).map(String::trim).map(cell -> cell.replace("\n", "<br>")).orElse("");
+        return ofNullable(value)
+            .map(String::trim)
+            .map(cell -> cell.replace("\n", "<br>"))
+            .orElse("");
     }
 
     private static int tableCellWidth(String value) {

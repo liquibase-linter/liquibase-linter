@@ -27,7 +27,9 @@ public class LintRuleChecker {
     }
 
     public boolean checkPattern(String value, Object subject) {
-        return Optional.ofNullable(patternChecker).map(checker -> checker.check(value, subject)).orElse(false);
+        return Optional.ofNullable(patternChecker)
+            .map(checker -> checker.check(value, subject))
+            .orElse(false);
     }
 
     public boolean checkMandatoryPattern(String value, Object subject) {

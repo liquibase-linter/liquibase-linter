@@ -17,10 +17,9 @@ public class LintMojo extends CheckMojo {
 
     @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
-        getLog()
-            .warn(
-                "The 'lint' goal is deprecated and will be removed in a future release. Please use the 'check' goal instead."
-            );
+        getLog().warn(
+            "The 'lint' goal is deprecated and will be removed in a future release. Please use the 'check' goal instead."
+        );
         super.execute();
     }
 }

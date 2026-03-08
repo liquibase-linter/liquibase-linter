@@ -112,7 +112,14 @@ public class TextReporter extends AbstractReporter {
 
     protected void printSummaryByItemType(PrintWriter output, List<ReportItem> items) {
         for (ReportItem.ReportItemType type : ReportItem.ReportItemType.values()) {
-            printItemTypeSummary(output, type, items.stream().filter(item -> item.getType() == type).collect(toList()));
+            printItemTypeSummary(
+                output,
+                type,
+                items
+                    .stream()
+                    .filter(item -> item.getType() == type)
+                    .collect(toList())
+            );
         }
     }
 

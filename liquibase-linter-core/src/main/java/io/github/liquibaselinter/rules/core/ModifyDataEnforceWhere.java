@@ -51,6 +51,9 @@ public class ModifyDataEnforceWhere implements ChangeRule {
         if (ruleConfig.getValues() == null) {
             return true;
         }
-        return ruleConfig.getValues().stream().anyMatch(value -> Pattern.compile(value).matcher(tableName).matches());
+        return ruleConfig
+            .getValues()
+            .stream()
+            .anyMatch(value -> Pattern.compile(value).matcher(tableName).matches());
     }
 }
