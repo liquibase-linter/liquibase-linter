@@ -7,7 +7,7 @@ Feature: Rule "column-name"
 
   Scenario: Column name not matching the configured pattern
     Given the main XML changelog file contains changes
-      """
+      """xml
       <renameColumn oldColumnName="TEST" newColumnName="INVALID_UPPERCASED_COLUMN_NAME" tableName="TEST_TABLE" />
       """
     When liquibase-linter runs
@@ -18,7 +18,7 @@ Feature: Rule "column-name"
 
   Scenario: Column name matching the configured pattern
     Given the main XML changelog file contains changes
-      """
+      """xml
       <renameColumn oldColumnName="TEST" newColumnName="valid_lowercased_column_name" tableName="TEST_TABLE" />
       """
     When liquibase-linter runs

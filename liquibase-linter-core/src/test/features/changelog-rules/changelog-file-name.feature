@@ -5,8 +5,8 @@ Feature: Rule "changelog-file-name"
       | pattern | ^[^ ]+$ |
 
   Scenario: Invalid main changeLog filename
-    Given the main XML changelog file - named "filename with-space.xml" - contains
-      """
+    Given the main XML changelog file "filename with-space.xml" contains changesets
+      """xml
       <changeSet id="1730495746920-1" author="liquibase-linter-tests" />
       """
     When liquibase-linter runs
@@ -16,12 +16,12 @@ Feature: Rule "changelog-file-name"
       """
 
   Scenario: Invalid included changeLog filename
-    Given the main XML changelog file - named "master.xml" - contains
-      """
+    Given the main XML changelog file "master.xml" contains changesets
+      """xml
       <include relativeToChangelogFile="true" file="filename with-space.xml" />
       """
-    And the changelog file named "filename with-space.xml" contains
-      """
+    And the additional XML changelog file "filename with-space.xml" contains changesets
+      """xml
       <changeSet id="1730495746920-1" author="liquibase-linter-tests" />
       """
     When liquibase-linter runs
@@ -31,8 +31,8 @@ Feature: Rule "changelog-file-name"
       """
 
   Scenario: Valid changeLog filename
-    Given the main XML changelog file - named "filename-with-no-spaces.xml" - contains
-      """
+    Given the main XML changelog file "filename-with-no-spaces.xml" contains changesets
+      """xml
       <changeSet id="1730495746920-1" author="liquibase-linter-tests" />
       """
     When liquibase-linter runs
