@@ -51,9 +51,6 @@ public class ColumnTypeRule implements ChangeRule {
     }
 
     private Set<ColumnConfig> getColumns(Change change) {
-        if (change instanceof ChangeWithColumns<?>) {
-            return new HashSet<>(((ChangeWithColumns<?>) change).getColumns());
-        }
-        return new HashSet<>();
+        return new HashSet<>(((ChangeWithColumns<?>) change).getColumns());
     }
 }
