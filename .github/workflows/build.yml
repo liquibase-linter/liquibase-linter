@@ -68,7 +68,7 @@ jobs:
         include:
           - java-version: 8
           - liquibase-minor-version: '5.0'
-            java-version: 17
+            java-version: 25
     steps:
       - uses: actions/checkout@v6
       - name: Set up JDK ${{ matrix.java-version }}
