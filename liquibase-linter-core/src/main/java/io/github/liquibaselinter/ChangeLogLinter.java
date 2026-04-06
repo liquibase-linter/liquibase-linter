@@ -171,7 +171,7 @@ public class ChangeLogLinter {
         if (errorCount > 0) {
             final String errorList = errors.stream().map(ReportItem::getMessage).collect(joining("\n - ", "\n - ", ""));
             throw new ChangeLogLintingException(
-                String.format("Linting failed with %d errors: %s", errorCount, errorList)
+                String.format("Linting failed with %d errors:%s", errorCount, errorList)
             );
         }
     }

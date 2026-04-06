@@ -1,4 +1,0 @@
-{
-  "fail-fast": true,
-  "import": ["import-multi/lqlint-chars.json", "import-multi/lqlint-prefix.json"]
-}

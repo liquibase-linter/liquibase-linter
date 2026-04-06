@@ -1,5 +1,6 @@
 package io.github.liquibaselinter.cucumber;
 
+import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.cucumber.java.Before;
@@ -14,9 +15,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.UUID;
 import liquibase.Liquibase;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.database.DatabaseConnection;
@@ -52,12 +54,17 @@ public class LiquibaseLinterSteps {
         Files.write(configurationPath, configurationContent.getBytes());
     }
 
+    @Given("rule {string} is enabled")
+    public void ruleIsEnabled(String ruleName) throws IOException {
+        ruleIsEnabledWithTheFollowingConfiguration(ruleName, new HashMap<>());
+    }
+
     @Given("rule {string} is enabled with the configuration")
     public void ruleIsEnabledWithTheFollowingConfiguration(String ruleName, Map<String, String> ruleConfiguration)
         throws IOException {
         String configurationContent =
             "{\n" +
-            "  \"fail-fast\": true," +
+            "  \"fail-fast\": true,\n" +
             "  \"rules\": {\n" +
             "    \"" +
             ruleName +
@@ -67,8 +74,11 @@ public class LiquibaseLinterSteps {
             ruleConfiguration
                 .entrySet()
                 .stream()
-                .map(entry -> String.format("\"%s\": \"%s\"", entry.getKey(), entry.getValue()))
-                .collect(Collectors.joining(", ")) +
+                .map(entry ->
+                    String.format("        \"%s\": \"%s\"", entry.getKey(), entry.getValue().replace("\\", "\\\\"))
+                )
+                .collect(joining(",\n")) +
+            "\n" +
             "      }\n" +
             "    ]\n" +
             "  }\n" +
@@ -78,26 +88,44 @@ public class LiquibaseLinterSteps {
 
     @Given("the main XML changelog file contains changes")
     public void mainChangelogFileContainsChanges(String changesContent) throws IOException {
-        String changeSetsContent = "<changeSet id=\"1\" author=\"tester\">\n" + changesContent + "\n</changeSet>";
+        String changeSetsContent = String.format(
+            "<changeSet id=\"%s\" author=\"tester\">%n%s%n</changeSet>",
+            UUID.randomUUID(),
+            changesContent
+        );
         mainChangelogFileContainsChangeSets(changeSetsContent);
     }
 
-    @Given("the main XML changelog file contains")
+    @Given("the main XML changelog file contains changesets")
     public void mainChangelogFileContainsChangeSets(String changelogContent) throws IOException {
         mainChangelogFileWithNameContainsChangeSets("changelog.xml", changelogContent);
     }
 
-    @Given("the main XML changelog file - named {string} - contains")
+    @Given("the main XML changelog file {string} contains changesets")
     public void mainChangelogFileWithNameContainsChangeSets(String changelogFileName, String changelogContent)
         throws IOException {
         databaseChangeLog = changelogFileName;
-        changelogFileWithNameContainsChanges(changelogFileName, changelogContent);
+        changelogFileWithNameContainsChangesets(changelogFileName, changelogContent);
     }
 
-    @Given("the changelog file named {string} contains")
-    public void changelogFileWithNameContainsChanges(String changelogFileName, String changelogContent)
+    @Given("the additional XML changelog file {string} contains changes")
+    public void changelogFileWithNameContainsChanges(String changelogFileName, String changesContent)
+        throws IOException {
+        String changeSetsContent = String.format(
+            "<changeSet id=\"%s\" author=\"tester\">%n%s%n</changeSet>",
+            UUID.randomUUID(),
+            changesContent
+        );
+        changelogFileWithNameContainsChangesets(changelogFileName, changeSetsContent);
+    }
+
+    @Given("the additional XML changelog file {string} contains changesets")
+    public void changelogFileWithNameContainsChangesets(String changelogFileName, String changelogContent)
         throws IOException {
         Path changelogPath = tempDirectory.resolve(changelogFileName);
+        if (changelogPath.getParent() != null) {
+            Files.createDirectories(changelogPath.getParent());
+        }
         String changelog =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<databaseChangeLog xmlns=\"http://www.liquibase.org/xml/ns/dbchangelog\"\n" +
@@ -108,6 +136,15 @@ public class LiquibaseLinterSteps {
             "\n" +
             "</databaseChangeLog>";
         Files.write(changelogPath, changelog.getBytes());
+    }
+
+    @Given("an additional configuration file {string} has content")
+    public void additionalConfigurationFileWithContent(String configFileName, String configContent) throws IOException {
+        Path configFilePath = tempDirectory.resolve(configFileName);
+        if (configFilePath.getParent() != null) {
+            Files.createDirectories(configFilePath.getParent());
+        }
+        Files.write(configFilePath, configContent.getBytes());
     }
 
     @When("liquibase-linter runs")
