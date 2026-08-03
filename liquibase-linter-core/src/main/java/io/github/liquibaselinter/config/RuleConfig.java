@@ -6,20 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.apache.commons.jexl3.JexlBuilder;
-import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;
-import org.apache.commons.jexl3.ObjectContext;
-import org.apache.commons.jexl3.introspection.JexlPermissions;
 
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
 public final class RuleConfig {
 
     public static final RuleConfig EMPTY = builder().build();
-
-    public static final JexlEngine JEXL_ENGINE = new JexlBuilder()
-        .permissions(JexlPermissions.RESTRICTED.compose("+liquibase.**", "+io.github.liquibaselinter.**"))
-        .create();
 
     private static final String DYNAMIC_VALUE = "{{value}}";
 
@@ -90,7 +82,7 @@ public final class RuleConfig {
             return Optional.empty();
         }
         if (columnConditionExpression == null) {
-            columnConditionExpression = JEXL_ENGINE.createExpression(columnCondition);
+            columnConditionExpression = ExpressionEvaluator.compile(columnCondition);
         }
         return Optional.of(columnConditionExpression);
     }
@@ -100,7 +92,7 @@ public final class RuleConfig {
             return Optional.empty();
         }
         if (conditionExpression == null) {
-            conditionExpression = JEXL_ENGINE.createExpression(condition);
+            conditionExpression = ExpressionEvaluator.compile(condition);
         }
         return Optional.of(conditionExpression);
     }
@@ -110,7 +102,7 @@ public final class RuleConfig {
             return Optional.empty();
         }
         if (dynamicValueExpression == null) {
-            dynamicValueExpression = JEXL_ENGINE.createExpression(dynamicValue);
+            dynamicValueExpression = ExpressionEvaluator.compile(dynamicValue);
         }
         return Optional.of(dynamicValueExpression);
     }
@@ -124,7 +116,7 @@ public final class RuleConfig {
 
     public String getDynamicValue(Object subject) {
         return getDynamicValueExpression()
-            .map(expression -> (String) expression.evaluate(new ObjectContext<>(JEXL_ENGINE, subject)))
+            .map(expression -> ExpressionEvaluator.evaluateString(expression, subject))
             .orElse(null);
     }
 

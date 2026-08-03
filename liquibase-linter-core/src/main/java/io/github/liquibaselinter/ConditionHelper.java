@@ -1,12 +1,12 @@
 package io.github.liquibaselinter;
 
+import io.github.liquibaselinter.config.ExpressionEvaluator;
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.Optional;
 import liquibase.Contexts;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
-import org.apache.commons.jexl3.ObjectContext;
 
 final class ConditionHelper {
 
@@ -15,26 +15,24 @@ final class ConditionHelper {
     public static boolean evaluateCondition(RuleConfig ruleConfig, Change change) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> (boolean) expression.evaluate(context(ConditionContext.from(change))))
+            .map(expression -> ExpressionEvaluator.evaluateBoolean(expression, ConditionContext.from(change)))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, ChangeSet changeSet) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> (boolean) expression.evaluate(context(ConditionContext.from(changeSet))))
+            .map(expression -> ExpressionEvaluator.evaluateBoolean(expression, ConditionContext.from(changeSet)))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, DatabaseChangeLog databaseChangeLog) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> (boolean) expression.evaluate(context(ConditionContext.from(databaseChangeLog))))
+            .map(expression ->
+                ExpressionEvaluator.evaluateBoolean(expression, ConditionContext.from(databaseChangeLog))
+            )
             .orElse(true);
-    }
-
-    private static ObjectContext<ConditionContext> context(ConditionContext conditionContext) {
-        return new ObjectContext<>(RuleConfig.JEXL_ENGINE, conditionContext);
     }
 
     // Must be public: JEXL reflectively invokes getters/matchesContext() and refuses to do so

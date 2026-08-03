@@ -1,9 +1,9 @@
 package io.github.liquibaselinter.rules;
 
+import io.github.liquibaselinter.config.ExpressionEvaluator;
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.Optional;
 import liquibase.change.ColumnConfig;
-import org.apache.commons.jexl3.ObjectContext;
 
 public class LintRuleChecker {
 
@@ -44,7 +44,7 @@ public class LintRuleChecker {
     public boolean columnConditionIsSatisfied(ColumnConfig column) {
         return ruleConfig
             .getConditionalColumnExpression()
-            .map(expression -> (boolean) expression.evaluate(new ObjectContext<>(RuleConfig.JEXL_ENGINE, column)))
+            .map(expression -> ExpressionEvaluator.evaluateBoolean(expression, column))
             .orElse(true);
     }
 }
