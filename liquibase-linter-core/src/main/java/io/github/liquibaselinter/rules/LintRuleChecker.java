@@ -3,14 +3,9 @@ package io.github.liquibaselinter.rules;
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.Optional;
 import liquibase.change.ColumnConfig;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.spel.support.SimpleEvaluationContext;
+import org.apache.commons.jexl3.ObjectContext;
 
 public class LintRuleChecker {
-
-    private static final EvaluationContext EVALUATION_CONTEXT = SimpleEvaluationContext.forReadOnlyDataBinding()
-        .withInstanceMethods()
-        .build();
 
     private final RuleConfig ruleConfig;
     private final PatternChecker patternChecker;
@@ -49,7 +44,7 @@ public class LintRuleChecker {
     public boolean columnConditionIsSatisfied(ColumnConfig column) {
         return ruleConfig
             .getConditionalColumnExpression()
-            .map(expression -> expression.getValue(EVALUATION_CONTEXT, column, boolean.class))
+            .map(expression -> (boolean) expression.evaluate(new ObjectContext<>(RuleConfig.JEXL_ENGINE, column)))
             .orElse(true);
     }
 }

@@ -6,41 +6,40 @@ import liquibase.Contexts;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.spel.support.SimpleEvaluationContext;
+import org.apache.commons.jexl3.ObjectContext;
 
 final class ConditionHelper {
-
-    private static final EvaluationContext EVALUATION_CONTEXT = SimpleEvaluationContext.forReadOnlyDataBinding()
-        .withInstanceMethods()
-        .build();
 
     private ConditionHelper() {}
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, Change change) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> expression.getValue(EVALUATION_CONTEXT, ConditionContext.from(change), boolean.class))
+            .map(expression -> (boolean) expression.evaluate(context(ConditionContext.from(change))))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, ChangeSet changeSet) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> expression.getValue(EVALUATION_CONTEXT, ConditionContext.from(changeSet), boolean.class))
+            .map(expression -> (boolean) expression.evaluate(context(ConditionContext.from(changeSet))))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, DatabaseChangeLog databaseChangeLog) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression ->
-                expression.getValue(EVALUATION_CONTEXT, ConditionContext.from(databaseChangeLog), boolean.class)
-            )
+            .map(expression -> (boolean) expression.evaluate(context(ConditionContext.from(databaseChangeLog))))
             .orElse(true);
     }
 
-    private static final class ConditionContext {
+    private static ObjectContext<ConditionContext> context(ConditionContext conditionContext) {
+        return new ObjectContext<>(RuleConfig.JEXL_ENGINE, conditionContext);
+    }
+
+    // Must be public: JEXL reflectively invokes getters/matchesContext() and refuses to do so
+    // on a non-public declaring class, even when the members themselves are public.
+    public static final class ConditionContext {
 
         private final DatabaseChangeLog changeLog;
         private final ChangeSet changeSet;

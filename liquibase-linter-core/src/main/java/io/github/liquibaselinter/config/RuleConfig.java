@@ -6,20 +6,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.SimpleEvaluationContext;
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.ObjectContext;
+import org.apache.commons.jexl3.introspection.JexlPermissions;
 
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
 public final class RuleConfig {
 
     public static final RuleConfig EMPTY = builder().build();
 
+    public static final JexlEngine JEXL_ENGINE = new JexlBuilder()
+        .permissions(JexlPermissions.RESTRICTED.compose("+liquibase.**", "+io.github.liquibaselinter.**"))
+        .create();
+
     private static final String DYNAMIC_VALUE = "{{value}}";
-    private static final EvaluationContext EVALUATION_CONTEXT = SimpleEvaluationContext.forReadOnlyDataBinding()
-        .withInstanceMethods()
-        .build();
 
     private final boolean enabled;
     private final String condition;
@@ -31,9 +33,9 @@ public final class RuleConfig {
     private final String errorMessage;
     private final String enableAfter;
     private Pattern pattern;
-    private Expression conditionExpression;
-    private Expression columnConditionExpression;
-    private Expression dynamicValueExpression;
+    private JexlExpression conditionExpression;
+    private JexlExpression columnConditionExpression;
+    private JexlExpression dynamicValueExpression;
 
     private RuleConfig(RuleConfigBuilder builder) {
         this.enabled = builder.enabled;
@@ -83,32 +85,32 @@ public final class RuleConfig {
         return patternString;
     }
 
-    public Optional<Expression> getConditionalColumnExpression() {
+    public Optional<JexlExpression> getConditionalColumnExpression() {
         if (columnCondition == null) {
             return Optional.empty();
         }
         if (columnConditionExpression == null) {
-            columnConditionExpression = new SpelExpressionParser().parseExpression(columnCondition);
+            columnConditionExpression = JEXL_ENGINE.createExpression(columnCondition);
         }
         return Optional.of(columnConditionExpression);
     }
 
-    public Optional<Expression> getConditionalExpression() {
+    public Optional<JexlExpression> getConditionalExpression() {
         if (condition == null) {
             return Optional.empty();
         }
         if (conditionExpression == null) {
-            conditionExpression = new SpelExpressionParser().parseExpression(condition);
+            conditionExpression = JEXL_ENGINE.createExpression(condition);
         }
         return Optional.of(conditionExpression);
     }
 
-    public Optional<Expression> getDynamicValueExpression() {
+    public Optional<JexlExpression> getDynamicValueExpression() {
         if (dynamicValue == null) {
             return Optional.empty();
         }
         if (dynamicValueExpression == null) {
-            dynamicValueExpression = new SpelExpressionParser().parseExpression(dynamicValue);
+            dynamicValueExpression = JEXL_ENGINE.createExpression(dynamicValue);
         }
         return Optional.of(dynamicValueExpression);
     }
@@ -122,7 +124,7 @@ public final class RuleConfig {
 
     public String getDynamicValue(Object subject) {
         return getDynamicValueExpression()
-            .map(expression -> expression.getValue(EVALUATION_CONTEXT, subject, String.class))
+            .map(expression -> (String) expression.evaluate(new ObjectContext<>(JEXL_ENGINE, subject)))
             .orElse(null);
     }
 

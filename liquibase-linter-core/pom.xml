@@ -20,7 +20,8 @@
     <jackson.version>2.21.2</jackson.version>
     <jansi.version>3.30.9</jansi.version>
     <guava.version>33.5.0-jre</guava.version>
-    <spring.version>5.3.39</spring.version>
+    <commons-jexl3.version>3.7.0</commons-jexl3.version>
+    <spring-core.version>5.3.39</spring-core.version>
     <commons-io.version>2.21.0</commons-io.version>
     <cucumber.version>7.34.3</cucumber.version>
     <jacoco.version>0.8.14</jacoco.version>
@@ -54,9 +55,14 @@
       <version>${commons-beanutils.version}</version>
     </dependency>
     <dependency>
-      <artifactId>spring-expression</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-jexl3</artifactId>
+      <version>${commons-jexl3.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
-      <version>${spring.version}</version>
+      <artifactId>spring-core</artifactId>
+      <version>${spring-core.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jline</groupId>
