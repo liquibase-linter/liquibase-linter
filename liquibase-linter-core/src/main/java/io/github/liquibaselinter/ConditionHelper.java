@@ -6,29 +6,37 @@ import liquibase.Contexts;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.spel.support.SimpleEvaluationContext;
 
 final class ConditionHelper {
+
+    private static final EvaluationContext EVALUATION_CONTEXT = SimpleEvaluationContext.forReadOnlyDataBinding()
+        .withInstanceMethods()
+        .build();
 
     private ConditionHelper() {}
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, Change change) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> expression.getValue(ConditionContext.from(change), boolean.class))
+            .map(expression -> expression.getValue(EVALUATION_CONTEXT, ConditionContext.from(change), boolean.class))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, ChangeSet changeSet) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> expression.getValue(ConditionContext.from(changeSet), boolean.class))
+            .map(expression -> expression.getValue(EVALUATION_CONTEXT, ConditionContext.from(changeSet), boolean.class))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, DatabaseChangeLog databaseChangeLog) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> expression.getValue(ConditionContext.from(databaseChangeLog), boolean.class))
+            .map(expression ->
+                expression.getValue(EVALUATION_CONTEXT, ConditionContext.from(databaseChangeLog), boolean.class)
+            )
             .orElse(true);
     }
 

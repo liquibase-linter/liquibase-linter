@@ -6,8 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.SimpleEvaluationContext;
 
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
 public final class RuleConfig {
@@ -15,6 +17,9 @@ public final class RuleConfig {
     public static final RuleConfig EMPTY = builder().build();
 
     private static final String DYNAMIC_VALUE = "{{value}}";
+    private static final EvaluationContext EVALUATION_CONTEXT = SimpleEvaluationContext.forReadOnlyDataBinding()
+        .withInstanceMethods()
+        .build();
 
     private final boolean enabled;
     private final String condition;
@@ -117,7 +122,7 @@ public final class RuleConfig {
 
     public String getDynamicValue(Object subject) {
         return getDynamicValueExpression()
-            .map(expression -> expression.getValue(subject, String.class))
+            .map(expression -> expression.getValue(EVALUATION_CONTEXT, subject, String.class))
             .orElse(null);
     }
 
