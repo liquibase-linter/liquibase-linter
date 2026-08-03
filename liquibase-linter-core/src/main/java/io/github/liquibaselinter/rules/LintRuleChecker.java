@@ -1,6 +1,5 @@
 package io.github.liquibaselinter.rules;
 
-import io.github.liquibaselinter.config.ExpressionEvaluator;
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.Optional;
 import liquibase.change.ColumnConfig;
@@ -44,7 +43,7 @@ public class LintRuleChecker {
     public boolean columnConditionIsSatisfied(ColumnConfig column) {
         return ruleConfig
             .getConditionalColumnExpression()
-            .map(expression -> ExpressionEvaluator.evaluateBoolean(expression, column))
+            .map(expression -> expression.evaluateBoolean(column))
             .orElse(true);
     }
 }

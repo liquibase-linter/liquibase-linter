@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.apache.commons.jexl3.JexlExpression;
 
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
 public final class RuleConfig {
@@ -25,9 +24,9 @@ public final class RuleConfig {
     private final String errorMessage;
     private final String enableAfter;
     private Pattern pattern;
-    private JexlExpression conditionExpression;
-    private JexlExpression columnConditionExpression;
-    private JexlExpression dynamicValueExpression;
+    private Expression conditionExpression;
+    private Expression columnConditionExpression;
+    private Expression dynamicValueExpression;
 
     private RuleConfig(RuleConfigBuilder builder) {
         this.enabled = builder.enabled;
@@ -77,32 +76,32 @@ public final class RuleConfig {
         return patternString;
     }
 
-    public Optional<JexlExpression> getConditionalColumnExpression() {
+    public Optional<Expression> getConditionalColumnExpression() {
         if (columnCondition == null) {
             return Optional.empty();
         }
         if (columnConditionExpression == null) {
-            columnConditionExpression = ExpressionEvaluator.compile(columnCondition);
+            columnConditionExpression = Expression.compile(columnCondition);
         }
         return Optional.of(columnConditionExpression);
     }
 
-    public Optional<JexlExpression> getConditionalExpression() {
+    public Optional<Expression> getConditionalExpression() {
         if (condition == null) {
             return Optional.empty();
         }
         if (conditionExpression == null) {
-            conditionExpression = ExpressionEvaluator.compile(condition);
+            conditionExpression = Expression.compile(condition);
         }
         return Optional.of(conditionExpression);
     }
 
-    public Optional<JexlExpression> getDynamicValueExpression() {
+    public Optional<Expression> getDynamicValueExpression() {
         if (dynamicValue == null) {
             return Optional.empty();
         }
         if (dynamicValueExpression == null) {
-            dynamicValueExpression = ExpressionEvaluator.compile(dynamicValue);
+            dynamicValueExpression = Expression.compile(dynamicValue);
         }
         return Optional.of(dynamicValueExpression);
     }
@@ -116,7 +115,7 @@ public final class RuleConfig {
 
     public String getDynamicValue(Object subject) {
         return getDynamicValueExpression()
-            .map(expression -> ExpressionEvaluator.evaluateString(expression, subject))
+            .map(expression -> expression.evaluateString(subject))
             .orElse(null);
     }
 

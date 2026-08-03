@@ -1,6 +1,5 @@
 package io.github.liquibaselinter;
 
-import io.github.liquibaselinter.config.ExpressionEvaluator;
 import io.github.liquibaselinter.config.RuleConfig;
 import java.util.Optional;
 import liquibase.Contexts;
@@ -15,23 +14,21 @@ final class ConditionHelper {
     public static boolean evaluateCondition(RuleConfig ruleConfig, Change change) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> ExpressionEvaluator.evaluateBoolean(expression, ConditionContext.from(change)))
+            .map(expression -> expression.evaluateBoolean(ConditionContext.from(change)))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, ChangeSet changeSet) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression -> ExpressionEvaluator.evaluateBoolean(expression, ConditionContext.from(changeSet)))
+            .map(expression -> expression.evaluateBoolean(ConditionContext.from(changeSet)))
             .orElse(true);
     }
 
     public static boolean evaluateCondition(RuleConfig ruleConfig, DatabaseChangeLog databaseChangeLog) {
         return ruleConfig
             .getConditionalExpression()
-            .map(expression ->
-                ExpressionEvaluator.evaluateBoolean(expression, ConditionContext.from(databaseChangeLog))
-            )
+            .map(expression -> expression.evaluateBoolean(ConditionContext.from(databaseChangeLog)))
             .orElse(true);
     }
 
