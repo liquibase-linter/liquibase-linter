@@ -141,7 +141,7 @@ public class MarkdownReporter extends TextReporter {
     public static class Factory extends AbstractReporter.Factory<MarkdownReporter> {
 
         public Factory() {
-            super(NAME);
+            super(NAME, MarkdownReporter.class);
         }
     }
 }

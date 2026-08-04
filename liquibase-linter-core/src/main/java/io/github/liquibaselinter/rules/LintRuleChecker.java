@@ -43,7 +43,7 @@ public class LintRuleChecker {
     public boolean columnConditionIsSatisfied(ColumnConfig column) {
         return ruleConfig
             .getConditionalColumnExpression()
-            .map(expression -> expression.getValue(column, boolean.class))
+            .map(expression -> expression.evaluateBoolean(column))
             .orElse(true);
     }
 }

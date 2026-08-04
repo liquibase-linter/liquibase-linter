@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
 public final class RuleConfig {
@@ -83,27 +81,33 @@ public final class RuleConfig {
             return Optional.empty();
         }
         if (columnConditionExpression == null) {
-            columnConditionExpression = new SpelExpressionParser().parseExpression(columnCondition);
+            columnConditionExpression = Expression.compile(columnCondition);
         }
         return Optional.of(columnConditionExpression);
     }
 
-    public Optional<Expression> getConditionalExpression() {
+    private Optional<Expression> conditionalExpression() {
         if (condition == null) {
             return Optional.empty();
         }
         if (conditionExpression == null) {
-            conditionExpression = new SpelExpressionParser().parseExpression(condition);
+            conditionExpression = Expression.compile(condition);
         }
         return Optional.of(conditionExpression);
     }
 
-    public Optional<Expression> getDynamicValueExpression() {
+    public boolean isConditionSatisfiedWithContext(ConditionContext conditionContext) {
+        return conditionalExpression()
+            .map(expression -> expression.evaluateBoolean(conditionContext))
+            .orElse(true);
+    }
+
+    private Optional<Expression> dynamicValueExpression() {
         if (dynamicValue == null) {
             return Optional.empty();
         }
         if (dynamicValueExpression == null) {
-            dynamicValueExpression = new SpelExpressionParser().parseExpression(dynamicValue);
+            dynamicValueExpression = Expression.compile(dynamicValue);
         }
         return Optional.of(dynamicValueExpression);
     }
@@ -116,8 +120,8 @@ public final class RuleConfig {
     }
 
     public String getDynamicValue(Object subject) {
-        return getDynamicValueExpression()
-            .map(expression -> expression.getValue(subject, String.class))
+        return dynamicValueExpression()
+            .map(expression -> expression.evaluateString(subject))
             .orElse(null);
     }
 

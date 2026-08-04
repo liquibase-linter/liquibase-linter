@@ -136,7 +136,7 @@ public class TextReporter extends AbstractReporter {
     public static class Factory extends AbstractReporter.Factory<TextReporter> {
 
         public Factory() {
-            super(NAME);
+            super(NAME, TextReporter.class);
         }
     }
 }

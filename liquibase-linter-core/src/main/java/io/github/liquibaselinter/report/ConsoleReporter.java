@@ -53,7 +53,7 @@ public class ConsoleReporter extends TextReporter {
     public static class Factory extends AbstractReporter.Factory<ConsoleReporter> {
 
         public Factory() {
-            super(NAME);
+            super(NAME, ConsoleReporter.class);
         }
     }
 }

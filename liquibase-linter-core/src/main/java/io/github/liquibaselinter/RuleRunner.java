@@ -2,6 +2,7 @@ package io.github.liquibaselinter;
 
 import static java.util.stream.Collectors.toList;
 
+import io.github.liquibaselinter.config.ConditionContext;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.Report;
@@ -60,7 +61,7 @@ class RuleRunner {
             final String ruleName = changeRule.getName();
 
             for (RuleConfig ruleConfig : configs) {
-                if (isEnabled(ruleConfig) && ConditionHelper.evaluateCondition(ruleConfig, change)) {
+                if (shouldApplyRule(ruleConfig, ConditionContext.from(change))) {
                     Collection<RuleViolation> violations = changeRule.check(change, ruleConfig);
                     for (RuleViolation violation : violations) {
                         handleViolation(changeLog, changeSet, ruleName, violation.message());
@@ -80,7 +81,7 @@ class RuleRunner {
             final String ruleName = changeSetRule.getName();
             final List<RuleConfig> configs = config.forRule(ruleName);
             for (RuleConfig ruleConfig : configs) {
-                if (isEnabled(ruleConfig) && ConditionHelper.evaluateCondition(ruleConfig, changeSet)) {
+                if (shouldApplyRule(ruleConfig, ConditionContext.from(changeSet))) {
                     Collection<RuleViolation> violations = changeSetRule.check(changeSet, ruleConfig);
                     for (RuleViolation violation : violations) {
                         handleViolation(changeLog, changeSet, ruleName, violation.message());
@@ -98,7 +99,7 @@ class RuleRunner {
             final String ruleName = changeLogRule.getName();
             final List<RuleConfig> configs = config.forRule(ruleName);
             for (RuleConfig ruleConfig : configs) {
-                if (isEnabled(ruleConfig) && ConditionHelper.evaluateCondition(ruleConfig, changeLog)) {
+                if (shouldApplyRule(ruleConfig, ConditionContext.from(changeLog))) {
                     Collection<RuleViolation> ruleViolations = changeLogRule.check(changeLog, ruleConfig);
                     for (RuleViolation ruleViolation : ruleViolations) {
                         handleViolation(changeLog, null, ruleName, ruleViolation.message());
@@ -135,9 +136,10 @@ class RuleRunner {
         return false;
     }
 
-    private boolean isEnabled(RuleConfig ruleConfig) {
+    private boolean shouldApplyRule(RuleConfig ruleConfig, ConditionContext context) {
         return (
             ruleConfig.isEnabled() &&
+            ruleConfig.isConditionSatisfiedWithContext(context) &&
             (StringUtils.isEmpty(ruleConfig.getEnableAfter()) || filesParsed.contains(ruleConfig.getEnableAfter()))
         );
     }
