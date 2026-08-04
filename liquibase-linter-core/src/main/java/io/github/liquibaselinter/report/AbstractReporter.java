@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import liquibase.exception.UnexpectedLiquibaseException;
-import org.springframework.core.GenericTypeResolver;
 
 public abstract class AbstractReporter implements Reporter {
 
@@ -76,14 +75,10 @@ public abstract class AbstractReporter implements Reporter {
         private final Class<? extends C> configClass;
         private final Class<?> configBuilderClass;
 
-        protected BaseFactory(final String name) {
+        protected BaseFactory(final String name, Class<? extends R> reporterClass, Class<? extends C> configClass) {
             this.name = name;
-            final Class<?>[] factoryTypes = GenericTypeResolver.resolveTypeArguments(
-                getClass(),
-                Reporter.Factory.class
-            );
-            reporterClass = (Class<? extends R>) factoryTypes[0];
-            configClass = (Class<? extends C>) factoryTypes[1];
+            this.reporterClass = reporterClass;
+            this.configClass = configClass;
             configBuilderClass = Optional.ofNullable(configClass.getAnnotation(JsonDeserialize.class))
                 .map(JsonDeserialize::builder)
                 .orElseThrow(() -> new UnexpectedLiquibaseException("Cannot find builder for " + configClass));
@@ -133,8 +128,8 @@ public abstract class AbstractReporter implements Reporter {
 
     public static class Factory<R extends Reporter> extends BaseFactory<R, ReporterConfig> {
 
-        protected Factory(String name) {
-            super(name);
+        protected Factory(String name, Class<? extends R> reporterClass) {
+            super(name, reporterClass, ReporterConfig.class);
         }
     }
 }

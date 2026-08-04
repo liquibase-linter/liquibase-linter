@@ -23,6 +23,7 @@
     <liquibase.version>4.33.0</liquibase.version>
     <maven-core.version>3.9.14</maven-core.version>
     <maven-plugin-api.version>3.9.14</maven-plugin-api.version>
+    <spring-core.version>5.3.39</spring-core.version>
     <!-- plugins -->
     <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
     <maven-plugin-plugin.version>3.15.2</maven-plugin-plugin.version>
@@ -38,6 +39,12 @@
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
       <version>${liquibase.version}</version>
+    </dependency>
+    <dependency>
+      <!-- Required by liquibase-core's own SpringResourceAccessor, used with DefaultResourceLoader below -->
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring-core.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.annotation</groupId>

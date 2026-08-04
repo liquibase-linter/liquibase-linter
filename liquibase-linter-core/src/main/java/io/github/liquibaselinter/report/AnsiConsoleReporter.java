@@ -72,7 +72,7 @@ public class AnsiConsoleReporter extends ConsoleReporter {
     public static class Factory extends AbstractReporter.Factory<AnsiConsoleReporter> {
 
         public Factory() {
-            super(NAME);
+            super(NAME, AnsiConsoleReporter.class);
         }
     }
 }
