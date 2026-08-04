@@ -86,7 +86,7 @@ public final class RuleConfig {
         return Optional.of(columnConditionExpression);
     }
 
-    public Optional<Expression> getConditionalExpression() {
+    private Optional<Expression> conditionalExpression() {
         if (condition == null) {
             return Optional.empty();
         }
@@ -96,7 +96,13 @@ public final class RuleConfig {
         return Optional.of(conditionExpression);
     }
 
-    public Optional<Expression> getDynamicValueExpression() {
+    public boolean isConditionSatisfiedWithContext(ConditionContext conditionContext) {
+        return conditionalExpression()
+            .map(expression -> expression.evaluateBoolean(conditionContext))
+            .orElse(true);
+    }
+
+    private Optional<Expression> dynamicValueExpression() {
         if (dynamicValue == null) {
             return Optional.empty();
         }
@@ -114,7 +120,7 @@ public final class RuleConfig {
     }
 
     public String getDynamicValue(Object subject) {
-        return getDynamicValueExpression()
+        return dynamicValueExpression()
             .map(expression -> expression.evaluateString(subject))
             .orElse(null);
     }
