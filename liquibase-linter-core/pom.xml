@@ -21,7 +21,7 @@
     <jansi.version>3.30.9</jansi.version>
     <guava.version>33.6.0-jre</guava.version>
     <commons-jexl3.version>3.7.0</commons-jexl3.version>
-    <commons-io.version>2.21.0</commons-io.version>
+    <commons-io.version>2.22.0</commons-io.version>
     <cucumber.version>7.34.6</cucumber.version>
     <jacoco.version>0.8.15</jacoco.version>
   </properties>
