@@ -25,7 +25,7 @@
     <maven-plugin-api.version>3.9.14</maven-plugin-api.version>
     <spring-core.version>5.3.39</spring-core.version>
     <!-- plugins -->
-    <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
     <maven-plugin-plugin.version>3.15.2</maven-plugin-plugin.version>
   </properties>
 
