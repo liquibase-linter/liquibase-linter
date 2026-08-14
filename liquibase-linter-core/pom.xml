@@ -23,7 +23,7 @@
     <commons-jexl3.version>3.7.0</commons-jexl3.version>
     <commons-io.version>2.21.0</commons-io.version>
     <cucumber.version>7.34.6</cucumber.version>
-    <jacoco.version>0.8.14</jacoco.version>
+    <jacoco.version>0.8.15</jacoco.version>
   </properties>
 
   <dependencies>
