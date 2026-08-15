@@ -47,11 +47,14 @@ jobs:
           echo "previousVersion=$version" >> $GITHUB_OUTPUT
 
       - name: Prepare and perform release
-        run: mvn release:prepare release:perform --no-transfer-progress --batch-mode -DreleaseVersion=${{ github.event.inputs.releaseVersion }} -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
+        run: mvn release:prepare release:perform --no-transfer-progress --batch-mode -DpushChanges=false -DreleaseVersion=${{ github.event.inputs.releaseVersion }} -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Push release tag
+        run: git push origin refs/tags/${{ github.event.inputs.releaseVersion }}
 
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
@@ -74,5 +77,6 @@ jobs:
             sed -i "s/${{ steps.detect_versions.outputs.previousVersion }}/${{ github.event.inputs.releaseVersion }}/g" "$docFile";
             git add "$docFile";
           done
-          git commit -m "Update version in documentation to ${{ github.event.inputs.releaseVersion }}"
-          git push origin main
+          if ! git diff --cached --quiet; then
+            git commit -m "Update version in documentation to ${{ github.event.inputs.releaseVersion }}"
+          fi
