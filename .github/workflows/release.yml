@@ -55,7 +55,7 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Push release tag
-        run: git push origin refs/tags/${{ github.event.inputs.releaseVersion }}
+        run: git push origin "refs/tags/${{ github.event.inputs.releaseVersion }}"
 
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
