@@ -79,4 +79,5 @@ jobs:
           done
           if ! git diff --cached --quiet; then
             git commit -m "Update version in documentation to ${{ github.event.inputs.releaseVersion }}"
+            git push origin HEAD:docs/release-${{ github.event.inputs.releaseVersion }}-${{ github.run_id }}
           fi
