@@ -47,7 +47,7 @@ public class ColumnTypeRule implements ChangeRule {
     }
 
     private boolean supports(Change change) {
-        return (change instanceof AddColumnChange || change instanceof CreateTableChange);
+        return change instanceof AddColumnChange || change instanceof CreateTableChange;
     }
 
     private Set<ColumnConfig> getColumns(Change change) {

@@ -147,20 +147,20 @@ public class ChangeLogLinter {
                         throw new ChangeLogLintingException(String.format(errorMessage, unparsedFiles));
                     }
                 } catch (IOException e) {
-                    Scope.getCurrentScope().getLog(ChangeLogLinter.class).warning("Cannot list files in " + path, e);
+                    Scope.getCurrentScope()
+                        .getLog(ChangeLogLinter.class)
+                        .warning("Cannot list files in " + path, e);
                 }
             }
         }
     }
 
     private void reports() throws ChangeLogLintingException {
-        config
-            .getReporting()
-            .forEach((reportType, reporter) -> {
-                if (reporter.isEnabled()) {
-                    reporter.processReport(ruleRunner.buildReport());
-                }
-            });
+        config.getReporting().forEach((reportType, reporter) -> {
+            if (reporter.isEnabled()) {
+                reporter.processReport(ruleRunner.buildReport());
+            }
+        });
         final List<ReportItem> errors = ruleRunner
             .buildReport()
             .getItems()
@@ -169,7 +169,10 @@ public class ChangeLogLinter {
             .collect(Collectors.toList());
         final long errorCount = errors.size();
         if (errorCount > 0) {
-            final String errorList = errors.stream().map(ReportItem::getMessage).collect(joining("\n - ", "\n - ", ""));
+            final String errorList = errors
+                .stream()
+                .map(ReportItem::getMessage)
+                .collect(joining("\n - ", "\n - ", ""));
             throw new ChangeLogLintingException(
                 String.format("Linting failed with %d errors:%s", errorCount, errorList)
             );
