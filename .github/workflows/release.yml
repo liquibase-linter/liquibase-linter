@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v7
@@ -78,6 +79,14 @@ jobs:
             git add "$docFile";
           done
           if ! git diff --cached --quiet; then
+            branch=docs/release-${{ github.event.inputs.releaseVersion }}-${{ github.run_id }}
             git commit -m "Update version in documentation to ${{ github.event.inputs.releaseVersion }}"
-            git push origin HEAD:docs/release-${{ github.event.inputs.releaseVersion }}-${{ github.run_id }}
+            git push origin HEAD:"$branch"
+            gh pr create \
+              --base main \
+              --head "$branch" \
+              --title "Update version in documentation to ${{ github.event.inputs.releaseVersion }}" \
+              --body "Automated documentation update created by the Release workflow."
           fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
