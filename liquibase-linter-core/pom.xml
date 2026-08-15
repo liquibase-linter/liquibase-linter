@@ -149,17 +149,17 @@
               <configuration>
                 <rules>
                   <rule>
-                    <element>CLASS</element>
+                    <element>BUNDLE</element>
                     <limits>
                       <limit>
                         <counter>BRANCH</counter>
-                        <value>MISSEDCOUNT</value>
-                        <maximum>20</maximum>
+                        <value>COVEREDRATIO</value>
+                        <minimum>0.8</minimum>
                       </limit>
                       <limit>
                         <counter>LINE</counter>
-                        <value>MISSEDCOUNT</value>
-                        <maximum>10</maximum>
+                        <value>COVEREDRATIO</value>
+                        <minimum>0.8</minimum>
                       </limit>
                     </limits>
                   </rule>
