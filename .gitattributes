@@ -1,0 +1,83 @@
+# This file is inspired by https://github.com/alexkaratarakis/gitattributes
+#
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# The above will handle all files NOT found below
+# These files are text and should be normalized (Convert crlf => lf)
+*.css           text
+*.feature       text
+*.java          text
+*.json          text
+*.sh            text eol=lf
+*.txt           text
+*.xml           text
+*.yaml          text
+*.yml           text
+
+# Documents
+*.md            text
+AUTHORS         text
+CHANGELOG       text
+CHANGES         text
+CONTRIBUTING    text
+COPYING         text
+copyright       text
+*COPYRIGHT*     text
+INSTALL         text
+license         text
+LICENSE         text
+NEWS            text
+readme          text
+*README*        text
+TODO            text
+
+# Graphics
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.gif           binary
+*.tif           binary
+*.tiff          binary
+*.ico           binary
+# SVG treated as an asset (binary) by default. If you want to treat it as text,
+# comment-out the following line and uncomment the line after.
+*.svg           binary
+#*.svg          text
+*.eps           binary
+
+# These files are binary and should be left untouched
+# (binary is a macro for -text -diff)
+*.class         binary
+*.jar           binary
+*.war           binary
+
+## LINTERS
+.csslintrc      text
+.eslintrc       text
+.jscsrc         text
+.jshintrc       text
+.jshintignore   text
+.stylelintrc    text
+
+## CONFIGS
+*.conf          text
+*.config        text
+.editorconfig   text
+.gitattributes  text
+.gitconfig      text
+.gitignore      text
+
+## ARCHIVES
+*.7z            binary
+*.gz            binary
+*.rar           binary
+*.tar           binary
+*.zip           binary
+
+## FONTS
+*.ttf           binary
+*.eot           binary
+*.otf           binary
+*.woff          binary
+*.woff2         binary
