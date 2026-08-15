@@ -56,7 +56,8 @@ public class ColumnNameRule implements ChangeRule {
 
     private Set<String> getColumnNames(Change change) {
         if (change instanceof ChangeWithColumns<?>) {
-            return ((ChangeWithColumns<?>) change).getColumns()
+            return ((ChangeWithColumns<?>) change)
+                .getColumns()
                 .stream()
                 .map(ColumnConfig::getName)
                 .collect(Collectors.toSet());

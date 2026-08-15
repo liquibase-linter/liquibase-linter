@@ -48,10 +48,7 @@ class SequenceNameRuleTest {
                 "Sequence name 'SEQ_INVALID' does not follow pattern '^(?!SEQ)[A-Z_]+(?<!_)$'"
             );
 
-        assertThat(rule)
-            .withConfig(ruleConfig)
-            .checkingChange((changeFromSequenceName.apply("VALID")))
-            .hasNoViolations();
+        assertThat(rule).withConfig(ruleConfig).checkingChange(changeFromSequenceName.apply("VALID")).hasNoViolations();
     }
 
     @DisplayName("Sequence name rule should support formatted error message with pattern arg")

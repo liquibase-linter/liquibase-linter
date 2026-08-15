@@ -94,7 +94,10 @@ class ObjectNameLengthRuleTest {
     @Test
     void objectNameCanBeNull() {
         RuleConfig ruleConfig = RuleConfig.builder().withMaxLength(4).build();
-        assertThat(rule).withConfig(ruleConfig).checkingChange(getAddColumnChange((String) null)).hasNoViolations();
+        assertThat(rule)
+            .withConfig(ruleConfig)
+            .checkingChange(getAddColumnChange((String) null))
+            .hasNoViolations();
         assertThat(rule)
             .withConfig(ruleConfig)
             .checkingChange(getAddForeignKeyConstraintChange(null))
@@ -122,43 +125,43 @@ class ObjectNameLengthRuleTest {
 
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getAddColumnChange("VALUE")))
+            .checkingChange(getAddColumnChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getAddForeignKeyConstraintChange("VALUE")))
+            .checkingChange(getAddForeignKeyConstraintChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getAddPrimaryKeyConstraintChange("VALUE")))
+            .checkingChange(getAddPrimaryKeyConstraintChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getAddUniqueConstraintChange("VALUE")))
+            .checkingChange(getAddUniqueConstraintChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getCreateTableChange("VALUE")))
+            .checkingChange(getCreateTableChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getMergeColumnChange("VALUE")))
+            .checkingChange(getMergeColumnChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getRenameColumnChange("VALUE")))
+            .checkingChange(getRenameColumnChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getRenameViewChange("VALUE")))
+            .checkingChange(getRenameViewChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getCreateViewChange("VALUE")))
+            .checkingChange(getCreateViewChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getCreateIndexChange("VALUE")))
+            .checkingChange(getCreateIndexChange("VALUE"))
             .hasExactlyViolationsMessages("Object name 'VALUE' must be less than 4 characters");
     }
 
@@ -172,7 +175,7 @@ class ObjectNameLengthRuleTest {
 
         assertThat(rule)
             .withConfig(ruleConfig)
-            .checkingChange((getAddColumnChange("VALUE", "VALUE2")))
+            .checkingChange(getAddColumnChange("VALUE", "VALUE2"))
             .hasExactlyViolationsMessages(
                 "Object name 'VALUE' must be less than 4 characters",
                 "Object name 'VALUE2' must be less than 4 characters"

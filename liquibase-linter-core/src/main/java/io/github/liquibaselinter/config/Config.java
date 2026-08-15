@@ -154,17 +154,15 @@ public final class Config {
         ListMultimap<String, T> combined
     ) {
         if (imported != null) {
-            imported
-                .asMap()
-                .forEach((key, importedRulesList) -> {
-                    // If the main config has a config of the same name, it overrides any imported config for the same
-                    // name. But if not config of the same name exists in the main config, merge all the imported
-                    // configs together. This could cause multiple configs of the same name from different imported
-                    // files to end up in the final merged config.
-                    if (config == null || !config.containsKey(key)) {
-                        combined.putAll(key, importedRulesList);
-                    }
-                });
+            imported.asMap().forEach((key, importedRulesList) -> {
+                // If the main config has a config of the same name, it overrides any imported config for the same
+                // name. But if not config of the same name exists in the main config, merge all the imported
+                // configs together. This could cause multiple configs of the same name from different imported
+                // files to end up in the final merged config.
+                if (config == null || !config.containsKey(key)) {
+                    combined.putAll(key, importedRulesList);
+                }
+            });
         }
     }
 
@@ -301,17 +299,15 @@ public final class Config {
             throws IOException {
             final ImmutableListMultimap.Builder<String, Reporter> reporting = new ImmutableListMultimap.Builder<>();
             final JsonNode config = jsonParser.readValueAsTree();
-            config
-                .fields()
-                .forEachRemaining(entry -> {
-                    final String key = entry.getKey();
-                    final JsonNode value = entry.getValue();
-                    if (value.isArray()) {
-                        value.elements().forEachRemaining(node -> populateConfigValue(reporting, key, node));
-                    } else {
-                        populateConfigValue(reporting, key, value);
-                    }
-                });
+            config.fields().forEachRemaining(entry -> {
+                final String key = entry.getKey();
+                final JsonNode value = entry.getValue();
+                if (value.isArray()) {
+                    value.elements().forEachRemaining(node -> populateConfigValue(reporting, key, node));
+                } else {
+                    populateConfigValue(reporting, key, value);
+                }
+            });
             return reporting.build();
         }
 

@@ -26,7 +26,8 @@ public class ObjectNameRules {
 
     private static Collection<String> getObjectNames(Change change) {
         if (change instanceof AddColumnChange) {
-            return ((AddColumnChange) change).getColumns()
+            return ((AddColumnChange) change)
+                .getColumns()
                 .stream()
                 .map(ColumnConfig::getName)
                 .collect(Collectors.toList());
@@ -41,7 +42,8 @@ public class ObjectNameRules {
             return Collections.singletonList(((AddUniqueConstraintChange) change).getConstraintName());
         }
         if (change instanceof CreateTableChange) {
-            return ((CreateTableChange) change).getColumns()
+            return ((CreateTableChange) change)
+                .getColumns()
                 .stream()
                 .map(ColumnConfig::getName)
                 .collect(Collectors.toList());

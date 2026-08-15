@@ -22,7 +22,7 @@ class PrimaryKeyNameRuleTest {
         @Test
         void primaryKeyNameMustNotBeNull() {
             assertThat(rule)
-                .checkingChange((getAddPrimaryKeyConstraintChange(null)))
+                .checkingChange(getAddPrimaryKeyConstraintChange(null))
                 .hasExactlyViolationsMessages("Primary key name '' is missing or does not follow pattern ''");
         }
 

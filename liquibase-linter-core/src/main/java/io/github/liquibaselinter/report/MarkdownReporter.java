@@ -116,7 +116,10 @@ public class MarkdownReporter extends TextReporter {
 
     private void printTableRow(PrintWriter output, String[] row, int[] maxWidth) {
         for (int col = 0; col < row.length; col++) {
-            output.append("| ").append(rightPad(row[col], maxWidth[col], ' ')).append(' ');
+            output
+                .append("| ")
+                .append(rightPad(row[col], maxWidth[col], ' '))
+                .append(' ');
         }
         output.println('|');
     }
