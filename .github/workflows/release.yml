@@ -82,11 +82,16 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -m "Update version in documentation to ${{ github.event.inputs.releaseVersion }}"
           fi
-          git push origin HEAD:"$branch"
-          gh pr create \
-            --base main \
-            --head "$branch" \
-            --title "Apply release ${{ github.event.inputs.releaseVersion }} version updates" \
-            --body "Automated follow-up created by the Release workflow to persist Maven release plugin version commits and documentation updates."
+          git fetch origin main
+          if [ "$(git rev-list --count origin/main..HEAD)" -gt 0 ]; then
+            git push origin HEAD:"$branch"
+            gh pr create \
+              --base main \
+              --head "$branch" \
+              --title "Apply release ${{ github.event.inputs.releaseVersion }} version updates" \
+              --body "Automated follow-up created by the Release workflow to persist Maven release plugin version commits and documentation updates."
+          else
+            echo "No release follow-up commits to push."
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
