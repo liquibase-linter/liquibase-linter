@@ -5,3 +5,7 @@ pom.xml.versionsBackup
 node_modules/
 databasechangelog.csv
 databasechangelog.csv.new
+.settings/
+.classpath
+.project
+.factorypath
