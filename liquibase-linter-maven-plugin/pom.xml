@@ -23,7 +23,7 @@
     <liquibase.version>4.33.0</liquibase.version>
     <maven-core.version>3.9.16</maven-core.version>
     <maven-plugin-api.version>3.9.16</maven-plugin-api.version>
-    <spring-core.version>5.3.39</spring-core.version>
+    <spring-core.version>7.0.9</spring-core.version>
     <!-- plugins -->
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
     <maven-plugin-plugin.version>3.15.2</maven-plugin-plugin.version>
