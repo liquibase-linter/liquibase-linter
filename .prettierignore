@@ -1,5 +1,4 @@
 target/
 build/
-package-lock.json
 pnpm-lock.yaml
 liquibase-linter-core/src/test/resources/

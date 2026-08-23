@@ -21,14 +21,20 @@ jobs:
           distribution: 'temurin'
           java-version: '8'
           cache: 'maven'
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          run_install: false
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
           node-version: 'lts/*'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
       - name: Check formatting
         run: |
-          npm ci
-          npm run prettier:check
+          pnpm install --frozen-lockfile --filter .
+          pnpm run prettier:check
       - name: Build
         run: mvn --no-transfer-progress --batch-mode clean verify
 
@@ -41,7 +47,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 10
           run_install: false
 
       - name: Setup node
