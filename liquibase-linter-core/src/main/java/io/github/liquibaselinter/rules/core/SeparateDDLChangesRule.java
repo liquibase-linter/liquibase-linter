@@ -8,6 +8,8 @@ import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
+import java.util.regex.Matcher;
 import liquibase.ContextExpression;
 import liquibase.change.Change;
 import liquibase.changelog.ChangeSet;
@@ -32,7 +34,7 @@ public class SeparateDDLChangesRule implements ChangeSetRule {
         return Collections.emptyList();
     }
 
-    public boolean isInvalid(ChangeSet changeSet, RuleConfig ruleConfig) {
+    private boolean isInvalid(ChangeSet changeSet, RuleConfig ruleConfig) {
         ContextExpression contextExpression = changeSet.getContextFilter();
         if (contextExpression == null || contextExpression.getContexts().isEmpty()) {
             return false;
@@ -41,28 +43,25 @@ public class SeparateDDLChangesRule implements ChangeSetRule {
         for (Change change : changeSet.getChanges()) {
             if (Changes.isDDL(change)) {
                 for (String context : contexts) {
-                    if (
-                        !ruleConfig
-                            .getPattern()
-                            .map(pattern -> pattern.matcher(context).matches())
-                            .orElse(true)
-                    ) {
+                    if (!contextMatchesRulePattern(context, ruleConfig).orElse(true)) {
                         return true;
                     }
                 }
             } else if (Changes.isDML(change)) {
                 for (String context : contexts) {
-                    if (
-                        ruleConfig
-                            .getPattern()
-                            .map(pattern -> pattern.matcher(context).matches())
-                            .orElse(false)
-                    ) {
+                    if (contextMatchesRulePattern(context, ruleConfig).orElse(false)) {
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    private static Optional<Boolean> contextMatchesRulePattern(String context, RuleConfig ruleConfig) {
+        return ruleConfig
+            .getPattern()
+            .map(pattern -> pattern.matcher(context))
+            .map(Matcher::matches);
     }
 }
