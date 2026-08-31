@@ -80,7 +80,9 @@ Example usage:
 
 ### `ignore-files-pattern`
 
-This config entry is an optional regular expression for file patterns that, if matched on a changeSet, will cause the linter to skip checking that changeSet.
+This config entry is an optional regular expression. When it matches, the linter skips every changelog and changeset coming from that file.
+
+The pattern is matched against the **physical file path** &mdash; the actual location of the file on disk or the classpath &mdash; and **not** the logical file path. A `logicalFilePath` override declared on a `databaseChangeLog` or a `changeSet` therefore has no effect on whether the file is ignored; only where the file really lives matters.
 
 Example usage:
 

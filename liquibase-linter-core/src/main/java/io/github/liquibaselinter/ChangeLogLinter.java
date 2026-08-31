@@ -83,7 +83,7 @@ public class ChangeLogLinter {
     private boolean shouldLint(DatabaseChangeLog changeLog) {
         return (
             isEnabled() &&
-            isFilePathNotIgnored(changeLog.getFilePath()) &&
+            isFilePathNotIgnored(changeLog.getPhysicalFilePath()) &&
             !hasAlreadyBeenParsed(changeLog.getFilePath())
         );
     }
@@ -97,7 +97,11 @@ public class ChangeLogLinter {
     }
 
     private boolean shouldLint(ChangeSet changeSet) {
-        return isEnabled() && !isContextIgnored(changeSet) && isFilePathNotIgnored(changeSet.getFilePath());
+        return (
+            isEnabled() &&
+            !isContextIgnored(changeSet) &&
+            isFilePathNotIgnored(changeSet.getChangeLog().getPhysicalFilePath())
+        );
     }
 
     private boolean isContextIgnored(ChangeSet changeSet) {
@@ -110,10 +114,16 @@ public class ChangeLogLinter {
         return false;
     }
 
-    private boolean isFilePathNotIgnored(String filePath) {
-        if (filePath != null && config.getIgnoreFilesPattern() != null) {
-            String changeLogPath = filePath.replace('\\', '/');
-            return !config.getIgnoreFilesPattern().matcher(changeLogPath).matches();
+    /**
+     * Checks the {@code ignore-files-pattern} config against the <em>physical</em> file path of the
+     * changelog (its real location on disk / classpath), not the logical file path. The logical path
+     * can be overridden via {@code logicalFilePath} on a changelog or changeset, so matching against it
+     * would make the exclusion pattern depend on Liquibase metadata rather than where the file lives.
+     */
+    private boolean isFilePathNotIgnored(String physicalFilePath) {
+        if (physicalFilePath != null && config.getIgnoreFilesPattern() != null) {
+            String normalizedPath = physicalFilePath.replace('\\', '/');
+            return !config.getIgnoreFilesPattern().matcher(normalizedPath).matches();
         }
         return true;
     }
