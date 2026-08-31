@@ -10,7 +10,7 @@
   "devDependencies": {
     "@prettier/plugin-xml": "3.4.2",
     "husky": "9.1.7",
-    "lint-staged": "17.3.0",
+    "lint-staged": "17.4.1",
     "prettier": "3.9.6",
     "prettier-plugin-gherkin": "4.0.0",
     "prettier-plugin-java": "2.10.3",
