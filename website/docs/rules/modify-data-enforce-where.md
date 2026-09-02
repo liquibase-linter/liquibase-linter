@@ -26,7 +26,7 @@ A basic usage:
   "rules": {
     "modify-data-enforce-where": {
       "values": ["SETTINGS"],
-      "errorMessage": "Updates and deletes to settings table must have a where condition"
+      "error-message": "Updates and deletes to settings table must have a where condition"
     }
   }
 }
@@ -40,7 +40,7 @@ With the addition of a pattern:
     "modify-data-enforce-where": {
       "values": ["SETTINGS"],
       "pattern": "^.*GROUP =.*$",
-      "errorMessage": "Updates and deletes to settings table must have a where condition that references group column"
+      "error-message": "Updates and deletes to settings table must have a where condition that references group column"
     }
   }
 }

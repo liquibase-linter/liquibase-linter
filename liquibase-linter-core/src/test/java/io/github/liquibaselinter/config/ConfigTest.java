@@ -179,7 +179,7 @@ class ConfigTest {
         String configJson =
             "{\n" +
             "  \"enable-after-changeset\": {\n" +
-            "    \"changeLogFile\": \"db/changelog/init.xml\",\n" +
+            "    \"change-log-file\": \"db/changelog/init.xml\",\n" +
             "    \"id\": \"create-user-table\",\n" +
             "    \"author\": \"dba\"\n" +
             "  }\n" +
@@ -211,6 +211,42 @@ class ConfigTest {
         assertThat(changesetConfig.getEnableAfterChangeset())
             .extracting(ChangeSetIdentifier::getId)
             .isEqualTo("create-user-table");
+    }
+
+    @DisplayName("Should accept both kebab-case and camelCase spellings for project options")
+    @Test
+    void shouldAcceptBothSpellingsForProjectOptions() throws IOException {
+        String kebab = "{\n" + "  \"fail-fast\": true,\n" + "  \"ignore-files-pattern\": \"^legacy/.*$\"\n" + "}";
+        String camel = "{\n" + "  \"failFast\": true,\n" + "  \"ignoreFilesPattern\": \"^legacy/.*$\"\n" + "}";
+
+        Config fromKebab = Config.fromInputStream(IOUtils.toInputStream(kebab, UTF_8));
+        Config fromCamel = Config.fromInputStream(IOUtils.toInputStream(camel, UTF_8));
+
+        assertThat(fromKebab.isFailFast()).isTrue();
+        assertThat(fromKebab.getIgnoreFilesPattern()).asString().isEqualTo("^legacy/.*$");
+        assertThat(fromCamel.isFailFast()).isTrue();
+        assertThat(fromCamel.getIgnoreFilesPattern()).asString().isEqualTo("^legacy/.*$");
+    }
+
+    @DisplayName("Should accept both kebab-case and camelCase spellings for rule options")
+    @Test
+    void shouldAcceptBothSpellingsForRuleOptions() throws IOException {
+        String kebab =
+            "{\n" + "  \"rules\": { \"object-name\": { \"error-message\": \"msg\", \"max-length\": 30 } }\n" + "}";
+        String camel =
+            "{\n" + "  \"rules\": { \"object-name\": { \"errorMessage\": \"msg\", \"maxLength\": 30 } }\n" + "}";
+
+        RuleConfig fromKebab = Config.fromInputStream(IOUtils.toInputStream(kebab, UTF_8))
+            .forRule("object-name")
+            .get(0);
+        RuleConfig fromCamel = Config.fromInputStream(IOUtils.toInputStream(camel, UTF_8))
+            .forRule("object-name")
+            .get(0);
+
+        assertThat(fromKebab.getErrorMessage()).isEqualTo("msg");
+        assertThat(fromKebab.getMaxLength()).isEqualTo(30);
+        assertThat(fromCamel.getErrorMessage()).isEqualTo("msg");
+        assertThat(fromCamel.getMaxLength()).isEqualTo(30);
     }
 
     @DisplayName("Should resolve the legacy enable-after through getEnableAfterChangelog")
@@ -255,7 +291,7 @@ class ConfigTest {
 
         assertThatExceptionOfType(JsonMappingException.class)
             .isThrownBy(() -> Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8)))
-            .withMessageContaining("'changeLogFile', 'id' and 'author'");
+            .withMessageContaining("'change-log-file', 'id' and 'author'");
     }
 
     @DisplayName("Should load reporting configuration")

@@ -33,15 +33,17 @@ The value can also be an options object:
 
 All rules also support these standard options (other than `enabled`):
 
-- `errorMessage` - (string) override the default error message for this rule, which is output when the rule fails on a change. This can be useful if you are using a rule in a very targeted way and want to make it clear to the developer why it has failed. Most rules make the invalid value they found available to be interpolated with `%s`.
+- `error-message` - (string) override the default error message for this rule, which is output when the rule fails on a change. This can be useful if you are using a rule in a very targeted way and want to make it clear to the developer why it has failed. Most rules make the invalid value they found available to be interpolated with `%s`.
 - `condition` - (string) - [Spring EL expression](https://www.baeldung.com/spring-expression-language) that should resolve to a boolean, which if provided will decide whether the rule should be applied or not. The expression scope is as follows -
   - [`DatabaseChangeLog`](https://github.com/liquibase/liquibase/blob/master/liquibase-standard/src/main/java/liquibase/changelog/DatabaseChangeLog.java) object available as `changeLog`
   - [`ChangeSet`](https://github.com/liquibase/liquibase/blob/master/liquibase-standard/src/main/java/liquibase/changelog/ChangeSet.java) object available as `changeSet`
   - [`Change`](https://github.com/liquibase/liquibase/blob/master/liquibase-standard/src/main/java/liquibase/change/Change.java) object available as `change`
   - `matchesContext` helper function which can be used like `matchesContext('foo', 'bar')`. This function just delegates to the liquibase context matching method so the same logic applies.
 - `enable-after-changelog` - (string) allows you to specify a change log file name _after_ which this rule should be enabled. See [Retrofitting](../retrofitting.md) for more detail.
-- `enable-after-changeset` - (object) allows you to specify a single changeset by its full identity (`changeLogFile`, `id` and `author`, all mandatory) _after_ which this rule should be enabled. See [Retrofitting](../retrofitting.md) for more detail.
-- The camel-cased aliases `enableAfterChangelog` / `enableAfterChangeset` are also accepted. `enableAfter` is the _deprecated_ former name of `enable-after-changelog`, removed in 1.0.
+- `enable-after-changeset` - (object) allows you to specify a single changeset by its full identity (`change-log-file`, `id` and `author`, all mandatory) _after_ which this rule should be enabled. See [Retrofitting](../retrofitting.md) for more detail.
+- `enable-after` - (string) _deprecated_ former name of `enable-after-changelog`, removed in 1.0.
+
+Every option name is also accepted in camelCase (`errorMessage`, `dynamicValue`, `enableAfterChangelog`, …); see [Configuration](../configure.md#property-names).
 
 Individual rules also support their own options; you can find these documented with those rules.
 
@@ -55,11 +57,11 @@ Though you might not need it often, you can specify multiple configs - with diff
     "object-name": [
       {
         "pattern": "^(?!_)[A-Z_0-9]+(?<!_)$",
-        "errorMessage": "Object name '%s' name must be uppercase and use '_' separation"
+        "error-message": "Object name '%s' name must be uppercase and use '_' separation"
       },
       {
         "pattern": "^POWER.*$",
-        "errorMessage": "Object name '%s' name must begin with 'POWER'"
+        "error-message": "Object name '%s' name must begin with 'POWER'"
       }
     ]
   }

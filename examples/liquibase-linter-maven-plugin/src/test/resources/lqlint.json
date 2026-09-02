@@ -3,8 +3,8 @@
   "rules": {
     "index-name": {
       "pattern": "^{{value}}_IX\\d$\\d$",
-      "dynamicValue": "tableName",
-      "errorMessage": "Index names must be the table name, suffixed with 'IX' and a two-digit number, e.g. FOO_IX01"
+      "dynamic-value": "tableName",
+      "error-message": "Index names must be the table name, suffixed with 'IX' and a two-digit number, e.g. FOO_IX01"
     }
   }
 }

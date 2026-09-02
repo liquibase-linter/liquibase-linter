@@ -17,7 +17,7 @@ class ChangeSetIdentifierTest {
     void shouldRejectMissingId() {
         assertThatThrownBy(() -> new ChangeSetIdentifier("changelog.xml", null, "dba"))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("'changeLogFile', 'id' and 'author'");
+            .hasMessageContaining("'change-log-file', 'id' and 'author'");
     }
 
     @Test

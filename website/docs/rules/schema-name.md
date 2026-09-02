@@ -20,7 +20,7 @@ The `schema-name` rule matches the regex you provide against any `schemaName` at
     "schema-name": {
       "enabled": true,
       "pattern": "^FOO_SCHEMA$",
-      "errorMessage": "Schema name must follow pattern '%s'"
+      "error-message": "Schema name must follow pattern '%s'"
     }
   }
 }

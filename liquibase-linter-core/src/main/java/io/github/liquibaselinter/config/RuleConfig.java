@@ -200,7 +200,8 @@ public final class RuleConfig {
             return this;
         }
 
-        @JsonProperty("errorMessage")
+        @JsonProperty("error-message")
+        @JsonAlias("errorMessage")
         public RuleConfigBuilder withErrorMessage(String errorMessage) {
             this.errorMessage = errorMessage;
             return this;
@@ -212,7 +213,8 @@ public final class RuleConfig {
             return this;
         }
 
-        @JsonProperty("columnCondition")
+        @JsonProperty("column-condition")
+        @JsonAlias("columnCondition")
         public RuleConfigBuilder withColumnCondition(String columnCondition) {
             this.columnCondition = columnCondition;
             return this;
@@ -224,7 +226,8 @@ public final class RuleConfig {
             return this;
         }
 
-        @JsonProperty("dynamicValue")
+        @JsonProperty("dynamic-value")
+        @JsonAlias("dynamicValue")
         public RuleConfigBuilder withDynamicValue(String dynamicValue) {
             this.dynamicValue = dynamicValue;
             return this;
@@ -240,7 +243,8 @@ public final class RuleConfig {
             return withValues(Arrays.asList(values));
         }
 
-        @JsonProperty("maxLength")
+        @JsonProperty("max-length")
+        @JsonAlias("maxLength")
         public RuleConfigBuilder withMaxLength(Integer maxLength) {
             this.maxLength = maxLength;
             return this;
@@ -250,7 +254,8 @@ public final class RuleConfig {
          * @deprecated legacy option, use {@link #withEnableAfterChangelog(String)} instead. Removed in 1.0.
          */
         @Deprecated
-        @JsonProperty("enableAfter")
+        @JsonProperty("enable-after")
+        @JsonAlias("enableAfter")
         public RuleConfigBuilder withEnableAfter(String enableAfter) {
             this.enableAfter = enableAfter;
             return this;

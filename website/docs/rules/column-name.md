@@ -19,7 +19,7 @@ This rule will fail if the given regex does not match against the name when crea
   "rules": {
     "column-name": {
       "pattern": "^[a-z_]+$",
-      "errorMessage": "Column name '%s' should be lower cased"
+      "error-message": "Column name '%s' should be lower cased"
     }
   }
 }

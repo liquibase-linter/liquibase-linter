@@ -13,7 +13,7 @@ This rule will fail if there is no `constraintName` given when adding a unique c
 ## Options
 
 - `pattern` - (regex, as string) optional regular expression that the name of any added unique constraint must adhere to
-- `dynamicValue` - (string) Spring EL expression, with the [`AddUniqueConstraintChange`](https://github.com/liquibase/liquibase/blob/main/liquibase-core/src/main/java/liquibase/change/core/AddUniqueConstraintChange.java) instance as its expression scope, that should resolve to a string, and can then be interpolated in the pattern with `{{value}}`
+- `dynamic-value` - (string) Spring EL expression, with the [`AddUniqueConstraintChange`](https://github.com/liquibase/liquibase/blob/main/liquibase-core/src/main/java/liquibase/change/core/AddUniqueConstraintChange.java) instance as its expression scope, that should resolve to a string, and can then be interpolated in the pattern with `{{value}}`
 
 ## Example Usage
 
@@ -34,8 +34,8 @@ To ensure that a pattern is matched, including the table name:
   "rules": {
     "unique-constraint-name": {
       "pattern": "^{{value}}_U\\d$",
-      "dynamicValue": "tableName",
-      "errorMessage": "Unique constraint names must be the table name, suffixed with 'U' and a number, e.g. FOO_U2"
+      "dynamic-value": "tableName",
+      "error-message": "Unique constraint names must be the table name, suffixed with 'U' and a number, e.g. FOO_U2"
     }
   }
 }
