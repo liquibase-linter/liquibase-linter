@@ -1,5 +1,6 @@
 package io.github.liquibaselinter.config;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,6 +26,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import liquibase.exception.UnexpectedLiquibaseException;
+import org.apache.commons.lang3.StringUtils;
 
 @JsonDeserialize(builder = Config.Builder.class)
 public final class Config {
@@ -41,6 +43,8 @@ public final class Config {
     private final ListMultimap<String, RuleConfig> rules;
     private final boolean failFast;
     private final String enableAfter;
+    private final String enableAfterChangelog;
+    private final ChangeSetIdentifier enableAfterChangeset;
     private final ListMultimap<String, Reporter> reporting;
     private final List<String> imports;
 
@@ -50,6 +54,8 @@ public final class Config {
         ListMultimap<String, RuleConfig> rules,
         boolean failFast,
         String enableAfter,
+        String enableAfterChangelog,
+        ChangeSetIdentifier enableAfterChangeset,
         ListMultimap<String, Reporter> reporting,
         List<String> imports
     ) {
@@ -58,6 +64,8 @@ public final class Config {
         this.rules = Optional.ofNullable(rules).map(ImmutableListMultimap::copyOf).orElse(ImmutableListMultimap.of());
         this.failFast = failFast;
         this.enableAfter = enableAfter;
+        this.enableAfterChangelog = enableAfterChangelog;
+        this.enableAfterChangeset = enableAfterChangeset;
         this.reporting = Optional.ofNullable(reporting)
             .map(ImmutableListMultimap::copyOf)
             .orElse(ImmutableListMultimap.of());
@@ -92,8 +100,25 @@ public final class Config {
         return failFast;
     }
 
+    /**
+     * @deprecated legacy option, use {@link #getEnableAfterChangelog()} instead. Removed in 1.0.
+     */
+    @Deprecated
     public String getEnableAfter() {
         return enableAfter;
+    }
+
+    /**
+     * @return the changelog file after which linting applies, resolved from whichever of
+     * {@code enable-after-changelog} or the legacy {@code enable-after} is set, or {@code null} when
+     * linting is not gated on a changelog.
+     */
+    public String getEnableAfterChangelog() {
+        return StringUtils.firstNonEmpty(enableAfterChangelog, enableAfter);
+    }
+
+    public ChangeSetIdentifier getEnableAfterChangeset() {
+        return enableAfterChangeset;
     }
 
     public ListMultimap<String, Reporter> getReporting() {
@@ -174,6 +199,8 @@ public final class Config {
         private ListMultimap<String, RuleConfig> rules = ImmutableListMultimap.of();
         private boolean failFast;
         private String enableAfter;
+        private String enableAfterChangelog;
+        private ChangeSetIdentifier enableAfterChangeset;
         private ListMultimap<String, Reporter> reporting = ImmutableListMultimap.of();
         private List<String> imports = Collections.emptyList();
 
@@ -186,7 +213,11 @@ public final class Config {
             this.ignoreFilesPattern = config.getIgnoreFilesPattern();
             this.rules = config.getRules();
             this.failFast = config.isFailFast();
-            this.enableAfter = config.getEnableAfter();
+            // copy the raw backing fields, not the resolved getEnableAfterChangelog(), so a config built
+            // from the legacy enable-after does not end up with two options set on rebuild
+            this.enableAfter = config.enableAfter;
+            this.enableAfterChangelog = config.enableAfterChangelog;
+            this.enableAfterChangeset = config.enableAfterChangeset;
             this.imports = config.getImports();
         }
 
@@ -225,9 +256,27 @@ public final class Config {
             return this;
         }
 
+        /**
+         * @deprecated legacy option, use {@link #withEnableAfterChangelog(String)} instead. Removed in 1.0.
+         */
+        @Deprecated
         @JsonProperty("enable-after")
         public Builder withEnableAfter(String enableAfter) {
             this.enableAfter = enableAfter;
+            return this;
+        }
+
+        @JsonProperty("enable-after-changelog")
+        @JsonAlias("enableAfterChangelog")
+        public Builder withEnableAfterChangelog(String enableAfterChangelog) {
+            this.enableAfterChangelog = enableAfterChangelog;
+            return this;
+        }
+
+        @JsonProperty("enable-after-changeset")
+        @JsonAlias("enableAfterChangeset")
+        public Builder withEnableAfterChangeset(ChangeSetIdentifier enableAfterChangeset) {
+            this.enableAfterChangeset = enableAfterChangeset;
             return this;
         }
 
@@ -246,12 +295,20 @@ public final class Config {
         }
 
         public Config build() {
+            EnableAfterValidator.requireAtMostOne(
+                "configuration",
+                enableAfter,
+                enableAfterChangelog,
+                enableAfterChangeset
+            );
             return new Config(
                 ignoreContextPattern,
                 ignoreFilesPattern,
                 rules,
                 failFast,
                 enableAfter,
+                enableAfterChangelog,
+                enableAfterChangeset,
                 reporting,
                 imports
             );

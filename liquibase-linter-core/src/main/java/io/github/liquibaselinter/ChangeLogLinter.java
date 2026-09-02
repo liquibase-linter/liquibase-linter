@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toSet;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import io.github.liquibaselinter.config.ChangeSetIdentifier;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.ConfigLoader;
 import io.github.liquibaselinter.config.RuleConfig;
@@ -73,6 +74,7 @@ public class ChangeLogLinter {
             }
 
             ruleRunner.getFilesParsed().add(databaseChangeLog.getPhysicalFilePath());
+            ruleRunner.getChangeSetsParsed().add(changeSet);
         }
     }
 
@@ -89,7 +91,20 @@ public class ChangeLogLinter {
     }
 
     private boolean isEnabled() {
-        return StringUtils.isEmpty(config.getEnableAfter()) || hasAlreadyBeenParsed(config.getEnableAfter());
+        return isEnabledAfterChangelog() && isEnabledAfterChangeset();
+    }
+
+    private boolean isEnabledAfterChangelog() {
+        String enableAfterChangelog = config.getEnableAfterChangelog();
+        return StringUtils.isEmpty(enableAfterChangelog) || hasAlreadyBeenParsed(enableAfterChangelog);
+    }
+
+    private boolean isEnabledAfterChangeset() {
+        ChangeSetIdentifier enableAfterChangeset = config.getEnableAfterChangeset();
+        return (
+            enableAfterChangeset == null ||
+            ruleRunner.getChangeSetsParsed().stream().anyMatch(enableAfterChangeset::matches)
+        );
     }
 
     private boolean hasAlreadyBeenParsed(String filePath) {
