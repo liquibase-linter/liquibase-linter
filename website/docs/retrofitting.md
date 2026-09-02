@@ -36,12 +36,12 @@ Since we've called out `example-1.xml` as our `enable-after-changelog` change lo
 
 ## `enable-after-changeset` at project level
 
-When the boundary between "legacy" and "linted" changes does not line up with a change log file, you can point at a single changeset instead. It is referenced by its full Liquibase identity &mdash; the `changeLogFile`, `id` and `author` triple that uniquely identifies a changeset (the same three attributes as the [`changeSetExecuted`](https://docs.liquibase.com/concepts/changelogs/preconditions.html) precondition). **All three are mandatory**; `changeLogFile` is matched against the changeset's logical file path.
+When the boundary between "legacy" and "linted" changes does not line up with a change log file, you can point at a single changeset instead. It is referenced by its full Liquibase identity &mdash; the `change-log-file`, `id` and `author` triple that uniquely identifies a changeset (the same three attributes as the [`changeSetExecuted`](https://docs.liquibase.com/concepts/changelogs/preconditions.html) precondition). **All three are mandatory**; `change-log-file` is matched against the changeset's logical file path.
 
 ```json
 {
   "enable-after-changeset": {
-    "changeLogFile": "src/main/resources/example-2.xml",
+    "change-log-file": "src/main/resources/example-2.xml",
     "id": "0002-add-customer-table",
     "author": "jsmith"
   },
@@ -67,7 +67,7 @@ Over time you'll probably want to add new rules to your project &mdash; but agai
     },
     "has-comment": {
       "enable-after-changeset": {
-        "changeLogFile": "src/main/resources/example-2.xml",
+        "change-log-file": "src/main/resources/example-2.xml",
         "id": "0002-add-customer-table",
         "author": "jsmith"
       }
@@ -76,7 +76,7 @@ Over time you'll probably want to add new rules to your project &mdash; but agai
 }
 ```
 
-The camel-cased forms `enableAfterChangelog` and `enableAfterChangeset` are also accepted as aliases, at both levels. The legacy rule-level option is still spelled `enableAfter`.
+Every option also accepts a camelCase spelling (`enableAfterChangelog`, `enableAfterChangeset`, `changeLogFile`, `enableAfter`, …) &mdash; see [Configuration](configure.md#property-names).
 
 ## Only one boundary at a time
 

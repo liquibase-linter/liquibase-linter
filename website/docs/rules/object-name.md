@@ -27,7 +27,7 @@ This rule will fail if the given regex does not match against the name for any:
   "rules": {
     "object-name": {
       "pattern": "^(?!_)[A-Z_0-9]+(?<!_)$",
-      "errorMessage": "Object name '%s' name must be uppercase and use '_' separation"
+      "error-message": "Object name '%s' name must be uppercase and use '_' separation"
     }
   }
 }

@@ -22,7 +22,7 @@ This rule would typically be used in conjunction with [isolate-ddl-changes](isol
     "separate-ddl-context": {
       "enabled": true,
       "pattern": "^ddl$",
-      "errorMessage": "DDL changes should only use 'ddl' context"
+      "error-message": "DDL changes should only use 'ddl' context"
     }
   }
 }

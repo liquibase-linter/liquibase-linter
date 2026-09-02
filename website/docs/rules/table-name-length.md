@@ -12,7 +12,7 @@ This rule will fail if the given maximum length is exceeded by the name when cre
 
 ## Options
 
-- `maxLength` - (number) the maximum length of the name of any created or renamed table
+- `max-length` - (number) the maximum length of the name of any created or renamed table
 
 ## Example Usage
 
@@ -20,7 +20,7 @@ This rule will fail if the given maximum length is exceeded by the name when cre
 {
   "rules": {
     "table-name-length": {
-      "maxLength": 60
+      "max-length": 60
     }
   }
 }

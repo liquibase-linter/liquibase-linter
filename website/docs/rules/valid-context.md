@@ -22,7 +22,7 @@ This rule will not enforce the prescence of a context; see [has-context](has-con
     "valid-context": {
       "enabled": true,
       "pattern": "^.*_foo",
-      "errorMessage": "Context is incorrect, should end with '_foo'"
+      "error-message": "Context is incorrect, should end with '_foo'"
     }
   }
 }

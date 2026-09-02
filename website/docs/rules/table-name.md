@@ -19,7 +19,7 @@ This rule will fail if the given regex does not match against the name when crea
   "rules": {
     "table-name": {
       "pattern": "^(?!tbl).*$",
-      "errorMessage": "Don't prefix table names with 'tbl'"
+      "error-message": "Don't prefix table names with 'tbl'"
     }
   }
 }

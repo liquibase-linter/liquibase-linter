@@ -222,6 +222,7 @@ public final class Config {
         }
 
         @JsonProperty("ignore-context-pattern")
+        @JsonAlias("ignoreContextPattern")
         public Builder withIgnoreContextPattern(String ignoreContextPattern) {
             this.ignoreContextPattern = ignoreContextPattern != null ? Pattern.compile(ignoreContextPattern) : null;
             return this;
@@ -233,6 +234,7 @@ public final class Config {
         }
 
         @JsonProperty("ignore-files-pattern")
+        @JsonAlias("ignoreFilesPattern")
         public Builder withIgnoreFilesPattern(String ignoreFilesPattern) {
             this.ignoreFilesPattern = ignoreFilesPattern != null ? Pattern.compile(ignoreFilesPattern) : null;
             return this;
@@ -251,6 +253,7 @@ public final class Config {
         }
 
         @JsonProperty("fail-fast")
+        @JsonAlias("failFast")
         public Builder withFailFast(boolean failFast) {
             this.failFast = failFast;
             return this;
@@ -261,6 +264,7 @@ public final class Config {
          */
         @Deprecated
         @JsonProperty("enable-after")
+        @JsonAlias("enableAfter")
         public Builder withEnableAfter(String enableAfter) {
             this.enableAfter = enableAfter;
             return this;

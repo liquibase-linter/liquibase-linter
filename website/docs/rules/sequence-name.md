@@ -19,7 +19,7 @@ This rule will fail if the given regex does not match against the name when crea
   "rules": {
     "sequence-name": {
       "pattern": "^(?!seq).*$",
-      "errorMessage": "Don't prefix sequence names with 'seq'"
+      "error-message": "Don't prefix sequence names with 'seq'"
     }
   }
 }

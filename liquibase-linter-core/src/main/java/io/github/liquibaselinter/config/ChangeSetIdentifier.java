@@ -1,5 +1,6 @@
 package io.github.liquibaselinter.config;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,10 +8,10 @@ import java.util.Objects;
 import liquibase.changelog.ChangeSet;
 
 /**
- * References a single changeset by its full Liquibase identity &mdash; {@code changeLogFile}, {@code id}
+ * References a single changeset by its full Liquibase identity &mdash; {@code change-log-file}, {@code id}
  * and {@code author} &mdash; the same triple that uniquely identifies a changeset in Liquibase (see the
  * {@code changeSetExecuted} precondition and {@code allow-duplicated-changeset-identifiers}). All three
- * attributes are mandatory.
+ * attributes are mandatory. {@code change-log-file} also accepts the {@code changeLogFile} spelling.
  *
  * <p>Used by the {@code enable-after-changeset} configuration (project level and rule level) to mark the
  * point in history <em>after</em> which linting applies. The referenced changeset itself is not linted;
@@ -25,12 +26,14 @@ public final class ChangeSetIdentifier {
 
     @JsonCreator
     public ChangeSetIdentifier(
-        @JsonProperty("changeLogFile") String changeLogFile,
+        @JsonProperty("change-log-file") @JsonAlias("changeLogFile") String changeLogFile,
         @JsonProperty("id") String id,
         @JsonProperty("author") String author
     ) {
         if (isBlank(changeLogFile) || isBlank(id) || isBlank(author)) {
-            throw new IllegalArgumentException("'enable-after-changeset' requires 'changeLogFile', 'id' and 'author'");
+            throw new IllegalArgumentException(
+                "'enable-after-changeset' requires 'change-log-file', 'id' and 'author'"
+            );
         }
         this.changeLogFile = changeLogFile;
         this.id = id;

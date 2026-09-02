@@ -23,6 +23,12 @@ You do this by providing a `lqlint.json` file at the root of your project. Here'
 
 `enable-after-changelog` and `enable-after-changeset` let you switch linting on only from a certain point in your change log history &mdash; see [Retrofitting](retrofitting.md).
 
+### Property names
+
+Every configuration property &mdash; at project level, inside a rule, and inside nested objects &mdash; is documented and written here in `kebab-case` (`fail-fast`, `ignore-files-pattern`, `error-message`, `max-length`, `enable-after-changelog`, `change-log-file`, …).
+
+For backward compatibility the equivalent `camelCase` spelling (`failFast`, `errorMessage`, `maxLength`, `enableAfterChangelog`, `changeLogFile`, …) is also accepted for every property, so existing configuration keeps working. New configuration should use `kebab-case`.
+
 #### From the classpath
 
 It is also possible for Liquibase Linter to load the `lqlint.json` file from the classpath. This can be useful when you have many different

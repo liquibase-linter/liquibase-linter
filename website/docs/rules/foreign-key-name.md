@@ -13,7 +13,7 @@ Note that unlike some other constraint rules, the linter does not enforce a fore
 ## Options
 
 - `pattern` - (regex, as string) regular expression that the name of any added foreign key constraint must adhere to
-- `dynamicValue` - (string) Spring EL expression, with the [`AddForeignKeyConstraintChange`](https://github.com/liquibase/liquibase/blob/main/liquibase-core/src/main/java/liquibase/change/core/AddForeignKeyConstraintChange.java) instance as its expression scope, that should resolve to a string, and can then be interpolated in the pattern with `{{value}}`
+- `dynamic-value` - (string) Spring EL expression, with the [`AddForeignKeyConstraintChange`](https://github.com/liquibase/liquibase/blob/main/liquibase-core/src/main/java/liquibase/change/core/AddForeignKeyConstraintChange.java) instance as its expression scope, that should resolve to a string, and can then be interpolated in the pattern with `{{value}}`
 
 ## Example Usage
 
@@ -24,8 +24,8 @@ To ensure that a pattern is matched, including the base table name:
   "rules": {
     "foreign-key-name": {
       "pattern": "^{{value}}_FK\\d$",
-      "dynamicValue": "baseTableName",
-      "errorMessage": "Foreign key constraint names must be the table name, suffixed with 'FK' and a number, e.g. FOO_FK1"
+      "dynamic-value": "baseTableName",
+      "error-message": "Foreign key constraint names must be the table name, suffixed with 'FK' and a number, e.g. FOO_FK1"
     }
   }
 }
@@ -38,8 +38,8 @@ To ensure that a pattern is matched, including both table names - unless it woul
   "rules": {
     "foreign-key-name": {
       "pattern": "^{{value}}_FK$",
-      "dynamicValue": "(baseTableName + '_' + referencedTableName).length() <= 27 ? baseTableName + '_' + referencedTableName : '[A-Z_]+'",
-      "errorMessage": "Foreign key constraint '%s' must be named, ending in _FK, and follow pattern '{base_table_name}_{parent_table_name}_FK' where space permits"
+      "dynamic-value": "(baseTableName + '_' + referencedTableName).length() <= 27 ? baseTableName + '_' + referencedTableName : '[A-Z_]+'",
+      "error-message": "Foreign key constraint '%s' must be named, ending in _FK, and follow pattern '{base_table_name}_{parent_table_name}_FK' where space permits"
     }
   }
 }

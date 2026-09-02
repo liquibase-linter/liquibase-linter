@@ -26,7 +26,7 @@ This rule will fail if the given maximum length is exceeded by the name for any:
 
 ## Options
 
-- `maxLength` - (number) the maximum length of the name of any schema object to be created
+- `max-length` - (number) the maximum length of the name of any schema object to be created
 
 ## Example Usage
 
@@ -34,7 +34,7 @@ This rule will fail if the given maximum length is exceeded by the name for any:
 {
   "rules": {
     "object-name-length": {
-      "maxLength": 63
+      "max-length": 63
     }
   }
 }
