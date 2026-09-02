@@ -1,5 +1,6 @@
 package io.github.liquibaselinter.config;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -266,12 +267,14 @@ public final class Config {
         }
 
         @JsonProperty("enable-after-changelog")
+        @JsonAlias("enableAfterChangelog")
         public Builder withEnableAfterChangelog(String enableAfterChangelog) {
             this.enableAfterChangelog = enableAfterChangelog;
             return this;
         }
 
         @JsonProperty("enable-after-changeset")
+        @JsonAlias("enableAfterChangeset")
         public Builder withEnableAfterChangeset(ChangeSetIdentifier enableAfterChangeset) {
             this.enableAfterChangeset = enableAfterChangeset;
             return this;

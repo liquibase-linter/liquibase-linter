@@ -1,5 +1,6 @@
 package io.github.liquibaselinter.config;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import java.util.Arrays;
@@ -255,13 +256,15 @@ public final class RuleConfig {
             return this;
         }
 
-        @JsonProperty("enableAfterChangelog")
+        @JsonProperty("enable-after-changelog")
+        @JsonAlias("enableAfterChangelog")
         public RuleConfigBuilder withEnableAfterChangelog(String enableAfterChangelog) {
             this.enableAfterChangelog = enableAfterChangelog;
             return this;
         }
 
-        @JsonProperty("enableAfterChangeset")
+        @JsonProperty("enable-after-changeset")
+        @JsonAlias("enableAfterChangeset")
         public RuleConfigBuilder withEnableAfterChangeset(ChangeSetIdentifier enableAfterChangeset) {
             this.enableAfterChangeset = enableAfterChangeset;
             return this;

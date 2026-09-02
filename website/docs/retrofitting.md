@@ -57,21 +57,27 @@ The referenced changeset and every changeset before it are ignored; linting star
 
 ## At rule level
 
-Over time you'll probably want to add new rules to your project &mdash; but again there may be historical changes that would fail if you just drop them in. The same three options are available per rule, under the camel-cased names `enableAfterChangelog`, `enableAfterChangeset` and the deprecated `enableAfter`:
+Over time you'll probably want to add new rules to your project &mdash; but again there may be historical changes that would fail if you just drop them in. The same two options are available per rule, with the same names:
 
 ```json
 {
   "rules": {
     "has-context": {
-      "enableAfterChangelog": "last-changeset-before-contexts-became-mandatory.xml"
+      "enable-after-changelog": "last-changeset-before-contexts-became-mandatory.xml"
     },
     "has-comment": {
-      "enableAfterChangeset": { "id": "0002-add-customer-table", "author": "jsmith" }
+      "enable-after-changeset": {
+        "changeLogFile": "src/main/resources/example-2.xml",
+        "id": "0002-add-customer-table",
+        "author": "jsmith"
+      }
     }
   }
 }
 ```
 
+The camel-cased forms `enableAfterChangelog` and `enableAfterChangeset` are also accepted as aliases, at both levels. The legacy rule-level option is still spelled `enableAfter`.
+
 ## Only one boundary at a time
 
-`enable-after`, `enable-after-changelog` and `enable-after-changeset` all express the same thing &mdash; the single point in history before which nothing is linted &mdash; so they are mutually exclusive. Setting more than one (at project level or within the same rule) fails configuration loading with an explicit error. The same applies to the rule-level `enableAfter` / `enableAfterChangelog` / `enableAfterChangeset` trio.
+`enable-after`, `enable-after-changelog` and `enable-after-changeset` all express the same thing &mdash; the single point in history before which nothing is linted &mdash; so they are mutually exclusive. Setting more than one (at project level or within the same rule) fails configuration loading with an explicit error.

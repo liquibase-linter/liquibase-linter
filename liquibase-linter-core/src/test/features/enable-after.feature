@@ -144,7 +144,7 @@ Feature: All changelog files before a specific changelog can be ignored with the
           "fail-fast": true,
           "rules": {
             "has-comment": {
-              "enableAfterChangeset": { "changeLogFile": "changelog.xml", "id": "last-unlinted", "author": "legacy" }
+              "enable-after-changeset": { "changeLogFile": "changelog.xml", "id": "last-unlinted", "author": "legacy" }
             }
           }
         }
@@ -162,14 +162,14 @@ Feature: All changelog files before a specific changelog can be ignored with the
       When liquibase-linter runs
       Then no violation is detected
 
-    Scenario: A per-rule "enableAfterChangeset" still reports violations after the referenced changeset
+    Scenario: A per-rule "enable-after-changeset" still reports violations after the referenced changeset
       Given liquibase-linter is configured with
         """json
         {
           "fail-fast": true,
           "rules": {
             "has-comment": {
-              "enableAfterChangeset": { "changeLogFile": "changelog.xml", "id": "last-unlinted", "author": "legacy" }
+              "enable-after-changeset": { "changeLogFile": "changelog.xml", "id": "last-unlinted", "author": "legacy" }
             }
           }
         }
@@ -232,7 +232,7 @@ Feature: All changelog files before a specific changelog can be ignored with the
       When liquibase-linter runs
       Then no violation is detected
 
-    Scenario: A rule can use the explicit "enableAfterChangelog" name
+    Scenario: A rule also accepts the camelCase alias "enableAfterChangelog"
       Given liquibase-linter is configured with
         """json
         {
@@ -272,14 +272,14 @@ Feature: All changelog files before a specific changelog can be ignored with the
       When liquibase-linter runs
       Then no violation is detected
 
-    Scenario: A rule "enableAfterChangelog" still reports violations after the referenced changelog
+    Scenario: A rule "enable-after-changelog" still reports violations after the referenced changelog
       Given liquibase-linter is configured with
         """json
         {
           "fail-fast": true,
           "rules": {
             "has-comment": {
-              "enableAfterChangelog": "no-comment-1.xml"
+              "enable-after-changelog": "no-comment-1.xml"
             }
           }
         }

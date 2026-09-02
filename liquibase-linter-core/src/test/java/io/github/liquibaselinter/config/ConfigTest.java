@@ -195,6 +195,24 @@ class ConfigTest {
         assertThat(config.getEnableAfterChangelog()).isNull();
     }
 
+    @DisplayName("Should accept the camelCase alias for enable-after-changelog / enable-after-changeset")
+    @Test
+    void shouldAcceptCamelCaseAliasForNewEnableAfterOptions() throws IOException {
+        String changelogJson = "{\n" + "  \"enableAfterChangelog\": \"db/changelog/init.xml\"\n" + "}";
+        String changesetJson =
+            "{\n" +
+            "  \"enableAfterChangeset\": { \"changeLogFile\": \"init.xml\", \"id\": \"create-user-table\", \"author\": \"dba\" }\n" +
+            "}";
+
+        Config changelogConfig = Config.fromInputStream(IOUtils.toInputStream(changelogJson, UTF_8));
+        Config changesetConfig = Config.fromInputStream(IOUtils.toInputStream(changesetJson, UTF_8));
+
+        assertThat(changelogConfig.getEnableAfterChangelog()).isEqualTo("db/changelog/init.xml");
+        assertThat(changesetConfig.getEnableAfterChangeset())
+            .extracting(ChangeSetIdentifier::getId)
+            .isEqualTo("create-user-table");
+    }
+
     @DisplayName("Should resolve the legacy enable-after through getEnableAfterChangelog")
     @Test
     @SuppressWarnings("deprecation")
