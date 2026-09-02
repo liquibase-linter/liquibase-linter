@@ -3,6 +3,7 @@ package io.github.liquibaselinter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.github.liquibaselinter.config.ChangeSetIdentifier;
 import io.github.liquibaselinter.config.ConditionContext;
 import io.github.liquibaselinter.config.RuleConfig;
 import liquibase.ContextExpression;
@@ -69,6 +70,51 @@ class RuleConfigTest {
             assertThatThrownBy(() ->
                 ruleConfig.isConditionSatisfiedWithContext(ConditionContext.from(changeSet))
             ).isInstanceOf(RuntimeException.class);
+        }
+    }
+
+    @Nested
+    class EnableAfter {
+
+        @Test
+        @SuppressWarnings("deprecation")
+        void shouldResolveLegacyEnableAfterThroughGetEnableAfterChangelog() {
+            RuleConfig ruleConfig = RuleConfig.builder().withEnableAfter("legacy.xml").build();
+
+            assertThat(ruleConfig.getEnableAfter()).isEqualTo("legacy.xml");
+            assertThat(ruleConfig.getEnableAfterChangelog()).isEqualTo("legacy.xml");
+            assertThat(ruleConfig.isEnabledAfter()).isTrue();
+        }
+
+        @Test
+        void shouldExposeEnableAfterChangelog() {
+            RuleConfig ruleConfig = RuleConfig.builder().withEnableAfterChangelog("changelog.xml").build();
+
+            assertThat(ruleConfig.getEnableAfterChangelog()).isEqualTo("changelog.xml");
+        }
+
+        @Test
+        void shouldExposeEnableAfterChangeset() {
+            ChangeSetIdentifier changeset = new ChangeSetIdentifier("changelog.xml", "create-table", "dba");
+            RuleConfig ruleConfig = RuleConfig.builder().withEnableAfterChangeset(changeset).build();
+
+            assertThat(ruleConfig.getEnableAfterChangeset()).isSameAs(changeset);
+            assertThat(ruleConfig.isEnabledAfter()).isTrue();
+        }
+
+        @Test
+        void shouldReportNotEnabledAfterWhenNoOptionSet() {
+            assertThat(RuleConfig.builder().build().isEnabledAfter()).isFalse();
+        }
+
+        @Test
+        @SuppressWarnings("deprecation")
+        void shouldRejectMoreThanOneEnableAfterOption() {
+            assertThatThrownBy(() ->
+                RuleConfig.builder().withEnableAfter("legacy.xml").withEnableAfterChangelog("changelog.xml").build()
+            )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("rule configuration");
         }
     }
 

@@ -7,6 +7,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -159,6 +160,84 @@ class ConfigTest {
         Config copy = new Config.Builder(config).build();
 
         assertThat(config).usingRecursiveComparison().isEqualTo(copy);
+    }
+
+    @DisplayName("Should parse enable-after-changelog")
+    @Test
+    void shouldParseEnableAfterChangelog() throws IOException {
+        String configJson = "{\n" + "  \"enable-after-changelog\": \"db/changelog/init.xml\"\n" + "}";
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
+        assertThat(config.getEnableAfterChangelog()).isEqualTo("db/changelog/init.xml");
+        assertThat(config.getEnableAfterChangeset()).isNull();
+    }
+
+    @DisplayName("Should parse enable-after-changeset")
+    @Test
+    void shouldParseEnableAfterChangeset() throws IOException {
+        String configJson =
+            "{\n" +
+            "  \"enable-after-changeset\": {\n" +
+            "    \"changeLogFile\": \"db/changelog/init.xml\",\n" +
+            "    \"id\": \"create-user-table\",\n" +
+            "    \"author\": \"dba\"\n" +
+            "  }\n" +
+            "}";
+
+        Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
+
+        assertThat(config.getEnableAfterChangeset()).satisfies(changeset -> {
+            assertThat(changeset.getChangeLogFile()).isEqualTo("db/changelog/init.xml");
+            assertThat(changeset.getId()).isEqualTo("create-user-table");
+            assertThat(changeset.getAuthor()).isEqualTo("dba");
+        });
+        assertThat(config.getEnableAfterChangelog()).isNull();
+    }
+
+    @DisplayName("Should resolve the legacy enable-after through getEnableAfterChangelog")
+    @Test
+    @SuppressWarnings("deprecation")
+    void shouldResolveLegacyEnableAfterThroughGetEnableAfterChangelog() {
+        Config config = new Config.Builder().withEnableAfter("legacy.xml").build();
+
+        assertThat(config.getEnableAfter()).isEqualTo("legacy.xml");
+        assertThat(config.getEnableAfterChangelog()).isEqualTo("legacy.xml");
+    }
+
+    @DisplayName("Should reject more than one enable-after option (builder)")
+    @Test
+    @SuppressWarnings("deprecation")
+    void shouldRejectMultipleEnableAfterOptions() {
+        assertThatThrownBy(() ->
+            new Config.Builder().withEnableAfter("legacy.xml").withEnableAfterChangelog("changelog.xml").build()
+        )
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Only one of");
+    }
+
+    @DisplayName("Should reject more than one enable-after option (JSON)")
+    @Test
+    void shouldRejectMultipleEnableAfterOptionsFromJson() {
+        String configJson =
+            "{\n" +
+            "  \"enable-after-changelog\": \"changelog.xml\",\n" +
+            "  \"enable-after-changeset\": { \"changeLogFile\": \"init.xml\", \"id\": \"create-user-table\", \"author\": \"dba\" }\n" +
+            "}";
+
+        assertThatExceptionOfType(JsonMappingException.class)
+            .isThrownBy(() -> Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8)))
+            .withMessageContaining("Only one of");
+    }
+
+    @DisplayName("Should reject an incomplete enable-after-changeset")
+    @Test
+    void shouldRejectIncompleteEnableAfterChangeset() {
+        String configJson = "{\n" + "  \"enable-after-changeset\": { \"id\": \"create-user-table\" }\n" + "}";
+
+        assertThatExceptionOfType(JsonMappingException.class)
+            .isThrownBy(() -> Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8)))
+            .withMessageContaining("'changeLogFile', 'id' and 'author'");
     }
 
     @DisplayName("Should load reporting configuration")

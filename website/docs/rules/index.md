@@ -39,7 +39,9 @@ All rules also support these standard options (other than `enabled`):
   - [`ChangeSet`](https://github.com/liquibase/liquibase/blob/master/liquibase-standard/src/main/java/liquibase/changelog/ChangeSet.java) object available as `changeSet`
   - [`Change`](https://github.com/liquibase/liquibase/blob/master/liquibase-standard/src/main/java/liquibase/change/Change.java) object available as `change`
   - `matchesContext` helper function which can be used like `matchesContext('foo', 'bar')`. This function just delegates to the liquibase context matching method so the same logic applies.
-- `enableAfter` - (string) allows you to specify a change log file name _after_ which this rule should be enabled. See [Retrofitting](../retrofitting.md) for more detail.
+- `enableAfterChangelog` - (string) allows you to specify a change log file name _after_ which this rule should be enabled. See [Retrofitting](../retrofitting.md) for more detail.
+- `enableAfterChangeset` - (object) allows you to specify a single changeset by its full identity (`changeLogFile`, `id` and `author`, all mandatory) _after_ which this rule should be enabled. See [Retrofitting](../retrofitting.md) for more detail.
+- `enableAfter` - (string) _deprecated_ former name of `enableAfterChangelog`, removed in 1.0.
 
 Individual rules also support their own options; you can find these documented with those rules.
 

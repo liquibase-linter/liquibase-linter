@@ -15,9 +15,13 @@ You do this by providing a `lqlint.json` file at the root of your project. Here'
   "fail-fast": false,
   "ignore-context-pattern": null,
   "ignore-files-pattern": null,
+  "enable-after-changelog": null,
+  "enable-after-changeset": null,
   "rules": {}
 }
 ```
+
+`enable-after-changelog` and `enable-after-changeset` let you switch linting on only from a certain point in your change log history &mdash; see [Retrofitting](retrofitting.md).
 
 #### From the classpath
 

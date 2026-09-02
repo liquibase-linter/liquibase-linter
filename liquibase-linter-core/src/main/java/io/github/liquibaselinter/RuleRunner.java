@@ -2,6 +2,7 @@ package io.github.liquibaselinter;
 
 import static java.util.stream.Collectors.toList;
 
+import io.github.liquibaselinter.config.ChangeSetIdentifier;
 import io.github.liquibaselinter.config.ConditionContext;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.RuleConfig;
@@ -35,6 +36,7 @@ class RuleRunner {
     private final List<ChangeLogRule> changeLogRules = loadAvailablesServices(ChangeLogRule.class);
     private final List<ReportItem> reportItems = new ArrayList<>();
     private final Set<String> filesParsed = new HashSet<>();
+    private final List<ChangeSet> changeSetsParsed = new ArrayList<>();
 
     public RuleRunner(Config config) {
         this.config = config;
@@ -50,6 +52,14 @@ class RuleRunner {
 
     public Set<String> getFilesParsed() {
         return filesParsed;
+    }
+
+    /**
+     * Changesets already handled, in parsing order. Used to resolve {@code enable-after-changeset}: the
+     * referenced changeset itself is excluded, every later changeset is linted.
+     */
+    public List<ChangeSet> getChangeSetsParsed() {
+        return changeSetsParsed;
     }
 
     public void checkChange(Change change) throws ChangeLogLintingException {
@@ -140,7 +150,16 @@ class RuleRunner {
         return (
             ruleConfig.isEnabled() &&
             ruleConfig.isConditionSatisfiedWithContext(context) &&
-            (StringUtils.isEmpty(ruleConfig.getEnableAfter()) || filesParsed.contains(ruleConfig.getEnableAfter()))
+            isEnabledAfterChangelog(ruleConfig.getEnableAfterChangelog()) &&
+            isEnabledAfterChangeset(ruleConfig.getEnableAfterChangeset())
         );
+    }
+
+    private boolean isEnabledAfterChangelog(String enableAfterChangelog) {
+        return StringUtils.isEmpty(enableAfterChangelog) || filesParsed.contains(enableAfterChangelog);
+    }
+
+    private boolean isEnabledAfterChangeset(ChangeSetIdentifier enableAfterChangeset) {
+        return enableAfterChangeset == null || changeSetsParsed.stream().anyMatch(enableAfterChangeset::matches);
     }
 }

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
 public final class RuleConfig {
@@ -23,6 +24,8 @@ public final class RuleConfig {
     private final Integer maxLength;
     private final String errorMessage;
     private final String enableAfter;
+    private final String enableAfterChangelog;
+    private final ChangeSetIdentifier enableAfterChangeset;
     private Pattern pattern;
     private Expression conditionExpression;
     private Expression columnConditionExpression;
@@ -38,6 +41,14 @@ public final class RuleConfig {
         this.values = builder.values;
         this.maxLength = builder.maxLength;
         this.enableAfter = builder.enableAfter;
+        this.enableAfterChangelog = builder.enableAfterChangelog;
+        this.enableAfterChangeset = builder.enableAfterChangeset;
+        EnableAfterValidator.requireAtMostOne(
+            "rule configuration",
+            builder.enableAfter,
+            builder.enableAfterChangelog,
+            builder.enableAfterChangeset
+        );
     }
 
     public static RuleConfig enabled() {
@@ -136,12 +147,29 @@ public final class RuleConfig {
         return patternString != null && !patternString.isEmpty();
     }
 
+    /**
+     * @deprecated legacy option, use {@link #getEnableAfterChangelog()} instead. Removed in 1.0.
+     */
+    @Deprecated
     public String getEnableAfter() {
         return this.enableAfter;
     }
 
+    /**
+     * @return the changelog file after which this rule applies, resolved from whichever of
+     * {@code enableAfterChangelog} or the legacy {@code enableAfter} is set, or {@code null} when the
+     * rule is not gated on a changelog.
+     */
+    public String getEnableAfterChangelog() {
+        return StringUtils.firstNonEmpty(enableAfterChangelog, enableAfter);
+    }
+
+    public ChangeSetIdentifier getEnableAfterChangeset() {
+        return this.enableAfterChangeset;
+    }
+
     public boolean isEnabledAfter() {
-        return enableAfter != null && !enableAfter.isEmpty();
+        return getEnableAfterChangelog() != null || enableAfterChangeset != null;
     }
 
     public String effectivePatternFor(Object subject) {
@@ -162,6 +190,8 @@ public final class RuleConfig {
         private List<String> values;
         private Integer maxLength;
         private String enableAfter;
+        private String enableAfterChangelog;
+        private ChangeSetIdentifier enableAfterChangeset;
 
         @JsonProperty("enabled")
         public RuleConfigBuilder withEnabled(boolean enabled) {
@@ -215,9 +245,25 @@ public final class RuleConfig {
             return this;
         }
 
+        /**
+         * @deprecated legacy option, use {@link #withEnableAfterChangelog(String)} instead. Removed in 1.0.
+         */
+        @Deprecated
         @JsonProperty("enableAfter")
         public RuleConfigBuilder withEnableAfter(String enableAfter) {
             this.enableAfter = enableAfter;
+            return this;
+        }
+
+        @JsonProperty("enableAfterChangelog")
+        public RuleConfigBuilder withEnableAfterChangelog(String enableAfterChangelog) {
+            this.enableAfterChangelog = enableAfterChangelog;
+            return this;
+        }
+
+        @JsonProperty("enableAfterChangeset")
+        public RuleConfigBuilder withEnableAfterChangeset(ChangeSetIdentifier enableAfterChangeset) {
+            this.enableAfterChangeset = enableAfterChangeset;
             return this;
         }
 
