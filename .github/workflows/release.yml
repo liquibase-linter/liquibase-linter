@@ -68,7 +68,7 @@ jobs:
           tag: ${{ github.event.inputs.releaseVersion }}
           name: v${{ github.event.inputs.releaseVersion }}
           generateReleaseNotes: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Update version in documentation
         run: |
