@@ -12,41 +12,34 @@ class EnableAfterValidatorTest {
     @Test
     void shouldAllowNoneSet() {
         assertThatCode(() ->
-            EnableAfterValidator.requireAtMostOne("configuration", null, null, null)
+            EnableAfterValidator.requireAtMostOne("configuration", null, null)
         ).doesNotThrowAnyException();
     }
 
     @Test
     void shouldAllowExactlyOneSet() {
         assertThatCode(() ->
-            EnableAfterValidator.requireAtMostOne("configuration", "legacy.xml", null, null)
+            EnableAfterValidator.requireAtMostOne("configuration", "changelog.xml", null)
         ).doesNotThrowAnyException();
         assertThatCode(() ->
-            EnableAfterValidator.requireAtMostOne("configuration", null, "changelog.xml", null)
-        ).doesNotThrowAnyException();
-        assertThatCode(() ->
-            EnableAfterValidator.requireAtMostOne("configuration", null, null, A_CHANGESET)
+            EnableAfterValidator.requireAtMostOne("configuration", null, A_CHANGESET)
         ).doesNotThrowAnyException();
     }
 
     @Test
     void shouldTreatEmptyStringsAsUnset() {
         assertThatCode(() ->
-            EnableAfterValidator.requireAtMostOne("configuration", "", "changelog.xml", null)
+            EnableAfterValidator.requireAtMostOne("configuration", "", A_CHANGESET)
         ).doesNotThrowAnyException();
     }
 
     @Test
     void shouldRejectMoreThanOneSet() {
         assertThatThrownBy(() ->
-            EnableAfterValidator.requireAtMostOne("rule configuration", "legacy.xml", "changelog.xml", null)
+            EnableAfterValidator.requireAtMostOne("rule configuration", "changelog.xml", A_CHANGESET)
         )
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("Only one of")
             .hasMessageContaining("rule configuration");
-
-        assertThatThrownBy(() ->
-            EnableAfterValidator.requireAtMostOne("configuration", null, "changelog.xml", A_CHANGESET)
-        ).isInstanceOf(IllegalArgumentException.class);
     }
 }

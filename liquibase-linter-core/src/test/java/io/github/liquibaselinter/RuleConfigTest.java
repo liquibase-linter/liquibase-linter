@@ -77,16 +77,6 @@ class RuleConfigTest {
     class EnableAfter {
 
         @Test
-        @SuppressWarnings("deprecation")
-        void shouldResolveLegacyEnableAfterThroughGetEnableAfterChangelog() {
-            RuleConfig ruleConfig = RuleConfig.builder().withEnableAfter("legacy.xml").build();
-
-            assertThat(ruleConfig.getEnableAfter()).isEqualTo("legacy.xml");
-            assertThat(ruleConfig.getEnableAfterChangelog()).isEqualTo("legacy.xml");
-            assertThat(ruleConfig.isEnabledAfter()).isTrue();
-        }
-
-        @Test
         void shouldExposeEnableAfterChangelog() {
             RuleConfig ruleConfig = RuleConfig.builder().withEnableAfterChangelog("changelog.xml").build();
 
@@ -108,10 +98,14 @@ class RuleConfigTest {
         }
 
         @Test
-        @SuppressWarnings("deprecation")
         void shouldRejectMoreThanOneEnableAfterOption() {
+            ChangeSetIdentifier changeset = new ChangeSetIdentifier("changelog.xml", "create-table", "dba");
+
             assertThatThrownBy(() ->
-                RuleConfig.builder().withEnableAfter("legacy.xml").withEnableAfterChangelog("changelog.xml").build()
+                RuleConfig.builder()
+                    .withEnableAfterChangelog("changelog.xml")
+                    .withEnableAfterChangeset(changeset)
+                    .build()
             )
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("rule configuration");

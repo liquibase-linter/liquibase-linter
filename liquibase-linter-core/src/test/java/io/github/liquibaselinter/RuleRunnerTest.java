@@ -119,7 +119,7 @@ class RuleRunnerTest {
         return ruleRunnerWithTableNameRule(condition, failFast, null);
     }
 
-    private RuleRunner ruleRunnerWithTableNameRule(String condition, boolean failFast, String enableAfter) {
+    private RuleRunner ruleRunnerWithTableNameRule(String condition, boolean failFast, String enableAfterChangelog) {
         final ListMultimap<String, RuleConfig> ruleConfigMap = ImmutableListMultimap.of(
             "table-name",
             RuleConfig.builder()
@@ -135,7 +135,11 @@ class RuleRunnerTest {
                 .build()
         );
         return new RuleRunner(
-            new Config.Builder().withRules(ruleConfigMap).withFailFast(failFast).withEnableAfter(enableAfter).build()
+            new Config.Builder()
+                .withRules(ruleConfigMap)
+                .withFailFast(failFast)
+                .withEnableAfterChangelog(enableAfterChangelog)
+                .build()
         );
     }
 
