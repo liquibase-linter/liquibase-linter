@@ -15,14 +15,6 @@
     {
       "matchPackageNames": ["org.liquibase:liquibase-core"],
       "allowedVersions": "< 5.0.0"
-    },
-    {
-      "matchPackageNames": ["org.springframework:spring-expression"],
-      "allowedVersions": "< 6.0.0"
-    },
-    {
-      "matchPackageNames": ["org.junit:junit-bom"],
-      "allowedVersions": "< 6.0.0"
     }
   ]
 }

@@ -13,13 +13,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version:
+          - '17'
     steps:
       - uses: actions/checkout@v7
-      - name: Set up JDK
+      - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: '8'
+          java-version: ${{ matrix.java-version }}
           cache: 'maven'
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -70,17 +74,13 @@ jobs:
         liquibase-minor-version:
           - '4.33'
           - '5.0'
-        include:
-          - java-version: 8
-          - liquibase-minor-version: '5.0'
-            java-version: 17
     steps:
       - uses: actions/checkout@v7
-      - name: Set up JDK ${{ matrix.java-version }}
+      - name: Set up JDK
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: ${{ matrix.java-version }}
+          java-version: '17'
           cache: 'maven'
       - name: Setup node
         uses: actions/setup-node@v7
