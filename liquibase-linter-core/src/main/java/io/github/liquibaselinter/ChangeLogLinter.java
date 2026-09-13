@@ -190,13 +190,13 @@ public class ChangeLogLinter {
             .buildReport()
             .getItems()
             .stream()
-            .filter(item -> item.getType() == ReportItem.ReportItemType.ERROR)
+            .filter(item -> item.type() == ReportItem.ReportItemType.ERROR)
             .collect(Collectors.toList());
         final long errorCount = errors.size();
         if (errorCount > 0) {
             final String errorList = errors
                 .stream()
-                .map(ReportItem::getMessage)
+                .map(ReportItem::message)
                 .collect(joining("\n - ", "\n - ", ""));
             throw new ChangeLogLintingException(
                 String.format("Linting failed with %d errors:%s", errorCount, errorList)
