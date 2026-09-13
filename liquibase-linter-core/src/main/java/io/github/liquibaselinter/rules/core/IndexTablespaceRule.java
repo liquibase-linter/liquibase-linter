@@ -25,11 +25,10 @@ public class IndexTablespaceRule implements ChangeRule {
 
     @Override
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
-        if (!(change instanceof CreateIndexChange)) {
+        if (!(change instanceof CreateIndexChange createIndexChange)) {
             return Collections.emptyList();
         }
 
-        CreateIndexChange createIndexChange = (CreateIndexChange) change;
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         if (ruleChecker.checkMandatoryPattern(createIndexChange.getTablespace(), change)) {
             LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);

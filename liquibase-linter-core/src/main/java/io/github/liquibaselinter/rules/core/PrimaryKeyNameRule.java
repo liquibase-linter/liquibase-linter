@@ -42,11 +42,11 @@ public class PrimaryKeyNameRule implements ChangeRule {
     }
 
     private Collection<String> extractConstraintNamesFrom(Change change) {
-        if (change instanceof AddPrimaryKeyChange) {
-            return Collections.singleton(((AddPrimaryKeyChange) change).getConstraintName());
+        if (change instanceof AddPrimaryKeyChange addPrimaryKeyChange) {
+            return Collections.singleton(addPrimaryKeyChange.getConstraintName());
         }
-        if (change instanceof CreateTableChange) {
-            return primaryKeyNamesFromCreateTable((CreateTableChange) change);
+        if (change instanceof CreateTableChange createTableChange) {
+            return primaryKeyNamesFromCreateTable(createTableChange);
         }
         return Collections.emptyList();
     }

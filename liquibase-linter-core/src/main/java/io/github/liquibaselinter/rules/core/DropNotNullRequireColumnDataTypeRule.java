@@ -25,10 +25,9 @@ public class DropNotNullRequireColumnDataTypeRule implements ChangeRule {
 
     @Override
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
-        if (!(change instanceof DropNotNullConstraintChange)) {
+        if (!(change instanceof DropNotNullConstraintChange dropNotNullConstraintChange)) {
             return Collections.emptyList();
         }
-        DropNotNullConstraintChange dropNotNullConstraintChange = (DropNotNullConstraintChange) change;
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         if (ruleChecker.checkNotBlank(dropNotNullConstraintChange.getColumnDataType())) {
             LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);

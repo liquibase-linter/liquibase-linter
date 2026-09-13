@@ -36,11 +36,11 @@ public class TableNameRule implements ChangeRule {
     }
 
     private Collection<String> getTablesName(Change change) {
-        if (change instanceof CreateTableChange) {
-            return Collections.singleton(((CreateTableChange) change).getTableName());
+        if (change instanceof CreateTableChange createTableChange) {
+            return Collections.singleton(createTableChange.getTableName());
         }
-        if (change instanceof RenameTableChange) {
-            return Collections.singleton(((RenameTableChange) change).getNewTableName());
+        if (change instanceof RenameTableChange renameTableChange) {
+            return Collections.singleton(renameTableChange.getNewTableName());
         }
         return Collections.emptyList();
     }

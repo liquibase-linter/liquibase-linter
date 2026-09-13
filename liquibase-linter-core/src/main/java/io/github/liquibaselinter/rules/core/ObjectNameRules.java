@@ -25,43 +25,35 @@ import liquibase.change.core.RenameViewChange;
 public class ObjectNameRules {
 
     private static Collection<String> getObjectNames(Change change) {
-        if (change instanceof AddColumnChange) {
-            return ((AddColumnChange) change)
-                .getColumns()
-                .stream()
-                .map(ColumnConfig::getName)
-                .collect(Collectors.toList());
+        if (change instanceof AddColumnChange addColumnChange) {
+            return addColumnChange.getColumns().stream().map(ColumnConfig::getName).collect(Collectors.toList());
         }
-        if (change instanceof AddForeignKeyConstraintChange) {
-            return Collections.singletonList(((AddForeignKeyConstraintChange) change).getConstraintName());
+        if (change instanceof AddForeignKeyConstraintChange addForeignKeyConstraintChange) {
+            return Collections.singletonList(addForeignKeyConstraintChange.getConstraintName());
         }
-        if (change instanceof AddPrimaryKeyChange) {
-            return Collections.singletonList(((AddPrimaryKeyChange) change).getConstraintName());
+        if (change instanceof AddPrimaryKeyChange addPrimaryKeyChange) {
+            return Collections.singletonList(addPrimaryKeyChange.getConstraintName());
         }
-        if (change instanceof AddUniqueConstraintChange) {
-            return Collections.singletonList(((AddUniqueConstraintChange) change).getConstraintName());
+        if (change instanceof AddUniqueConstraintChange addUniqueConstraintChange) {
+            return Collections.singletonList(addUniqueConstraintChange.getConstraintName());
         }
-        if (change instanceof CreateTableChange) {
-            return ((CreateTableChange) change)
-                .getColumns()
-                .stream()
-                .map(ColumnConfig::getName)
-                .collect(Collectors.toList());
+        if (change instanceof CreateTableChange createTableChange) {
+            return createTableChange.getColumns().stream().map(ColumnConfig::getName).collect(Collectors.toList());
         }
-        if (change instanceof MergeColumnChange) {
-            return Collections.singletonList(((MergeColumnChange) change).getFinalColumnName());
+        if (change instanceof MergeColumnChange mergeColumnChange) {
+            return Collections.singletonList(mergeColumnChange.getFinalColumnName());
         }
-        if (change instanceof RenameColumnChange) {
-            return Collections.singletonList(((RenameColumnChange) change).getNewColumnName());
+        if (change instanceof RenameColumnChange renameColumnChange) {
+            return Collections.singletonList(renameColumnChange.getNewColumnName());
         }
-        if (change instanceof RenameViewChange) {
-            return Collections.singletonList(((RenameViewChange) change).getNewViewName());
+        if (change instanceof RenameViewChange renameViewChange) {
+            return Collections.singletonList(renameViewChange.getNewViewName());
         }
-        if (change instanceof CreateViewChange) {
-            return Collections.singletonList(((CreateViewChange) change).getViewName());
+        if (change instanceof CreateViewChange createViewChange) {
+            return Collections.singletonList(createViewChange.getViewName());
         }
-        if (change instanceof CreateIndexChange) {
-            return Collections.singletonList(((CreateIndexChange) change).getIndexName());
+        if (change instanceof CreateIndexChange createIndexChange) {
+            return Collections.singletonList(createIndexChange.getIndexName());
         }
         return Collections.emptyList();
     }

@@ -25,12 +25,11 @@ public class UniqueConstraintTablespaceRule implements ChangeRule {
 
     @Override
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
-        if (!(change instanceof AddUniqueConstraintChange)) {
+        if (!(change instanceof AddUniqueConstraintChange addUniqueConstraintChange)) {
             return Collections.emptyList();
         }
 
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
-        AddUniqueConstraintChange addUniqueConstraintChange = (AddUniqueConstraintChange) change;
         if (ruleChecker.checkMandatoryPattern(addUniqueConstraintChange.getTablespace(), change)) {
             LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
             return Collections.singleton(
