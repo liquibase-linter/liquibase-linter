@@ -24,16 +24,17 @@ class ConfigTest {
     @DisplayName("Should support valid config object")
     @Test
     void shouldSupportValidConfigObject() throws IOException {
-        String configJson =
-            "{\n" +
-            "  \"rules\": {\n" +
-            "    \"schema-name\": {\n" +
-            "      \"enabled\": true,\n" +
-            "      \"pattern\": \"^\\\\$\\\\{[a-z_]+\\\\}$\",\n" +
-            "      \"errorMessage\": \"Must use schema name token, not %s\"\n" +
-            "    }\n" +
-            "  }\n" +
-            "}";
+        String configJson = """
+        {
+          "rules": {
+            "schema-name": {
+              "enabled": true,
+              "pattern": "^\\\\$\\\\{[a-z_]+\\\\}$",
+              "errorMessage": "Must use schema name token, not %s"
+            }
+          }
+        }
+        """;
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
 
@@ -65,21 +66,22 @@ class ConfigTest {
     @DisplayName("Should support having an array of configs for one rule")
     @Test
     void shouldSupportArrayOfRuleConfigs() throws IOException {
-        String configJson =
-            "{\n" +
-            "    \"rules\": {\n" +
-            "        \"object-name\": [\n" +
-            "            {\n" +
-            "                \"pattern\": \"^(?!_)[A-Z_0-9]+(?<!_)$\",\n" +
-            "                \"errorMessage\": \"Object name '%s' name must be uppercase and use '_' separation\"\n" +
-            "            },\n" +
-            "            {\n" +
-            "                \"pattern\": \"^POWER.*$\",\n" +
-            "                \"errorMessage\": \"Object name '%s' name must begin with 'POWER'\"\n" +
-            "            }\n" +
-            "        ]\n" +
-            "    }\n" +
-            "}\n";
+        String configJson = """
+        {
+            "rules": {
+                "object-name": [
+                    {
+                        "pattern": "^(?!_)[A-Z_0-9]+(?<!_)$",
+                        "errorMessage": "Object name '%s' name must be uppercase and use '_' separation"
+                    },
+                    {
+                        "pattern": "^POWER.*$",
+                        "errorMessage": "Object name '%s' name must begin with 'POWER'"
+                    }
+                ]
+            }
+        }
+        """;
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
 
@@ -176,14 +178,15 @@ class ConfigTest {
     @DisplayName("Should parse enable-after-changeset")
     @Test
     void shouldParseEnableAfterChangeset() throws IOException {
-        String configJson =
-            "{\n" +
-            "  \"enable-after-changeset\": {\n" +
-            "    \"change-log-file\": \"db/changelog/init.xml\",\n" +
-            "    \"id\": \"create-user-table\",\n" +
-            "    \"author\": \"dba\"\n" +
-            "  }\n" +
-            "}";
+        String configJson = """
+        {
+          "enable-after-changeset": {
+            "change-log-file": "db/changelog/init.xml",
+            "id": "create-user-table",
+            "author": "dba"
+          }
+        }
+        """;
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
 
@@ -199,10 +202,11 @@ class ConfigTest {
     @Test
     void shouldAcceptCamelCaseAliasForNewEnableAfterOptions() throws IOException {
         String changelogJson = "{\n" + "  \"enableAfterChangelog\": \"db/changelog/init.xml\"\n" + "}";
-        String changesetJson =
-            "{\n" +
-            "  \"enableAfterChangeset\": { \"changeLogFile\": \"init.xml\", \"id\": \"create-user-table\", \"author\": \"dba\" }\n" +
-            "}";
+        String changesetJson = """
+        {
+          "enableAfterChangeset": { "changeLogFile": "init.xml", "id": "create-user-table", "author": "dba" }
+        }
+        """;
 
         Config changelogConfig = Config.fromInputStream(IOUtils.toInputStream(changelogJson, UTF_8));
         Config changesetConfig = Config.fromInputStream(IOUtils.toInputStream(changesetJson, UTF_8));
@@ -264,11 +268,12 @@ class ConfigTest {
     @DisplayName("Should reject more than one enable-after option (JSON)")
     @Test
     void shouldRejectMultipleEnableAfterOptionsFromJson() {
-        String configJson =
-            "{\n" +
-            "  \"enable-after-changelog\": \"changelog.xml\",\n" +
-            "  \"enable-after-changeset\": { \"changeLogFile\": \"init.xml\", \"id\": \"create-user-table\", \"author\": \"dba\" }\n" +
-            "}";
+        String configJson = """
+        {
+          "enable-after-changelog": "changelog.xml",
+          "enable-after-changeset": { "changeLogFile": "init.xml", "id": "create-user-table", "author": "dba" }
+        }
+        """;
 
         assertThatExceptionOfType(JsonMappingException.class)
             .isThrownBy(() -> Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8)))
@@ -288,29 +293,30 @@ class ConfigTest {
     @DisplayName("Should load reporting configuration")
     @Test
     void shouldSupportReporting() throws IOException {
-        String configJson =
-            "{\n" +
-            "  \"reporting\": {\n" +
-            "    \"text\": \"path/to/report.txt\",\n" +
-            "    \"console\": {\n" +
-            "      \"filter\": \"ERROR\"" +
-            "    },\n" +
-            "    \"markdown\": [\n" +
-            "      {\n" +
-            "        \"path\": \"path/to/report.md\"," +
-            "        \"filter\": [\n" +
-            "          \"ERROR\",\n" +
-            "          \"IGNORED\",\n" +
-            "          \"PASSED\"\n" +
-            "        ]\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"path\": \"path/to/report2.md\"," +
-            "        \"enabled\": true\n" +
-            "      }\n" +
-            "    ]\n" +
-            "  }\n" +
-            "}";
+        String configJson = """
+        {
+          "reporting": {
+            "text": "path/to/report.txt",
+            "console": {
+              "filter": "ERROR"
+            },
+            "markdown": [
+              {
+                "path": "path/to/report.md",
+                "filter": [
+                  "ERROR",
+                  "IGNORED",
+                  "PASSED"
+                ]
+              },
+              {
+                "path": "path/to/report2.md",
+                "enabled": true
+              }
+            ]
+          }
+        }
+        """;
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
 
@@ -345,14 +351,15 @@ class ConfigTest {
     @DisplayName("Should support having comments in configuration")
     @Test
     void shouldSupportComments() throws IOException {
-        String configJson =
-            "{\n" +
-            "  // Some comment \n" +
-            "  /* Some comment */" +
-            "  \"rules\": {\n" +
-            "    \"isolate-ddl-changes\": true\n" +
-            "  }\n" +
-            "}";
+        String configJson = """
+        {
+          // Some comment
+          /* Some comment */
+          "rules": {
+            "isolate-ddl-changes": true
+          }
+        }
+        """;
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
 
