@@ -18,12 +18,7 @@ import liquibase.changelog.ChangeSet;
  * every changeset parsed after it is.</p>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ChangeSetIdentifier {
-
-    private final String changeLogFile;
-    private final String id;
-    private final String author;
-
+public record ChangeSetIdentifier(String changeLogFile, String id, String author) {
     @JsonCreator
     public ChangeSetIdentifier(
         @JsonProperty("change-log-file") @JsonAlias("changeLogFile") String changeLogFile,
