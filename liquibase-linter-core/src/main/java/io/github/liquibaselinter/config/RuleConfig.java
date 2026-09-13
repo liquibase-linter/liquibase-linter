@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import org.apache.commons.lang3.StringUtils;
 
 @JsonDeserialize(builder = RuleConfig.RuleConfigBuilder.class)
 public final class RuleConfig {
@@ -24,7 +23,6 @@ public final class RuleConfig {
     private final List<String> values;
     private final Integer maxLength;
     private final String errorMessage;
-    private final String enableAfter;
     private final String enableAfterChangelog;
     private final ChangeSetIdentifier enableAfterChangeset;
     private Pattern pattern;
@@ -41,12 +39,10 @@ public final class RuleConfig {
         this.dynamicValue = builder.dynamicValue;
         this.values = builder.values;
         this.maxLength = builder.maxLength;
-        this.enableAfter = builder.enableAfter;
         this.enableAfterChangelog = builder.enableAfterChangelog;
         this.enableAfterChangeset = builder.enableAfterChangeset;
         EnableAfterValidator.requireAtMostOne(
             "rule configuration",
-            builder.enableAfter,
             builder.enableAfterChangelog,
             builder.enableAfterChangeset
         );
@@ -149,20 +145,11 @@ public final class RuleConfig {
     }
 
     /**
-     * @deprecated legacy option, use {@link #getEnableAfterChangelog()} instead. Removed in 1.0.
-     */
-    @Deprecated
-    public String getEnableAfter() {
-        return this.enableAfter;
-    }
-
-    /**
-     * @return the changelog file after which this rule applies, resolved from whichever of
-     * {@code enableAfterChangelog} or the legacy {@code enableAfter} is set, or {@code null} when the
-     * rule is not gated on a changelog.
+     * @return the changelog file after which this rule applies, or {@code null} when the rule is not
+     * gated on a changelog.
      */
     public String getEnableAfterChangelog() {
-        return StringUtils.firstNonEmpty(enableAfterChangelog, enableAfter);
+        return enableAfterChangelog;
     }
 
     public ChangeSetIdentifier getEnableAfterChangeset() {
@@ -190,7 +177,6 @@ public final class RuleConfig {
         private String dynamicValue;
         private List<String> values;
         private Integer maxLength;
-        private String enableAfter;
         private String enableAfterChangelog;
         private ChangeSetIdentifier enableAfterChangeset;
 
@@ -247,17 +233,6 @@ public final class RuleConfig {
         @JsonAlias("maxLength")
         public RuleConfigBuilder withMaxLength(Integer maxLength) {
             this.maxLength = maxLength;
-            return this;
-        }
-
-        /**
-         * @deprecated legacy option, use {@link #withEnableAfterChangelog(String)} instead. Removed in 1.0.
-         */
-        @Deprecated
-        @JsonProperty("enable-after")
-        @JsonAlias("enableAfter")
-        public RuleConfigBuilder withEnableAfter(String enableAfter) {
-            this.enableAfter = enableAfter;
             return this;
         }
 

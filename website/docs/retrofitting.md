@@ -51,10 +51,6 @@ When the boundary between "legacy" and "linted" changes does not line up with a 
 
 The referenced changeset and every changeset before it are ignored; linting starts at the next changeset.
 
-## `enable-after` (deprecated)
-
-`enable-after` is the former name of `enable-after-changelog` and still behaves identically. It is kept for backward compatibility and will be removed in 1.0 &mdash; prefer `enable-after-changelog` in new configuration.
-
 ## At rule level
 
 Over time you'll probably want to add new rules to your project &mdash; but again there may be historical changes that would fail if you just drop them in. The same two options are available per rule, with the same names:
@@ -76,8 +72,8 @@ Over time you'll probably want to add new rules to your project &mdash; but agai
 }
 ```
 
-Every option also accepts a camelCase spelling (`enableAfterChangelog`, `enableAfterChangeset`, `changeLogFile`, `enableAfter`, …) &mdash; see [Configuration](configure.md#property-names).
+Every option also accepts a camelCase spelling (`enableAfterChangelog`, `enableAfterChangeset`, `changeLogFile`, …) &mdash; see [Configuration](configure.md#property-names).
 
 ## Only one boundary at a time
 
-`enable-after`, `enable-after-changelog` and `enable-after-changeset` all express the same thing &mdash; the single point in history before which nothing is linted &mdash; so they are mutually exclusive. Setting more than one (at project level or within the same rule) fails configuration loading with an explicit error.
+`enable-after-changelog` and `enable-after-changeset` both express the same thing &mdash; the single point in history before which nothing is linted &mdash; so they are mutually exclusive. Setting both (at project level or within the same rule) fails configuration loading with an explicit error.

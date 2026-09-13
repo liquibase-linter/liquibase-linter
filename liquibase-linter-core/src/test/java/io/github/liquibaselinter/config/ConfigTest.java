@@ -126,7 +126,7 @@ class ConfigTest {
             .withIgnoreFilesPattern("def")
             .withRules(ImmutableListMultimap.of("rule-name", RuleConfig.enabled()))
             .withFailFast(true)
-            .withEnableAfter("after")
+            .withEnableAfterChangelog("after")
             .withImports("a", "b")
             .build();
 
@@ -134,7 +134,7 @@ class ConfigTest {
         assertThat(config.getIgnoreFilesPattern()).asString().isEqualTo("def");
         assertThat(config.getRules().asMap()).containsOnlyKeys("rule-name");
         assertThat(config.isFailFast()).isTrue();
-        assertThat(config.getEnableAfter()).isEqualTo("after");
+        assertThat(config.getEnableAfterChangelog()).isEqualTo("after");
         assertThat(config.getImports()).containsExactly("a", "b");
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() ->
@@ -153,7 +153,7 @@ class ConfigTest {
             .withIgnoreFilesPattern("def")
             .withRules(ImmutableListMultimap.of("rule-name", RuleConfig.enabled()))
             .withFailFast(true)
-            .withEnableAfter("after")
+            .withEnableAfterChangelog("after")
             .withImports("a", "b")
             .build();
 
@@ -249,22 +249,13 @@ class ConfigTest {
         assertThat(fromCamel.getMaxLength()).isEqualTo(30);
     }
 
-    @DisplayName("Should resolve the legacy enable-after through getEnableAfterChangelog")
-    @Test
-    @SuppressWarnings("deprecation")
-    void shouldResolveLegacyEnableAfterThroughGetEnableAfterChangelog() {
-        Config config = new Config.Builder().withEnableAfter("legacy.xml").build();
-
-        assertThat(config.getEnableAfter()).isEqualTo("legacy.xml");
-        assertThat(config.getEnableAfterChangelog()).isEqualTo("legacy.xml");
-    }
-
     @DisplayName("Should reject more than one enable-after option (builder)")
     @Test
-    @SuppressWarnings("deprecation")
     void shouldRejectMultipleEnableAfterOptions() {
+        ChangeSetIdentifier changeset = new ChangeSetIdentifier("init.xml", "create-user-table", "dba");
+
         assertThatThrownBy(() ->
-            new Config.Builder().withEnableAfter("legacy.xml").withEnableAfterChangelog("changelog.xml").build()
+            new Config.Builder().withEnableAfterChangelog("changelog.xml").withEnableAfterChangeset(changeset).build()
         )
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("Only one of");

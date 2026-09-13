@@ -41,7 +41,6 @@ All rules also support these standard options (other than `enabled`):
   - `matchesContext` helper function which can be used like `matchesContext('foo', 'bar')`. This function just delegates to the liquibase context matching method so the same logic applies.
 - `enable-after-changelog` - (string) allows you to specify a change log file name _after_ which this rule should be enabled. See [Retrofitting](../retrofitting.md) for more detail.
 - `enable-after-changeset` - (object) allows you to specify a single changeset by its full identity (`change-log-file`, `id` and `author`, all mandatory) _after_ which this rule should be enabled. See [Retrofitting](../retrofitting.md) for more detail.
-- `enable-after` - (string) _deprecated_ former name of `enable-after-changelog`, removed in 1.0.
 
 Every option name is also accepted in camelCase (`errorMessage`, `dynamicValue`, `enableAfterChangelog`, …); see [Configuration](../configure.md#property-names).
 
