@@ -58,11 +58,11 @@ public class PrimaryKeyTablespaceRule implements ChangeRule {
     }
 
     private Collection<String> extractTablespacesFrom(Change change) {
-        if (change instanceof AddPrimaryKeyChange) {
-            return Collections.singleton(((AddPrimaryKeyChange) change).getTablespace());
+        if (change instanceof AddPrimaryKeyChange addPrimaryKeyChange) {
+            return Collections.singleton(addPrimaryKeyChange.getTablespace());
         }
-        if (change instanceof CreateTableChange) {
-            return primaryKeyTablespacesFromCreateTable((CreateTableChange) change);
+        if (change instanceof CreateTableChange createTableChange) {
+            return primaryKeyTablespacesFromCreateTable(createTableChange);
         }
         return Collections.emptyList();
     }

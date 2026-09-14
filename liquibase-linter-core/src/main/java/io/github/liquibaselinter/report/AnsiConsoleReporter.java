@@ -27,18 +27,10 @@ public class AnsiConsoleReporter extends ConsoleReporter {
     @Override
     protected void printItemTypeName(PrintWriter output, ReportItem.ReportItemType type) {
         switch (type) {
-            case ERROR:
-                printColoured(output, Ansi.Color.RED, type.name());
-                break;
-            case IGNORED:
-                printColoured(output, Ansi.Color.YELLOW, type.name());
-                break;
-            case PASSED:
-                printColoured(output, Ansi.Color.GREEN, type.name());
-                break;
-            default:
-                super.printItemTypeName(output, type);
-                break;
+            case ERROR -> printColoured(output, Ansi.Color.RED, type.name());
+            case IGNORED -> printColoured(output, Ansi.Color.YELLOW, type.name());
+            case PASSED -> printColoured(output, Ansi.Color.GREEN, type.name());
+            default -> super.printItemTypeName(output, type);
         }
     }
 

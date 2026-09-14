@@ -24,10 +24,9 @@ public class CreateTableRemarksRule implements ChangeRule {
 
     @Override
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
-        if (!(change instanceof CreateTableChange)) {
+        if (!(change instanceof CreateTableChange createTableChange)) {
             return Collections.emptyList();
         }
-        CreateTableChange createTableChange = (CreateTableChange) change;
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         if (ruleChecker.checkNotBlank(createTableChange.getRemarks())) {
             LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);

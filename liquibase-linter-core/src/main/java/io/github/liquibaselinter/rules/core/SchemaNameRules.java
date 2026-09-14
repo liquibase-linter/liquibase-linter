@@ -52,122 +52,122 @@ import liquibase.change.core.SetTableRemarksChange;
 public class SchemaNameRules {
 
     private static Collection<String> getSchemaName(Change change) {
-        if (change instanceof AbstractModifyDataChange) {
-            return Collections.singletonList(((AbstractModifyDataChange) change).getSchemaName());
+        if (change instanceof AbstractModifyDataChange abstractModifyDataChange) {
+            return Collections.singletonList(abstractModifyDataChange.getSchemaName());
         }
-        if (change instanceof AddAutoIncrementChange) {
-            return Collections.singletonList(((AddAutoIncrementChange) change).getSchemaName());
+        if (change instanceof AddAutoIncrementChange addAutoIncrementChange) {
+            return Collections.singletonList(addAutoIncrementChange.getSchemaName());
         }
-        if (change instanceof AddColumnChange) {
-            return Collections.singletonList(((AddColumnChange) change).getSchemaName());
+        if (change instanceof AddColumnChange addColumnChange) {
+            return Collections.singletonList(addColumnChange.getSchemaName());
         }
-        if (change instanceof AddDefaultValueChange) {
-            return Collections.singletonList(((AddDefaultValueChange) change).getSchemaName());
+        if (change instanceof AddDefaultValueChange addDefaultValueChange) {
+            return Collections.singletonList(addDefaultValueChange.getSchemaName());
         }
-        if (change instanceof AddForeignKeyConstraintChange) {
+        if (change instanceof AddForeignKeyConstraintChange addForeignKeyConstraintChange) {
             return Arrays.asList(
-                ((AddForeignKeyConstraintChange) change).getBaseTableSchemaName(),
-                ((AddForeignKeyConstraintChange) change).getReferencedTableSchemaName()
+                addForeignKeyConstraintChange.getBaseTableSchemaName(),
+                addForeignKeyConstraintChange.getReferencedTableSchemaName()
             );
         }
-        if (change instanceof AddLookupTableChange) {
+        if (change instanceof AddLookupTableChange addLookupTableChange) {
             return Arrays.asList(
-                ((AddLookupTableChange) change).getExistingTableSchemaName(),
-                ((AddLookupTableChange) change).getNewTableSchemaName()
+                addLookupTableChange.getExistingTableSchemaName(),
+                addLookupTableChange.getNewTableSchemaName()
             );
         }
-        if (change instanceof AddNotNullConstraintChange) {
-            return Collections.singletonList(((AddNotNullConstraintChange) change).getSchemaName());
+        if (change instanceof AddNotNullConstraintChange addNotNullConstraintChange) {
+            return Collections.singletonList(addNotNullConstraintChange.getSchemaName());
         }
-        if (change instanceof AddPrimaryKeyChange) {
-            return Collections.singletonList(((AddPrimaryKeyChange) change).getSchemaName());
+        if (change instanceof AddPrimaryKeyChange addPrimaryKeyChange) {
+            return Collections.singletonList(addPrimaryKeyChange.getSchemaName());
         }
-        if (change instanceof AddUniqueConstraintChange) {
-            return Collections.singletonList(((AddUniqueConstraintChange) change).getSchemaName());
+        if (change instanceof AddUniqueConstraintChange addUniqueConstraintChange) {
+            return Collections.singletonList(addUniqueConstraintChange.getSchemaName());
         }
-        if (change instanceof AlterSequenceChange) {
-            return Collections.singletonList(((AlterSequenceChange) change).getSchemaName());
+        if (change instanceof AlterSequenceChange alterSequenceChange) {
+            return Collections.singletonList(alterSequenceChange.getSchemaName());
         }
-        if (change instanceof CreateIndexChange) {
-            return Collections.singletonList(((CreateIndexChange) change).getSchemaName());
+        if (change instanceof CreateIndexChange createIndexChange) {
+            return Collections.singletonList(createIndexChange.getSchemaName());
         }
-        if (change instanceof CreateProcedureChange) {
-            return Collections.singletonList(((CreateProcedureChange) change).getSchemaName());
+        if (change instanceof CreateProcedureChange createProcedureChange) {
+            return Collections.singletonList(createProcedureChange.getSchemaName());
         }
-        if (change instanceof CreateSequenceChange) {
-            return Collections.singletonList(((CreateSequenceChange) change).getSchemaName());
+        if (change instanceof CreateSequenceChange createSequenceChange) {
+            return Collections.singletonList(createSequenceChange.getSchemaName());
         }
-        if (change instanceof CreateTableChange) {
-            return Collections.singletonList(((CreateTableChange) change).getSchemaName());
+        if (change instanceof CreateTableChange createTableChange) {
+            return Collections.singletonList(createTableChange.getSchemaName());
         }
-        if (change instanceof CreateViewChange) {
-            return Collections.singletonList(((CreateViewChange) change).getSchemaName());
+        if (change instanceof CreateViewChange createViewChange) {
+            return Collections.singletonList(createViewChange.getSchemaName());
         }
-        if (change instanceof DropAllForeignKeyConstraintsChange) {
-            return Collections.singletonList(((DropAllForeignKeyConstraintsChange) change).getBaseTableSchemaName());
+        if (change instanceof DropAllForeignKeyConstraintsChange dropAllForeignKeyConstraintsChange) {
+            return Collections.singletonList(dropAllForeignKeyConstraintsChange.getBaseTableSchemaName());
         }
-        if (change instanceof DropColumnChange) {
-            return Collections.singletonList(((DropColumnChange) change).getSchemaName());
+        if (change instanceof DropColumnChange dropColumnChange) {
+            return Collections.singletonList(dropColumnChange.getSchemaName());
         }
-        if (change instanceof DropDefaultValueChange) {
-            return Collections.singletonList(((DropDefaultValueChange) change).getSchemaName());
+        if (change instanceof DropDefaultValueChange dropDefaultValueChange) {
+            return Collections.singletonList(dropDefaultValueChange.getSchemaName());
         }
-        if (change instanceof DropForeignKeyConstraintChange) {
-            return Collections.singletonList(((DropForeignKeyConstraintChange) change).getBaseTableSchemaName());
+        if (change instanceof DropForeignKeyConstraintChange dropForeignKeyConstraintChange) {
+            return Collections.singletonList(dropForeignKeyConstraintChange.getBaseTableSchemaName());
         }
-        if (change instanceof DropIndexChange) {
-            return Collections.singletonList(((DropIndexChange) change).getSchemaName());
+        if (change instanceof DropIndexChange dropIndexChange) {
+            return Collections.singletonList(dropIndexChange.getSchemaName());
         }
-        if (change instanceof DropNotNullConstraintChange) {
-            return Collections.singletonList(((DropNotNullConstraintChange) change).getSchemaName());
+        if (change instanceof DropNotNullConstraintChange dropNotNullConstraintChange) {
+            return Collections.singletonList(dropNotNullConstraintChange.getSchemaName());
         }
-        if (change instanceof DropPrimaryKeyChange) {
-            return Collections.singletonList(((DropPrimaryKeyChange) change).getSchemaName());
+        if (change instanceof DropPrimaryKeyChange dropPrimaryKeyChange) {
+            return Collections.singletonList(dropPrimaryKeyChange.getSchemaName());
         }
-        if (change instanceof DropProcedureChange) {
-            return Collections.singletonList(((DropProcedureChange) change).getSchemaName());
+        if (change instanceof DropProcedureChange dropProcedureChange) {
+            return Collections.singletonList(dropProcedureChange.getSchemaName());
         }
-        if (change instanceof DropSequenceChange) {
-            return Collections.singletonList(((DropSequenceChange) change).getSchemaName());
+        if (change instanceof DropSequenceChange dropSequenceChange) {
+            return Collections.singletonList(dropSequenceChange.getSchemaName());
         }
-        if (change instanceof DropTableChange) {
-            return Collections.singletonList(((DropTableChange) change).getSchemaName());
+        if (change instanceof DropTableChange dropTableChange) {
+            return Collections.singletonList(dropTableChange.getSchemaName());
         }
-        if (change instanceof DropUniqueConstraintChange) {
-            return Collections.singletonList(((DropUniqueConstraintChange) change).getSchemaName());
+        if (change instanceof DropUniqueConstraintChange dropUniqueConstraintChange) {
+            return Collections.singletonList(dropUniqueConstraintChange.getSchemaName());
         }
-        if (change instanceof DropViewChange) {
-            return Collections.singletonList(((DropViewChange) change).getSchemaName());
+        if (change instanceof DropViewChange dropViewChange) {
+            return Collections.singletonList(dropViewChange.getSchemaName());
         }
-        if (change instanceof InsertDataChange) {
-            return Collections.singletonList(((InsertDataChange) change).getSchemaName());
+        if (change instanceof InsertDataChange insertDataChange) {
+            return Collections.singletonList(insertDataChange.getSchemaName());
         }
-        if (change instanceof LoadDataChange) {
-            return Collections.singletonList(((LoadDataChange) change).getSchemaName());
+        if (change instanceof LoadDataChange loadDataChange) {
+            return Collections.singletonList(loadDataChange.getSchemaName());
         }
-        if (change instanceof MergeColumnChange) {
-            return Collections.singletonList(((MergeColumnChange) change).getSchemaName());
+        if (change instanceof MergeColumnChange mergeColumnChange) {
+            return Collections.singletonList(mergeColumnChange.getSchemaName());
         }
-        if (change instanceof ModifyDataTypeChange) {
-            return Collections.singletonList(((ModifyDataTypeChange) change).getSchemaName());
+        if (change instanceof ModifyDataTypeChange modifyDataTypeChange) {
+            return Collections.singletonList(modifyDataTypeChange.getSchemaName());
         }
-        if (change instanceof RenameColumnChange) {
-            return Collections.singletonList(((RenameColumnChange) change).getSchemaName());
+        if (change instanceof RenameColumnChange renameColumnChange) {
+            return Collections.singletonList(renameColumnChange.getSchemaName());
         }
-        if (change instanceof RenameSequenceChange) {
-            return Collections.singletonList(((RenameSequenceChange) change).getSchemaName());
+        if (change instanceof RenameSequenceChange renameSequenceChange) {
+            return Collections.singletonList(renameSequenceChange.getSchemaName());
         }
-        if (change instanceof RenameTableChange) {
-            return Collections.singletonList(((RenameTableChange) change).getSchemaName());
+        if (change instanceof RenameTableChange renameTableChange) {
+            return Collections.singletonList(renameTableChange.getSchemaName());
         }
-        if (change instanceof RenameViewChange) {
-            return Collections.singletonList(((RenameViewChange) change).getSchemaName());
+        if (change instanceof RenameViewChange renameViewChange) {
+            return Collections.singletonList(renameViewChange.getSchemaName());
         }
-        if (change instanceof SetColumnRemarksChange) {
-            return Collections.singletonList(((SetColumnRemarksChange) change).getSchemaName());
+        if (change instanceof SetColumnRemarksChange setColumnRemarksChange) {
+            return Collections.singletonList(setColumnRemarksChange.getSchemaName());
         }
-        if (change instanceof SetTableRemarksChange) {
-            return Collections.singletonList(((SetTableRemarksChange) change).getSchemaName());
+        if (change instanceof SetTableRemarksChange setTableRemarksChange) {
+            return Collections.singletonList(setTableRemarksChange.getSchemaName());
         }
         return Collections.emptyList();
     }

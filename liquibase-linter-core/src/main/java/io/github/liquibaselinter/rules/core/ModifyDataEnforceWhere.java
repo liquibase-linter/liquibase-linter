@@ -25,11 +25,10 @@ public class ModifyDataEnforceWhere implements ChangeRule {
 
     @Override
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
-        if (!(change instanceof AbstractModifyDataChange)) {
+        if (!(change instanceof AbstractModifyDataChange modifyDataChange)) {
             return Collections.emptyList();
         }
 
-        AbstractModifyDataChange modifyDataChange = (AbstractModifyDataChange) change;
         if (isInvalid(ruleConfig, modifyDataChange)) {
             LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
             return Collections.singleton(violations.withFormattedMessage(modifyDataChange.getTableName()));

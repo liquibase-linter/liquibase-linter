@@ -3,22 +3,7 @@ package io.github.liquibaselinter.report;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 
-public final class ReportItem {
-
-    private final String filePath;
-    private final String changeSetId;
-    private final String rule;
-    private final ReportItemType type;
-    private final String message;
-
-    ReportItem(String filePath, String changeSetId, String rule, ReportItemType type, String message) {
-        this.filePath = filePath;
-        this.changeSetId = changeSetId;
-        this.rule = rule;
-        this.type = type;
-        this.message = message;
-    }
-
+public record ReportItem(String filePath, String changeSetId, String rule, ReportItemType type, String message) {
     public static ReportItem error(
         DatabaseChangeLog databaseChangeLog,
         ChangeSet changeSet,
@@ -69,26 +54,6 @@ public final class ReportItem {
             return databaseChangeLog.getFilePath();
         }
         return null;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public String getChangeSetId() {
-        return changeSetId;
-    }
-
-    public String getRule() {
-        return rule;
-    }
-
-    public ReportItemType getType() {
-        return type;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public enum ReportItemType {

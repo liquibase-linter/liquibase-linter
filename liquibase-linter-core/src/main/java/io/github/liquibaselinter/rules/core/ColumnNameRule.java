@@ -55,16 +55,12 @@ public class ColumnNameRule implements ChangeRule {
     }
 
     private Set<String> getColumnNames(Change change) {
-        if (change instanceof ChangeWithColumns<?>) {
-            return ((ChangeWithColumns<?>) change)
-                .getColumns()
-                .stream()
-                .map(ColumnConfig::getName)
-                .collect(Collectors.toSet());
-        } else if (change instanceof RenameColumnChange) {
-            return Collections.singleton(((RenameColumnChange) change).getNewColumnName());
-        } else if (change instanceof MergeColumnChange) {
-            return Collections.singleton(((MergeColumnChange) change).getFinalColumnName());
+        if (change instanceof ChangeWithColumns<?> changeWithColumns) {
+            return changeWithColumns.getColumns().stream().map(ColumnConfig::getName).collect(Collectors.toSet());
+        } else if (change instanceof RenameColumnChange renameColumnChange) {
+            return Collections.singleton(renameColumnChange.getNewColumnName());
+        } else if (change instanceof MergeColumnChange mergeColumnChange) {
+            return Collections.singleton(mergeColumnChange.getFinalColumnName());
         }
         return new HashSet<>();
     }

@@ -39,7 +39,7 @@ public abstract class AbstractReporter implements Reporter {
         final List<ReportItem> filteredItems = report
             .getItems()
             .stream()
-            .filter(item -> filter.contains(item.getType()))
+            .filter(item -> filter.contains(item.type()))
             .collect(Collectors.toList());
         process(report, filteredItems);
     }

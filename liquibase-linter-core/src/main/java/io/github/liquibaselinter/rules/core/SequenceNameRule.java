@@ -36,11 +36,11 @@ public class SequenceNameRule implements ChangeRule {
     }
 
     private Collection<String> getSequencesName(Change change) {
-        if (change instanceof CreateSequenceChange) {
-            return Collections.singleton(((CreateSequenceChange) change).getSequenceName());
+        if (change instanceof CreateSequenceChange createSequenceChange) {
+            return Collections.singleton(createSequenceChange.getSequenceName());
         }
-        if (change instanceof RenameSequenceChange) {
-            return Collections.singleton(((RenameSequenceChange) change).getNewSequenceName());
+        if (change instanceof RenameSequenceChange renameSequenceChange) {
+            return Collections.singleton(renameSequenceChange.getNewSequenceName());
         }
         return Collections.emptyList();
     }

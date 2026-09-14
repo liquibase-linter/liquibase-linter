@@ -24,10 +24,9 @@ public class ForeignKeyNameRule implements ChangeRule {
 
     @Override
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
-        if (!(change instanceof AddForeignKeyConstraintChange)) {
+        if (!(change instanceof AddForeignKeyConstraintChange addForeignKeyConstraintChange)) {
             return Collections.emptyList();
         }
-        AddForeignKeyConstraintChange addForeignKeyConstraintChange = (AddForeignKeyConstraintChange) change;
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         final String constraintName = addForeignKeyConstraintChange.getConstraintName();
         if (ruleChecker.checkMandatoryPattern(constraintName, addForeignKeyConstraintChange)) {

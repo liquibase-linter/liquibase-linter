@@ -49,11 +49,7 @@ public class MarkdownReporter extends TextReporter {
         SortedMap<String, List<ReportItem>> itemsByChangeSet = items
             .stream()
             .collect(
-                groupingBy(
-                    item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse(""),
-                    TreeMap::new,
-                    toList()
-                )
+                groupingBy(item -> ofNullable(item.changeSetId()).map(String::trim).orElse(""), TreeMap::new, toList())
             );
 
         for (Map.Entry<String, List<ReportItem>> changeSetEntry : itemsByChangeSet.entrySet()) {
@@ -63,7 +59,7 @@ public class MarkdownReporter extends TextReporter {
             final SortedMap<ReportItem.ReportItemType, List<ReportItem>> itemsByType = changeSetEntry
                 .getValue()
                 .stream()
-                .collect(groupingBy(ReportItem::getType, TreeMap::new, toList()));
+                .collect(groupingBy(ReportItem::type, TreeMap::new, toList()));
 
             for (Map.Entry<ReportItem.ReportItemType, List<ReportItem>> typedEntry : itemsByType.entrySet()) {
                 String status = tableCellFormat(typedEntry.getKey().name());
@@ -72,8 +68,8 @@ public class MarkdownReporter extends TextReporter {
                 for (ReportItem item : typedEntry.getValue()) {
                     table[row][COL_CHANGE_SET] = changeSet;
                     table[row][COL_STATUS] = status;
-                    table[row][COL_RULE] = tableCellFormat(item.getRule());
-                    table[row][COL_MESSAGE] = tableCellFormat(item.getMessage());
+                    table[row][COL_RULE] = tableCellFormat(item.rule());
+                    table[row][COL_MESSAGE] = tableCellFormat(item.message());
 
                     maxWidth[COL_RULE] = max(maxWidth[COL_RULE], tableCellWidth(table[row][COL_RULE]));
                     maxWidth[COL_MESSAGE] = max(maxWidth[COL_MESSAGE], tableCellWidth(table[row][COL_MESSAGE]));

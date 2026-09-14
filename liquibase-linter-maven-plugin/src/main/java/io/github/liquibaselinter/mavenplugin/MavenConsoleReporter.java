@@ -29,7 +29,7 @@ class MavenConsoleReporter implements Reporter {
         Set<ReportItem> errors = report
             .getItems()
             .stream()
-            .filter(reportItem -> reportItem.getType() == ReportItem.ReportItemType.ERROR)
+            .filter(reportItem -> reportItem.type() == ReportItem.ReportItemType.ERROR)
             .collect(Collectors.toSet());
         if (errors.isEmpty()) {
             log.info("No violation found");
@@ -42,7 +42,7 @@ class MavenConsoleReporter implements Reporter {
     private void printByChangeLogFile(Collection<ReportItem> items) {
         items
             .stream()
-            .collect(groupingBy(item -> ofNullable(item.getFilePath()).map(String::trim).orElse("")))
+            .collect(groupingBy(item -> ofNullable(item.filePath()).map(String::trim).orElse("")))
             .entrySet()
             .stream()
             .sorted(Map.Entry.comparingByKey(new EmptyLastComparator()))
@@ -65,7 +65,7 @@ class MavenConsoleReporter implements Reporter {
     private void printByChangeSet(List<ReportItem> items) {
         items
             .stream()
-            .collect(groupingBy(item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse("")))
+            .collect(groupingBy(item -> ofNullable(item.changeSetId()).map(String::trim).orElse("")))
             .entrySet()
             .stream()
             .sorted(Map.Entry.comparingByKey())
@@ -76,7 +76,7 @@ class MavenConsoleReporter implements Reporter {
         printChangeSetHeader(changeSetId);
         items
             .stream()
-            .sorted(Comparator.comparing(ReportItem::getRule).thenComparing(ReportItem::getMessage))
+            .sorted(Comparator.comparing(ReportItem::rule).thenComparing(ReportItem::message))
             .forEach(this::printItemDetail);
     }
 
@@ -87,7 +87,7 @@ class MavenConsoleReporter implements Reporter {
     }
 
     private void printItemDetail(ReportItem item) {
-        println("\t\t'", item.getRule(), "': ", indentMessage(item.getMessage()));
+        println("\t\t'", item.rule(), "': ", indentMessage(item.message()));
     }
 
     private String indentMessage(String message) {

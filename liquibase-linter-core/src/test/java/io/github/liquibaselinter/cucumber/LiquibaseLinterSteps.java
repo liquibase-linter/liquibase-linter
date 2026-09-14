@@ -63,26 +63,31 @@ public class LiquibaseLinterSteps {
     public void ruleIsEnabledWithTheFollowingConfiguration(String ruleName, Map<String, String> ruleConfiguration)
         throws IOException {
         String configurationContent =
-            "{\n" +
-            "  \"fail-fast\": true,\n" +
-            "  \"rules\": {\n" +
-            "    \"" +
-            ruleName +
-            "\": [\n" +
-            "      {\n" +
-            "        \"enabled\": true,\n" +
+            """
+            {
+              "fail-fast": true,
+              "rules": {
+                "%s": [
+                  {
+                    "enabled": true,
+            """.formatted(ruleName) +
             ruleConfiguration
                 .entrySet()
                 .stream()
                 .map(entry ->
-                    String.format("        \"%s\": \"%s\"", entry.getKey(), entry.getValue().replace("\\", "\\\\"))
+                    String.format(
+                        "                    \"%s\": \"%s\"",
+                        entry.getKey(),
+                        entry.getValue().replace("\\", "\\\\")
+                    )
                 )
                 .collect(joining(",\n")) +
-            "\n" +
-            "      }\n" +
-            "    ]\n" +
-            "  }\n" +
-            "}";
+            """
+
+                  }
+                ]
+              }
+            }""";
         liquibaseLinterIsConfiguredWith(configurationContent);
     }
 
@@ -127,14 +132,17 @@ public class LiquibaseLinterSteps {
             Files.createDirectories(changelogPath.getParent());
         }
         String changelog =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<databaseChangeLog xmlns=\"http://www.liquibase.org/xml/ns/dbchangelog\"\n" +
-            "                   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-            "                   xsi:schemaLocation=\"http://www.liquibase.org/xml/ns/dbchangelog\n" +
-            "                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd\">\n" +
+            """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+            """ +
             changelogContent +
-            "\n" +
-            "</databaseChangeLog>";
+            """
+
+            </databaseChangeLog>""";
         Files.write(changelogPath, changelog.getBytes());
     }
 

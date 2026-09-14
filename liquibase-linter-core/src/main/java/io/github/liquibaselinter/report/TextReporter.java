@@ -31,7 +31,7 @@ public class TextReporter extends AbstractReporter {
     protected void printByChangeLogFile(PrintWriter output, List<ReportItem> items) {
         items
             .stream()
-            .collect(groupingBy(item -> ofNullable(item.getFilePath()).map(String::trim).orElse("")))
+            .collect(groupingBy(item -> ofNullable(item.filePath()).map(String::trim).orElse("")))
             .entrySet()
             .stream()
             .sorted(Map.Entry.comparingByKey(new EmptyLastComparator()))
@@ -55,7 +55,7 @@ public class TextReporter extends AbstractReporter {
     protected void printByChangeSet(PrintWriter output, List<ReportItem> items) {
         items
             .stream()
-            .collect(groupingBy(item -> ofNullable(item.getChangeSetId()).map(String::trim).orElse("")))
+            .collect(groupingBy(item -> ofNullable(item.changeSetId()).map(String::trim).orElse("")))
             .entrySet()
             .stream()
             .sorted(Map.Entry.comparingByKey())
@@ -76,7 +76,7 @@ public class TextReporter extends AbstractReporter {
     protected void printByItemType(PrintWriter output, List<ReportItem> items) {
         items
             .stream()
-            .collect(groupingBy(ReportItem::getType))
+            .collect(groupingBy(ReportItem::type))
             .entrySet()
             .stream()
             .sorted(Map.Entry.comparingByKey())
@@ -93,7 +93,7 @@ public class TextReporter extends AbstractReporter {
     }
 
     protected void printItemDetail(PrintWriter output, ReportItem item) {
-        output.append("\t'").append(item.getRule()).append("': ").println(indentMessage(item.getMessage()));
+        output.append("\t'").append(item.rule()).append("': ").println(indentMessage(item.message()));
     }
 
     protected String indentMessage(String message) {
@@ -117,7 +117,7 @@ public class TextReporter extends AbstractReporter {
                 type,
                 items
                     .stream()
-                    .filter(item -> item.getType() == type)
+                    .filter(item -> item.type() == type)
                     .collect(toList())
             );
         }
