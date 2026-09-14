@@ -2,3 +2,14 @@ packages:
   - website
 allowBuilds:
   core-js: true
+overrides:
+  # Security patches for transitive dependencies pulled in by Docusaurus'
+  # build tooling (webpack-dev-server, cssnano, etc.) — see the matching
+  # GitHub Dependabot alerts for details. Pinned to each advisory's first
+  # patched version (not an open range) to avoid silently jumping to a
+  # newer, unaudited major on a future install.
+  js-yaml@>=4.0.0 <4.3.2: '4.3.2'
+  svgo@>=3.0.0 <3.3.5: '3.3.5'
+  qs@>=2.2.5 <6.16.0: '6.16.0'
+  serialize-javascript@<7.0.5: '7.0.5'
+  uuid@<11.1.1: '11.1.1'
