@@ -10,7 +10,7 @@ importers:
     devDependencies:
       '@prettier/plugin-xml':
         specifier: 3.4.2
-        version: 3.4.2(prettier@3.9.6)
+        version: 3.4.2(prettier@3.9.8)
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -18,17 +18,17 @@ importers:
         specifier: 17.5.1
         version: 17.5.1
       prettier:
-        specifier: 3.9.6
-        version: 3.9.6
+        specifier: 3.9.8
+        version: 3.9.8
       prettier-plugin-gherkin:
         specifier: 4.0.0
         version: 4.0.0
       prettier-plugin-java:
         specifier: 2.10.3
-        version: 2.10.3(prettier@3.9.6)
+        version: 2.10.3(prettier@3.9.8)
       prettier-plugin-packagejson:
         specifier: 3.0.2
-        version: 3.0.2(prettier@3.9.6)
+        version: 3.0.2(prettier@3.9.8)
 
   website:
     dependencies:
@@ -4257,8 +4257,8 @@ packages:
       prettier:
         optional: true
 
-  prettier@3.9.6:
-    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
+  prettier@3.9.8:
+    resolution: {integrity: sha512-WRFq3Wn3WId7LLROfMLdH7xaFr2jR62wU8nLO6rQUOLOxNZUviyJQs1M0iIhLexSFy+L+w0ch66wtoO2jRjG0A==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -7694,10 +7694,10 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@prettier/plugin-xml@3.4.2(prettier@3.9.6)':
+  '@prettier/plugin-xml@3.4.2(prettier@3.9.8)':
     dependencies:
       '@xml-tools/parser': 1.0.11
-      prettier: 3.9.6
+      prettier: 3.9.8
 
   '@sideway/address@4.1.5':
     dependencies:
@@ -10930,20 +10930,20 @@ snapshots:
     dependencies:
       '@cucumber/gherkin': 39.1.0
       '@cucumber/messages': 32.3.1
-      prettier: 3.9.6
+      prettier: 3.9.8
 
-  prettier-plugin-java@2.10.3(prettier@3.9.6):
+  prettier-plugin-java@2.10.3(prettier@3.9.8):
     dependencies:
-      prettier: 3.9.6
+      prettier: 3.9.8
       web-tree-sitter: 0.26.11
 
-  prettier-plugin-packagejson@3.0.2(prettier@3.9.6):
+  prettier-plugin-packagejson@3.0.2(prettier@3.9.8):
     dependencies:
       sort-package-json: 3.7.1
     optionalDependencies:
-      prettier: 3.9.6
+      prettier: 3.9.8
 
-  prettier@3.9.6: {}
+  prettier@3.9.8: {}
 
   pretty-error@4.0.0:
     dependencies:
