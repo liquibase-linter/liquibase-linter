@@ -24,8 +24,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       prettier-plugin-java:
-        specifier: 2.10.3
-        version: 2.10.3(prettier@3.9.9)
+        specifier: 2.11.0
+        version: 2.11.0(prettier@3.9.9)
       prettier-plugin-packagejson:
         specifier: 3.0.2
         version: 3.0.2(prettier@3.9.9)
@@ -4244,8 +4244,8 @@ packages:
   prettier-plugin-gherkin@4.0.0:
     resolution: {integrity: sha512-EBDwV1Ou9rG+seoh7jcwZ6sXXyHwsbUks5TeSyrlrLaTdz+/qYvnHuwY8rk7mb6/+M1ZGuY4/SiVc68ybwvJOA==}
 
-  prettier-plugin-java@2.10.3:
-    resolution: {integrity: sha512-/g52mTbsN2ee8JjLRpBWGGmcmRhdv2zRWyj4QbsL9CQ+nKR022GRJhebwEpRyaCc8hLV6aO3JPGNQyXp1DPrCA==}
+  prettier-plugin-java@2.11.0:
+    resolution: {integrity: sha512-pLwm2wHvVvW5eVVLf1cq2orY2ATaIj5ngN8hJ5ZdXYzUHzxrfaZkk2xmu8Mz/duBXAc2xT/cUH5+dK414HQSTw==}
     peerDependencies:
       prettier: ^3.0.0
 
@@ -5073,8 +5073,8 @@ packages:
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
 
-  web-tree-sitter@0.26.11:
-    resolution: {integrity: sha512-Q5Dm3YTIXSXuH6FxX6RuzX2Qwpc4DPGiYMU87Wg5Z8OIStiQFiUex4zMDc0vBTw78EphaYJacncJghCHzbZptg==}
+  web-tree-sitter@0.27.0:
+    resolution: {integrity: sha512-XK08gj6RwTMQatAG7uVRP8MunqotL/XC19vHgkSPKmELgbGPBj4ECvB8haHOUnyj6ls2B8t42UTro14zxGgAHg==}
 
   webpack-bundle-analyzer@4.10.2:
     resolution: {integrity: sha512-vJptkMm9pk5si4Bv922ZbKLV8UTT4zib4FPgXMhgzUny0bfDDkLXAVQs3ly3fS4/TN9ROFtb0NFrm04UXFE/Vw==}
@@ -10932,10 +10932,10 @@ snapshots:
       '@cucumber/messages': 32.3.1
       prettier: 3.9.9
 
-  prettier-plugin-java@2.10.3(prettier@3.9.9):
+  prettier-plugin-java@2.11.0(prettier@3.9.9):
     dependencies:
       prettier: 3.9.9
-      web-tree-sitter: 0.26.11
+      web-tree-sitter: 0.27.0
 
   prettier-plugin-packagejson@3.0.2(prettier@3.9.9):
     dependencies:
@@ -11840,7 +11840,7 @@ snapshots:
 
   web-namespaces@2.0.1: {}
 
-  web-tree-sitter@0.26.11: {}
+  web-tree-sitter@0.27.0: {}
 
   webpack-bundle-analyzer@4.10.2:
     dependencies:
