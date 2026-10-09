@@ -40,6 +40,12 @@ class CheckMojoIT {
         assertThatLintIssueIsDetectedAndReported(result, "config/liquibase/changelog/002_create_index_example.xml");
     }
 
+    @MavenTest
+    @MavenGoal("test")
+    void detect_lint_issue_in_changeset_restricted_to_another_dbms(MavenExecutionResult result) {
+        assertThatLintIssueIsDetectedAndReported(result, "src/main/resources/config/liquibase/master.xml");
+    }
+
     private static void assertThatLintIssueIsDetectedAndReported(MavenExecutionResult result, String faultyChangelog) {
         assertThat(result).isFailure();
 

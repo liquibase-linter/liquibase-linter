@@ -17,13 +17,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import javax.inject.Inject;
-import liquibase.Liquibase;
 import liquibase.Scope;
+import liquibase.changelog.ChangeLogParameters;
 import liquibase.changelog.DatabaseChangeLog;
-import liquibase.database.DatabaseConnection;
-import liquibase.database.OfflineConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.integration.spring.SpringResourceAccessor;
+import liquibase.parser.ChangeLogParser;
+import liquibase.parser.ChangeLogParserFactory;
 import liquibase.resource.CompositeResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 import org.apache.maven.plugin.AbstractMojo;
@@ -60,8 +60,7 @@ public class CheckMojo extends AbstractMojo {
     public void execute() throws MojoFailureException, MojoExecutionException {
         try (ResourceAccessor resourceAccessor = buildResourceAccessor()) {
             Scope.child(setUpLiquibaseLogging(), () -> {
-                Liquibase liquibase = createLiquibase(relativePathOf(changeLogFile), resourceAccessor);
-                DatabaseChangeLog databaseChangeLog = liquibase.getDatabaseChangeLog();
+                DatabaseChangeLog databaseChangeLog = parseChangeLog(relativePathOf(changeLogFile), resourceAccessor);
 
                 Config linterConfig = linterConfiguration(resourceAccessor);
                 new ChangeLogLinter(resourceAccessor, linterConfig).lintChangeLog(databaseChangeLog);
@@ -140,10 +139,18 @@ public class CheckMojo extends AbstractMojo {
         };
     }
 
-    private static Liquibase createLiquibase(String changeLogFile, ResourceAccessor resourceAccessor)
+    /**
+     * Parses the change log without a database. Liquibase drops every changeset whose {@code dbms} does not match
+     * the database it parses for, so parsing for any one database would hide the changesets meant for the others
+     * from the rules. Without a database, every changeset is kept.
+     */
+    private static DatabaseChangeLog parseChangeLog(String changeLogFile, ResourceAccessor resourceAccessor)
         throws LiquibaseException {
-        try (DatabaseConnection connection = new OfflineConnection("offline:h2", resourceAccessor)) {
-            return new Liquibase(changeLogFile, resourceAccessor, connection);
-        }
+        ChangeLogParser parser = ChangeLogParserFactory.getInstance().getParser(changeLogFile, resourceAccessor);
+        DatabaseChangeLog databaseChangeLog = parser.parse(changeLogFile, new ChangeLogParameters(), resourceAccessor);
+        Scope.getCurrentScope()
+            .getLog(CheckMojo.class)
+            .info("Parsed changelog file '" + changeLogFile + "'");
+        return databaseChangeLog;
     }
 }
