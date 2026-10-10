@@ -56,7 +56,7 @@ jobs:
           echo "previousVersion=$version" >> $GITHUB_OUTPUT
 
       - name: Prepare and perform release
-        run: mvn release:prepare release:perform --no-transfer-progress --batch-mode -DreleaseVersion=${{ github.event.inputs.releaseVersion }} -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
+        run: ./mvnw release:prepare release:perform --no-transfer-progress --batch-mode -DreleaseVersion=${{ github.event.inputs.releaseVersion }} -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
