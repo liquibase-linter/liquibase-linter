@@ -40,7 +40,7 @@ jobs:
           pnpm install --frozen-lockfile --filter .
           pnpm run prettier:check
       - name: Build
-        run: mvn --no-transfer-progress --batch-mode clean verify
+        run: ./mvnw --no-transfer-progress --batch-mode clean verify
 
   build-website:
     runs-on: ubuntu-latest
@@ -93,7 +93,7 @@ jobs:
           LIQUIBASE_NEXT_MINOR_VERSION=$(semver ${{ matrix.liquibase-minor-version }}.0 --increment minor);
           LIQUIBASE_VERSION_RANGE="[${{ matrix.liquibase-minor-version }}.0,${LIQUIBASE_NEXT_MINOR_VERSION})";
           echo "Liquibase version range: ${LIQUIBASE_VERSION_RANGE}";
-          mvn clean verify --no-transfer-progress --batch-mode -Dliquibase.version="${LIQUIBASE_VERSION_RANGE}"
+          ./mvnw clean verify --no-transfer-progress --batch-mode -Dliquibase.version="${LIQUIBASE_VERSION_RANGE}"
   # Summary job that allows checking for workflow status
   # This job is used as a required status check to pass before merging to the main branch
   status-checks:
