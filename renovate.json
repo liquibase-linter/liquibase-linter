@@ -15,6 +15,11 @@
     {
       "matchPackageNames": ["org.liquibase:liquibase-core"],
       "allowedVersions": "< 5.0.0"
+    },
+    {
+      "description": "Maven 3.10 breaks central-publishing-maven-plugin bundles (mavenplugins/central-publishing-maven-plugin#79)",
+      "matchPackageNames": ["org.apache.maven:apache-maven"],
+      "allowedVersions": "< 3.10.0"
     }
   ]
 }
