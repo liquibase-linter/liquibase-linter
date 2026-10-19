@@ -3,6 +3,7 @@ package io.github.liquibaselinter.config;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_CLASSPATH;
 import static io.github.liquibaselinter.config.ConfigLoader.LQLINT_CONFIG_PATH_PROPERTY;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.github.liquibaselinter.report.Reporter;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -62,6 +64,20 @@ class ConfigLoaderTest {
     void shouldThrowOnIoException() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
         when(resourceAccessor.get(LQLINT_CONFIG)).thenThrow(new IOException("file not found"));
+
+        assertThatExceptionOfType(UnexpectedLiquibaseException.class)
+            .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
+            .withMessageContaining("Failed to load liquibase-linter config file: /lqlint.json");
+    }
+
+    @DisplayName("Should throw on invalid json")
+    @Test
+    void shouldThrowOnInvalidJson() throws IOException {
+        ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
+        Resource resource = mock(Resource.class);
+        when(resource.exists()).thenReturn(true);
+        when(resource.openInputStream()).thenReturn(new ByteArrayInputStream("{ invalid".getBytes(UTF_8)));
+        when(resourceAccessor.get(LQLINT_CONFIG)).thenReturn(resource);
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> ConfigLoader.load(resourceAccessor))

@@ -4,15 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.core.json.JsonReadFeature;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
@@ -20,19 +11,30 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Streams;
 import io.github.liquibaselinter.report.Reporter;
 import io.github.liquibaselinter.report.ReporterConfig;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import liquibase.exception.UnexpectedLiquibaseException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.json.JsonReadFeature;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.json.JsonMapper;
 
 @JsonDeserialize(builder = Config.Builder.class)
 public final class Config {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-        .enable(Feature.ALLOW_COMMENTS)
-        .enable(JsonReadFeature.ALLOW_TRAILING_COMMA.mappedFeature());
+    private static final JsonMapper OBJECT_MAPPER = JsonMapper.builder()
+        .enable(JsonReadFeature.ALLOW_JAVA_COMMENTS, JsonReadFeature.ALLOW_TRAILING_COMMA)
+        // Jackson 3 enables it by default: keep mapping a `null` rule config to a disabled rule
+        .disable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+        .build();
     private static final TypeReference<Map<String, Object>> VALUE_TYPE_REF = new TypeReference<
         Map<String, Object>
     >() {};
@@ -68,7 +70,7 @@ public final class Config {
         this.imports = Optional.ofNullable(imports).map(ImmutableList::copyOf).orElse(ImmutableList.of());
     }
 
-    public static Config fromInputStream(final InputStream inputStream) throws IOException {
+    public static Config fromInputStream(final InputStream inputStream) {
         return OBJECT_MAPPER.readValue(inputStream, Config.class);
     }
 
@@ -285,12 +287,14 @@ public final class Config {
         }
     }
 
-    static class RuleConfigDeserializer extends JsonDeserializer<Object> {
+    static class RuleConfigDeserializer extends ValueDeserializer<Object> {
 
         @Override
-        public ListMultimap<String, RuleConfig> deserialize(JsonParser jsonParser, DeserializationContext context)
-            throws IOException {
-            final Map<String, Object> config = jsonParser.readValueAs(VALUE_TYPE_REF);
+        public ListMultimap<String, RuleConfig> deserialize(JsonParser jsonParser, DeserializationContext context) {
+            final Map<String, Object> config = context.readValue(
+                jsonParser,
+                context.getTypeFactory().constructType(VALUE_TYPE_REF)
+            );
             final ImmutableListMultimap.Builder<String, RuleConfig> ruleConfigs = new ImmutableListMultimap.Builder<>();
             config.forEach((key, value) -> {
                 if (value instanceof List) {
@@ -310,27 +314,26 @@ public final class Config {
             try {
                 boolean ruleEnabled = OBJECT_MAPPER.convertValue(value, boolean.class);
                 ruleConfigs.put(key, ruleEnabled ? RuleConfig.enabled() : RuleConfig.disabled());
-            } catch (IllegalArgumentException e) {
+            } catch (JacksonException e) {
                 RuleConfig ruleConfig = OBJECT_MAPPER.convertValue(value, RuleConfig.class);
                 ruleConfigs.put(key, ruleConfig);
             }
         }
     }
 
-    static class ReportingDeserializer extends JsonDeserializer<Object> {
+    static class ReportingDeserializer extends ValueDeserializer<Object> {
 
         private static final ServiceLoader<Reporter.Factory> REPORTERS = ServiceLoader.load(Reporter.Factory.class);
 
         @Override
-        public ListMultimap<String, Reporter> deserialize(JsonParser jsonParser, DeserializationContext context)
-            throws IOException {
+        public ListMultimap<String, Reporter> deserialize(JsonParser jsonParser, DeserializationContext context) {
             final ImmutableListMultimap.Builder<String, Reporter> reporting = new ImmutableListMultimap.Builder<>();
-            final JsonNode config = jsonParser.readValueAsTree();
-            config.fields().forEachRemaining(entry -> {
+            final JsonNode config = context.readTree(jsonParser);
+            config.properties().forEach(entry -> {
                 final String key = entry.getKey();
                 final JsonNode value = entry.getValue();
                 if (value.isArray()) {
-                    value.elements().forEachRemaining(node -> populateConfigValue(reporting, key, node));
+                    value.values().forEach(node -> populateConfigValue(reporting, key, node));
                 } else {
                     populateConfigValue(reporting, key, value);
                 }
@@ -350,8 +353,8 @@ public final class Config {
 
             if (node.isBoolean()) {
                 reporting.put(key, reporterFactory.create(node.asBoolean()));
-            } else if (node.isTextual()) {
-                reporting.put(key, reporterFactory.create(node.asText()));
+            } else if (node.isString()) {
+                reporting.put(key, reporterFactory.create(node.asString()));
             } else {
                 reporting.put(
                     key,

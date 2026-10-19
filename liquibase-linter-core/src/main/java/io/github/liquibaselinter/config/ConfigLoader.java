@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import liquibase.exception.UnexpectedLiquibaseException;
 import liquibase.resource.Resource;
 import liquibase.resource.ResourceAccessor;
+import tools.jackson.core.JacksonException;
 
 public final class ConfigLoader {
 
@@ -62,7 +63,7 @@ public final class ConfigLoader {
             if (config != null) {
                 return loadImports(resourceAccessor, config);
             }
-        } catch (IOException exception) {
+        } catch (IOException | JacksonException exception) {
             throw new UnexpectedLiquibaseException("Failed to load liquibase-linter config file: " + path, exception);
         }
         return null;
