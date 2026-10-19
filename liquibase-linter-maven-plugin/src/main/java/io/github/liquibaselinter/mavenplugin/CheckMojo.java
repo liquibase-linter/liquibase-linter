@@ -51,6 +51,12 @@ public class CheckMojo extends AbstractMojo {
     private String configurationFile;
 
     /**
+     * Skips the linting of the change log.
+     */
+    @Parameter(property = "liquibase-linter.skip", defaultValue = "false")
+    private boolean skip;
+
+    /**
      * The active Maven project.
      */
     @Inject
@@ -58,6 +64,10 @@ public class CheckMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoFailureException, MojoExecutionException {
+        if (skip) {
+            getLog().info("Skipping liquibase-linter check");
+            return;
+        }
         try (ResourceAccessor resourceAccessor = buildResourceAccessor()) {
             Scope.child(setUpLiquibaseLogging(), () -> {
                 DatabaseChangeLog databaseChangeLog = parseChangeLog(relativePathOf(changeLogFile), resourceAccessor);
