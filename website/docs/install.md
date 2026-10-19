@@ -19,7 +19,7 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
 <plugin>
   <groupId>io.github.liquibase-linter</groupId>
   <artifactId>liquibase-linter-maven-plugin</artifactId>
-  <version>1.0.2</version>
+  <version>1.1.0</version>
   <configuration>
     <changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
     <!-- This is the default value for configurationFile -->
@@ -60,7 +60,7 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
     <dependency>
       <groupId>io.github.liquibase-linter</groupId>
       <artifactId>liquibase-parser-extension</artifactId>
-      <version>1.0.2</version>
+      <version>1.1.0</version>
     </dependency>
   </dependencies>
   <executions>...</executions>
@@ -79,7 +79,7 @@ dependencies {
     liquibaseRuntime 'org.liquibase:liquibase-core:4.29.2'
     liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:4.0.0'
     liquibaseRuntime 'org.hsqldb:hsqldb:2.5.0'
-    liquibaseRuntime 'io.github.liquibase-linter:liquibase-parser-extension:1.0.2'
+    liquibaseRuntime 'io.github.liquibase-linter:liquibase-parser-extension:1.1.0'
     liquibaseRuntime files('lqlint')
 }
 ```
