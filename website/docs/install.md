@@ -36,6 +36,12 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
 </plugin>
 ```
 
+To skip the check, set the `skip` parameter to `true` in the plugin configuration, or pass the `liquibase-linter.skip` property on the command line:
+
+```shell
+mvn verify -Dliquibase-linter.skip=true
+```
+
 ### Using the liquibase-maven-plugin
 
 If you're already using the `liquibase-maven-plugin`, you can add `liquibase-parser-extension` that will lint automatically your scripts when they're parsed by Liquibase, using [the Extensions feature in Liquibase](https://contribute.liquibase.com/extensions-integrations/extensions-overview/):

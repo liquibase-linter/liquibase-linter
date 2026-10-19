@@ -5,6 +5,7 @@ import static com.soebes.itf.extension.assertj.MavenExecutionResultAssert.assert
 import com.soebes.itf.jupiter.extension.MavenGoal;
 import com.soebes.itf.jupiter.extension.MavenJupiterExtension;
 import com.soebes.itf.jupiter.extension.MavenTest;
+import com.soebes.itf.jupiter.extension.SystemProperty;
 import com.soebes.itf.jupiter.maven.MavenExecutionResult;
 
 @MavenJupiterExtension
@@ -44,6 +45,28 @@ class CheckMojoIT {
     @MavenGoal("test")
     void detect_lint_issue_in_changeset_restricted_to_another_dbms(MavenExecutionResult result) {
         assertThatLintIssueIsDetectedAndReported(result, "src/main/resources/config/liquibase/master.xml");
+    }
+
+    @MavenTest
+    @MavenGoal("test")
+    void skip_lint_with_configuration(MavenExecutionResult result) {
+        assertThatLintIsSkipped(result);
+    }
+
+    @MavenTest
+    @MavenGoal("test")
+    @SystemProperty(value = "liquibase-linter.skip", content = "true")
+    void skip_lint_with_user_property(MavenExecutionResult result) {
+        assertThatLintIsSkipped(result);
+    }
+
+    private static void assertThatLintIsSkipped(MavenExecutionResult result) {
+        assertThat(result).isSuccessful();
+        assertThat(result).out().info().contains("Skipping liquibase-linter check");
+        assertThat(result)
+            .out()
+            .plain()
+            .noneMatch(line -> line.contains("violation(s) found"));
     }
 
     private static void assertThatLintIssueIsDetectedAndReported(MavenExecutionResult result, String faultyChangelog) {
