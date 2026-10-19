@@ -30,13 +30,14 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
           server-id: central
-          server-username: CENTRAL_PORTAL_USERNAME
-          server-password: CENTRAL_PORTAL_PASSWORD
+          server-username-env-var: CENTRAL_PORTAL_USERNAME
+          server-password-env-var: CENTRAL_PORTAL_PASSWORD
+          mvn-server-repository-origins: central:https://central.sonatype.com
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
 
       - name: Build and publish
-        run: ./mvnw deploy --no-transfer-progress --batch-mode --activate-profiles release
+        run: mvn deploy --no-transfer-progress --batch-mode --activate-profiles release
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
