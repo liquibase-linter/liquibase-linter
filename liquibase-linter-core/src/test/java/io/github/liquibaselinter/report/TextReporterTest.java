@@ -20,7 +20,7 @@ class TextReporterTest {
         File outputFile = reporterTester.processReportWithConfig(fullReport(), reporterConfig);
 
         assertThat(outputFile).exists().isNotEmpty();
-        assertThat(outputFile.getPath()).isEqualTo("target/lqlint-report.md");
+        assertThat(outputFile).isEqualTo(new File("target/lqlint-report.md"));
     }
 
     @Test

@@ -17,7 +17,7 @@ package org.fusesource.jansi.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +78,7 @@ public class HtmlAnsiOutputStream extends AnsiOutputStream {
             createAnsiToHtmlProcessorForOutput(os),
             AnsiType.Native,
             AnsiColors.Colors16,
-            Charset.defaultCharset(),
+            StandardCharsets.UTF_8,
             null,
             null,
             true
@@ -89,7 +89,7 @@ public class HtmlAnsiOutputStream extends AnsiOutputStream {
     private final List<String> closingAttributes = new ArrayList<>();
 
     public void write(String s) throws IOException {
-        super.out.write(s.getBytes());
+        super.out.write(s.getBytes(StandardCharsets.UTF_8));
     }
 
     public void writeAttribute(String s) throws IOException {

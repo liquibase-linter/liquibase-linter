@@ -71,6 +71,6 @@ class HtmlAnsiOutputStreamTest {
             hos.write(text.getBytes(StandardCharsets.UTF_8));
         }
         os.close();
-        return os.toString();
+        return os.toString(StandardCharsets.UTF_8);
     }
 }
