@@ -12,9 +12,15 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: build (${{ matrix.os }}, java ${{ matrix.java-version }})
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - ubuntu-24.04-arm
         java-version:
           - '17'
     steps:
@@ -36,6 +42,8 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
       - name: Check formatting
+        # Formatting does not depend on the OS: check it only once
+        if: runner.os == 'Linux'
         run: |
           pnpm install --frozen-lockfile --filter .
           pnpm run prettier:check

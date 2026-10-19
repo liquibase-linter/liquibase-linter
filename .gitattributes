@@ -1,0 +1,19 @@
+# Normalize line endings to LF on every platform (including Windows checkouts),
+# so that approval files, feature files and formatting checks behave identically.
+* text=auto eol=lf
+
+*.cmd           text eol=crlf
+*.bat           text eol=crlf
+
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.gif           binary
+*.ico           binary
+*.jar           binary
+*.class         binary
+*.zip           binary
+*.gz            binary
+*.woff          binary
+*.woff2         binary
+*.ttf           binary
