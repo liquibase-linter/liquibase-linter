@@ -4,11 +4,11 @@ import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.IGNORED;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.collect.ImmutableSet;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(builder = ReporterConfig.Builder.class)
 public class ReporterConfig {

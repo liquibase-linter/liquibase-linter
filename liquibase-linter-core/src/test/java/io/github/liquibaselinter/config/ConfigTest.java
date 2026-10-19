@@ -9,8 +9,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableListMultimap;
 import io.github.liquibaselinter.report.Reporter;
 import java.io.IOException;
@@ -18,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.DatabindException;
 
 class ConfigTest {
 
@@ -47,7 +46,7 @@ class ConfigTest {
     void shouldNotSupportInValidConfigObject() throws IOException {
         String configJson = "{\n" + "  \"rules\": {\n" + "    \"isolate-ddl-changes\": \"foo\"\n" + "  }\n" + "}";
 
-        assertThatExceptionOfType(JsonMappingException.class)
+        assertThatExceptionOfType(DatabindException.class)
             .isThrownBy(() -> Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8)))
             .withMessageContaining("instance of `io.github.liquibaselinter.config.RuleConfig$RuleConfigBuilder`");
     }
@@ -275,7 +274,7 @@ class ConfigTest {
         }
         """;
 
-        assertThatExceptionOfType(JsonMappingException.class)
+        assertThatExceptionOfType(DatabindException.class)
             .isThrownBy(() -> Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8)))
             .withMessageContaining("Only one of");
     }
@@ -285,7 +284,7 @@ class ConfigTest {
     void shouldRejectIncompleteEnableAfterChangeset() {
         String configJson = "{\n" + "  \"enable-after-changeset\": { \"id\": \"create-user-table\" }\n" + "}";
 
-        assertThatExceptionOfType(JsonMappingException.class)
+        assertThatExceptionOfType(DatabindException.class)
             .isThrownBy(() -> Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8)))
             .withMessageContaining("'change-log-file', 'id' and 'author'");
     }
@@ -343,7 +342,7 @@ class ConfigTest {
     void shouldNotLoadWithMissingReporters() throws IOException {
         String configJson = "{\n" + "  \"reporting\": {\n" + "    \"other\": false\n" + "  }\n" + "}";
 
-        assertThatExceptionOfType(JsonMappingException.class)
+        assertThatExceptionOfType(DatabindException.class)
             .isThrownBy(() -> Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8)))
             .withMessageContaining("No lq lint reporter named 'other'");
     }

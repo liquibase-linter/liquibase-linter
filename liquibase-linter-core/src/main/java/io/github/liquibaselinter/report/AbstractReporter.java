@@ -3,7 +3,6 @@ package io.github.liquibaselinter.report;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.IGNORED;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.collect.ImmutableSet;
 import io.github.liquibaselinter.report.ReporterConfig.BaseBuilder;
 import java.io.FileWriter;
@@ -14,6 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import liquibase.exception.UnexpectedLiquibaseException;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 public abstract class AbstractReporter implements Reporter {
 
