@@ -196,7 +196,7 @@
         <artifactId>maven-pmd-plugin</artifactId>
         <version>${maven.pmd.plugin.version}</version>
         <configuration>
-          <targetJdk>1.8</targetJdk>
+          <targetJdk>${java.version}</targetJdk>
           <failOnViolation>true</failOnViolation>
           <printFailingErrors>true</printFailingErrors>
           <linkXRef>false</linkXRef>
