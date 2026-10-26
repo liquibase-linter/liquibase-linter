@@ -16,6 +16,7 @@ import io.github.liquibaselinter.config.RuleConfig;
 import io.github.liquibaselinter.report.Report;
 import liquibase.change.Change;
 import liquibase.change.core.RenameTableChange;
+import liquibase.changelog.DatabaseChangeLog;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -113,6 +114,39 @@ class RuleRunnerTest {
 
         Report report = ruleRunner.buildReport();
         assertThat(report.getItems()).isEmpty();
+    }
+
+    @DisplayName("Should not run disabled rule")
+    @Test
+    void shouldNotRunDisabledRule() throws ChangeLogLintingException {
+        RuleRunner ruleRunner = new RuleRunner(
+            new Config.Builder()
+                .withRules(ImmutableListMultimap.of("table-name", RuleConfig.builder().withEnabled(false).build()))
+                .build()
+        );
+
+        ruleRunner.checkChange(mockInvalidChange(null, "TBL_TABLE"));
+
+        assertThat(ruleRunner.buildReport().getItems()).isEmpty();
+    }
+
+    @DisplayName("Should not run changelog rule when condition resolves to false")
+    @Test
+    void shouldNotRunChangeLogRuleWhenConditionFalse() throws ChangeLogLintingException {
+        RuleRunner ruleRunner = new RuleRunner(
+            new Config.Builder()
+                .withRules(
+                    ImmutableListMultimap.of(
+                        "changelog-file-name",
+                        RuleConfig.builder().withEnabled(true).withPattern("^NEVER$").withCondition("false").build()
+                    )
+                )
+                .build()
+        );
+
+        ruleRunner.checkChangeLog(new DatabaseChangeLog("changelog.xml"));
+
+        assertThat(ruleRunner.buildReport().getItems()).isEmpty();
     }
 
     private RuleRunner ruleRunnerWithTableNameRule(String condition, boolean failFast) {

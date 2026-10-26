@@ -11,8 +11,11 @@ import io.github.liquibaselinter.ChangeLogLinter;
 import io.github.liquibaselinter.ChangeLogLintingException;
 import io.github.liquibaselinter.config.Config;
 import io.github.liquibaselinter.config.ConfigLoader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -37,6 +40,7 @@ public class LiquibaseLinterSteps {
     private String databaseChangeLog;
     private String configFile;
     private Optional<String> actualErrorMessage;
+    private String consoleOutput;
 
     @Before
     public void setup() throws IOException {
@@ -45,13 +49,15 @@ public class LiquibaseLinterSteps {
         databaseChangeLog = null;
         configFile = null;
         actualErrorMessage = Optional.empty();
+        consoleOutput = "";
     }
 
     @Given("liquibase-linter is configured with")
     public void liquibaseLinterIsConfiguredWith(String configurationContent) throws IOException {
         configFile = "lqlint.json";
         Path configurationPath = tempDirectory.resolve(configFile);
-        Files.write(configurationPath, configurationContent.getBytes());
+        String testDirectory = tempDirectory.toAbsolutePath().toString().replace('\\', '/');
+        Files.write(configurationPath, configurationContent.replace("${testDirectory}", testDirectory).getBytes());
     }
 
     @Given("rule {string} is enabled")
@@ -160,10 +166,17 @@ public class LiquibaseLinterSteps {
         DatabaseChangeLog changelog = loadDatabaseChangelog(databaseChangeLog);
         ChangeLogLinter linter = initLinterFromConfigFile(configFile);
 
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream capturedOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(capturedOut, true, StandardCharsets.UTF_8));
         try {
             linter.lintChangeLog(changelog);
         } catch (ChangeLogLintingException changeLogLintingException) {
             actualErrorMessage = Optional.of(changeLogLintingException.getMessage());
+        } finally {
+            System.setOut(originalOut);
+            consoleOutput = capturedOut.toString(StandardCharsets.UTF_8);
+            System.out.print(consoleOutput);
         }
     }
 
@@ -183,6 +196,26 @@ public class LiquibaseLinterSteps {
         assertThat(this.actualErrorMessage).hasValueSatisfying(message ->
             assertThat(message).contains(expectedErrorMessage)
         );
+    }
+
+    @Then("the console output contains")
+    public void consoleOutputContains(String expectedOutput) {
+        assertThat(consoleOutput).contains(expectedOutput);
+    }
+
+    @Then("the console output is empty")
+    public void consoleOutputIsEmpty() {
+        assertThat(consoleOutput).isEmpty();
+    }
+
+    @Then("the report file {string} contains")
+    public void reportFileContains(String reportFileName, String expectedContent) throws IOException {
+        assertThat(tempDirectory.resolve(reportFileName)).content(StandardCharsets.UTF_8).contains(expectedContent);
+    }
+
+    @Then("the report file {string} does not exist")
+    public void reportFileDoesNotExist(String reportFileName) {
+        assertThat(tempDirectory.resolve(reportFileName)).doesNotExist();
     }
 
     private ChangeLogLinter initLinterFromConfigFile(String configFile) {

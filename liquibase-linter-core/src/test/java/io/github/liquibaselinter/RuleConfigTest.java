@@ -81,6 +81,7 @@ class RuleConfigTest {
             RuleConfig ruleConfig = RuleConfig.builder().withEnableAfterChangelog("changelog.xml").build();
 
             assertThat(ruleConfig.getEnableAfterChangelog()).isEqualTo("changelog.xml");
+            assertThat(ruleConfig.isEnabledAfter()).isTrue();
         }
 
         @Test
@@ -109,6 +110,72 @@ class RuleConfigTest {
             )
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("rule configuration");
+        }
+    }
+
+    @Nested
+    class Expressions {
+
+        @Test
+        void shouldEvaluateConditionRepeatedly() {
+            ConditionContext context = ConditionContext.from(changeSetWithNoContext());
+            RuleConfig ruleConfig = RuleConfig.builder().withCondition("changeLog != null").build();
+
+            assertThat(ruleConfig.isConditionSatisfiedWithContext(context)).isTrue();
+            assertThat(ruleConfig.isConditionSatisfiedWithContext(context)).isTrue();
+        }
+
+        @Test
+        void shouldCompileColumnConditionOnlyOnce() {
+            RuleConfig ruleConfig = RuleConfig.builder().withColumnCondition("name == 'id'").build();
+
+            assertThat(ruleConfig.getConditionalColumnExpression()).containsSame(
+                ruleConfig.getConditionalColumnExpression().orElseThrow()
+            );
+        }
+
+        @Test
+        void shouldHaveNoDynamicValueWhenNotConfigured() {
+            assertThat(RuleConfig.EMPTY.getDynamicValue(new Object())).isNull();
+        }
+    }
+
+    @Nested
+    class Patterns {
+
+        @Test
+        void shouldCompilePatternOnlyOnce() {
+            RuleConfig ruleConfig = RuleConfig.builder().withPattern("^[A-Z]+$").build();
+
+            assertThat(ruleConfig.hasPattern()).isTrue();
+            assertThat(ruleConfig.getPattern()).containsSame(ruleConfig.getPattern().orElseThrow());
+        }
+
+        @Test
+        void shouldHaveNoPatternWhenNotConfigured() {
+            assertThat(RuleConfig.EMPTY.hasPattern()).isFalse();
+            assertThat(RuleConfig.EMPTY.getPattern()).isEmpty();
+        }
+
+        @Test
+        void shouldHaveNoPatternWhenEmpty() {
+            assertThat(RuleConfig.builder().withPattern("").build().hasPattern()).isFalse();
+        }
+
+        @Test
+        void shouldNotCompileDynamicPatternWithoutValue() {
+            RuleConfig ruleConfig = RuleConfig.builder().withPattern("^{{value}}_[A-Z]+$").build();
+
+            assertThat(ruleConfig.getPattern()).isEmpty();
+        }
+
+        @Test
+        void shouldRejectDynamicPatternWhenPatternIsNotDynamic() {
+            RuleConfig ruleConfig = RuleConfig.builder().withPattern("^[A-Z]+$").build();
+
+            assertThatThrownBy(() -> ruleConfig.getDynamicPattern("FOO"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Pattern is not dynamic");
         }
     }
 
