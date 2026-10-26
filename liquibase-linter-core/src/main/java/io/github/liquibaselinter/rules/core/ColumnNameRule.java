@@ -7,8 +7,6 @@ import io.github.liquibaselinter.rules.LintRuleChecker;
 import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import liquibase.change.Change;
@@ -32,9 +30,6 @@ public class ColumnNameRule implements ChangeRule {
 
     @Override
     public Collection<RuleViolation> check(Change change, RuleConfig ruleConfig) {
-        if (!supports(change)) {
-            return Collections.emptyList();
-        }
         LintRuleChecker ruleChecker = new LintRuleChecker(ruleConfig);
         LintRuleViolationGenerator violations = new LintRuleViolationGenerator(DEFAULT_MESSAGE, ruleConfig);
 
@@ -45,23 +40,17 @@ public class ColumnNameRule implements ChangeRule {
             .collect(Collectors.toList());
     }
 
-    private boolean supports(Change change) {
-        return (
-            change instanceof AddColumnChange ||
-            change instanceof RenameColumnChange ||
-            change instanceof CreateTableChange ||
-            change instanceof MergeColumnChange
-        );
-    }
-
     private Set<String> getColumnNames(Change change) {
-        if (change instanceof ChangeWithColumns<?> changeWithColumns) {
+        if (
+            change instanceof ChangeWithColumns<?> changeWithColumns &&
+            (changeWithColumns instanceof AddColumnChange || changeWithColumns instanceof CreateTableChange)
+        ) {
             return changeWithColumns.getColumns().stream().map(ColumnConfig::getName).collect(Collectors.toSet());
         } else if (change instanceof RenameColumnChange renameColumnChange) {
-            return Collections.singleton(renameColumnChange.getNewColumnName());
+            return Set.of(renameColumnChange.getNewColumnName());
         } else if (change instanceof MergeColumnChange mergeColumnChange) {
-            return Collections.singleton(mergeColumnChange.getFinalColumnName());
+            return Set.of(mergeColumnChange.getFinalColumnName());
         }
-        return new HashSet<>();
+        return Set.of();
     }
 }

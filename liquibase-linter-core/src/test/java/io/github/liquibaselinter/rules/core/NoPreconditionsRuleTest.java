@@ -10,6 +10,7 @@ import liquibase.change.core.InsertDataChange;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
 import liquibase.precondition.Precondition;
+import liquibase.precondition.core.PreconditionContainer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -50,5 +51,20 @@ class NoPreconditionsRuleTest {
         assertThat(rule.check(changeLog, RuleConfig.EMPTY))
             .extracting(RuleViolation::message)
             .containsExactly("Preconditions are not allowed in this project");
+    }
+
+    @DisplayName("Should pass if no preconditions in changeLog")
+    @Test
+    void shouldPassIfNoPreconditionsInChangeLog() {
+        assertThat(rule.check(mock(DatabaseChangeLog.class), RuleConfig.EMPTY)).isEmpty();
+    }
+
+    @DisplayName("Should pass on empty preconditions in changeLog")
+    @Test
+    void shouldPassWhenEmptyPreconditionsInChangeLog() {
+        DatabaseChangeLog changeLog = new DatabaseChangeLog("changelog.xml");
+        changeLog.setPreconditions(new PreconditionContainer());
+
+        assertThat(rule.check(changeLog, RuleConfig.EMPTY)).isEmpty();
     }
 }

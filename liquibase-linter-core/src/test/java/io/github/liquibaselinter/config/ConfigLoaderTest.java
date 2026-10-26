@@ -15,19 +15,22 @@ import io.github.liquibaselinter.report.Reporter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import liquibase.exception.UnexpectedLiquibaseException;
 import liquibase.resource.PathResource;
 import liquibase.resource.Resource;
 import liquibase.resource.ResourceAccessor;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class ConfigLoaderTest {
 
-    @AfterAll
-    static void tearDown() {
+    @AfterEach
+    void tearDown() {
         System.clearProperty(LQLINT_CONFIG_PATH_PROPERTY);
     }
 
@@ -51,6 +54,23 @@ class ConfigLoaderTest {
     void shouldThrowIfCannotLoadConfig() throws IOException {
         ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
         when(resourceAccessor.get(LQLINT_CONFIG)).thenReturn(null);
+
+        assertThatExceptionOfType(UnexpectedLiquibaseException.class)
+            .isThrownBy(() -> ConfigLoader.load(resourceAccessor))
+            .withMessageContaining(
+                "Failed to load any liquibase-linter configuration from locations: /lqlint.json, lqlint.json"
+            );
+    }
+
+    @DisplayName("Should skip config files that do not exist or are empty")
+    @Test
+    void shouldSkipMissingOrNullConfig(@TempDir Path directory) throws IOException {
+        Path nullConfig = Files.writeString(directory.resolve("lqlint.json"), "null");
+        Resource missingResource = mock(Resource.class);
+        when(missingResource.exists()).thenReturn(false);
+        ResourceAccessor resourceAccessor = mock(ResourceAccessor.class);
+        when(resourceAccessor.get(LQLINT_CONFIG)).thenReturn(missingResource);
+        when(resourceAccessor.get(LQLINT_CONFIG_CLASSPATH)).thenReturn(new PathResource("lqlint.json", nullConfig));
 
         assertThatExceptionOfType(UnexpectedLiquibaseException.class)
             .isThrownBy(() -> ConfigLoader.load(resourceAccessor))

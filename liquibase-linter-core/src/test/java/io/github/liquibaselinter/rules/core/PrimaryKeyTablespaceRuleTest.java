@@ -211,6 +211,18 @@ class PrimaryKeyTablespaceRuleTest {
                 );
         }
 
+        @Test
+        @DisplayName("Columns with constraints unrelated to primary key should be ignored")
+        void columnWithNonPrimaryKeyConstraintsShouldBeIgnored() {
+            RuleConfig ruleConfig = RuleConfig.builder().withPattern("^NEVER_MATCHES$").build();
+
+            CreateTableChange createTableChange = new CreateTableChange();
+            createTableChange.setTableName("TABLE");
+            createTableChange.addColumn(columnWithPrimaryKeyTablespace(null, false));
+
+            assertThat(rule).withConfig(ruleConfig).checkingChange(createTableChange).hasNoViolations();
+        }
+
         private CreateTableChange createTableChange(String primaryKeyName) {
             CreateTableChange createTableChange = new CreateTableChange();
             createTableChange.setTableName("TABLE");

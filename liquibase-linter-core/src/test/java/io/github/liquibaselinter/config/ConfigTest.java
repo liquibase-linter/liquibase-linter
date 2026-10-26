@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.google.common.collect.ImmutableListMultimap;
 import io.github.liquibaselinter.report.Reporter;
 import java.io.IOException;
+import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +23,7 @@ class ConfigTest {
 
     @DisplayName("Should support valid config object")
     @Test
-    void shouldSupportValidConfigObject() throws IOException {
+    void shouldSupportValidConfigObject() {
         String configJson = """
         {
           "rules": {
@@ -53,7 +54,7 @@ class ConfigTest {
 
     @DisplayName("Should support having rule config value as boolean")
     @Test
-    void shouldSupportHavingRuleConfigAsBoolean() throws IOException {
+    void shouldSupportHavingRuleConfigAsBoolean() {
         String configJson = "{\n" + "  \"rules\": {\n" + "    \"isolate-ddl-changes\": true\n" + "  }\n" + "}";
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
@@ -64,7 +65,7 @@ class ConfigTest {
 
     @DisplayName("Should support having an array of configs for one rule")
     @Test
-    void shouldSupportArrayOfRuleConfigs() throws IOException {
+    void shouldSupportArrayOfRuleConfigs() {
         String configJson = """
         {
             "rules": {
@@ -89,7 +90,7 @@ class ConfigTest {
 
     @DisplayName("Should return disabled rule for null config object")
     @Test
-    void shouldReturnDisabledRuleForNullConfigObject() throws IOException {
+    void shouldReturnDisabledRuleForNullConfigObject() {
         String configJson = "{\n" + "  \"rules\": {\n" + "    \"isolate-ddl-changes\": null\n" + "  }\n" + "}";
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
@@ -100,7 +101,7 @@ class ConfigTest {
 
     @DisplayName("Should support a simple import")
     @Test
-    void shouldSupportSimpleImport() throws IOException {
+    void shouldSupportSimpleImport() {
         String configJson = "{\n" + "  \"import\": \"imported.json\"\n" + "}";
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
@@ -110,7 +111,7 @@ class ConfigTest {
 
     @DisplayName("Should support multiple imports")
     @Test
-    void shouldSupportMultipleImports() throws IOException {
+    void shouldSupportMultipleImports() {
         String configJson =
             "{\n" + "  \"import\": [\n" + "    \"first.json\",\n" + "    \"second.json\"\n" + "  ]\n" + "}";
 
@@ -146,6 +147,24 @@ class ConfigTest {
         );
     }
 
+    @DisplayName("Should accept patterns and null values for ignore patterns with builder")
+    @Test
+    void shouldAcceptPatternsAndNullValuesForIgnorePatterns() {
+        Config withPatterns = new Config.Builder()
+            .withIgnoreContextPattern(Pattern.compile("abc"))
+            .withIgnoreFilesPattern(Pattern.compile("def"))
+            .build();
+        Config withNullValues = new Config.Builder()
+            .withIgnoreContextPattern((String) null)
+            .withIgnoreFilesPattern((String) null)
+            .build();
+
+        assertThat(withPatterns.getIgnoreContextPattern()).asString().isEqualTo("abc");
+        assertThat(withPatterns.getIgnoreFilesPattern()).asString().isEqualTo("def");
+        assertThat(withNullValues.getIgnoreContextPattern()).isNull();
+        assertThat(withNullValues.getIgnoreFilesPattern()).isNull();
+    }
+
     @DisplayName("Should copy existing config with builder")
     @Test
     void shouldCopyConfigWithBuilder() {
@@ -165,7 +184,7 @@ class ConfigTest {
 
     @DisplayName("Should parse enable-after-changelog")
     @Test
-    void shouldParseEnableAfterChangelog() throws IOException {
+    void shouldParseEnableAfterChangelog() {
         String configJson = "{\n" + "  \"enable-after-changelog\": \"db/changelog/init.xml\"\n" + "}";
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));
@@ -176,7 +195,7 @@ class ConfigTest {
 
     @DisplayName("Should parse enable-after-changeset")
     @Test
-    void shouldParseEnableAfterChangeset() throws IOException {
+    void shouldParseEnableAfterChangeset() {
         String configJson = """
         {
           "enable-after-changeset": {
@@ -199,7 +218,7 @@ class ConfigTest {
 
     @DisplayName("Should accept the camelCase alias for enable-after-changelog / enable-after-changeset")
     @Test
-    void shouldAcceptCamelCaseAliasForNewEnableAfterOptions() throws IOException {
+    void shouldAcceptCamelCaseAliasForNewEnableAfterOptions() {
         String changelogJson = "{\n" + "  \"enableAfterChangelog\": \"db/changelog/init.xml\"\n" + "}";
         String changesetJson = """
         {
@@ -218,7 +237,7 @@ class ConfigTest {
 
     @DisplayName("Should accept both kebab-case and camelCase spellings for project options")
     @Test
-    void shouldAcceptBothSpellingsForProjectOptions() throws IOException {
+    void shouldAcceptBothSpellingsForProjectOptions() {
         String kebab = "{\n" + "  \"fail-fast\": true,\n" + "  \"ignore-files-pattern\": \"^legacy/.*$\"\n" + "}";
         String camel = "{\n" + "  \"failFast\": true,\n" + "  \"ignoreFilesPattern\": \"^legacy/.*$\"\n" + "}";
 
@@ -233,7 +252,7 @@ class ConfigTest {
 
     @DisplayName("Should accept both kebab-case and camelCase spellings for rule options")
     @Test
-    void shouldAcceptBothSpellingsForRuleOptions() throws IOException {
+    void shouldAcceptBothSpellingsForRuleOptions() {
         String kebab =
             "{\n" + "  \"rules\": { \"object-name\": { \"error-message\": \"msg\", \"max-length\": 30 } }\n" + "}";
         String camel =
@@ -291,7 +310,7 @@ class ConfigTest {
 
     @DisplayName("Should load reporting configuration")
     @Test
-    void shouldSupportReporting() throws IOException {
+    void shouldSupportReporting() {
         String configJson = """
         {
           "reporting": {
@@ -339,7 +358,7 @@ class ConfigTest {
 
     @DisplayName("Should not load with missing reporters")
     @Test
-    void shouldNotLoadWithMissingReporters() throws IOException {
+    void shouldNotLoadWithMissingReporters() {
         String configJson = "{\n" + "  \"reporting\": {\n" + "    \"other\": false\n" + "  }\n" + "}";
 
         assertThatExceptionOfType(DatabindException.class)
@@ -349,7 +368,7 @@ class ConfigTest {
 
     @DisplayName("Should support having comments in configuration")
     @Test
-    void shouldSupportComments() throws IOException {
+    void shouldSupportComments() {
         String configJson = """
         {
           // Some comment
@@ -367,7 +386,7 @@ class ConfigTest {
 
     @DisplayName("Should support having trailing commas in configuration")
     @Test
-    void shouldSupportTrailingCommas() throws IOException {
+    void shouldSupportTrailingCommas() {
         String configJson = "{\n" + "  \"rules\": {\n" + "    \"isolate-ddl-changes\": true,\n" + "  },\n" + "}";
 
         Config config = Config.fromInputStream(IOUtils.toInputStream(configJson, UTF_8));

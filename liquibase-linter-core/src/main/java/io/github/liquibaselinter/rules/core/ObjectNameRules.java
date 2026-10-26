@@ -24,6 +24,8 @@ import liquibase.change.core.RenameViewChange;
 
 public class ObjectNameRules {
 
+    private ObjectNameRules() {}
+
     private static Collection<String> getObjectNames(Change change) {
         if (change instanceof AddColumnChange addColumnChange) {
             return addColumnChange.getColumns().stream().map(ColumnConfig::getName).collect(Collectors.toList());

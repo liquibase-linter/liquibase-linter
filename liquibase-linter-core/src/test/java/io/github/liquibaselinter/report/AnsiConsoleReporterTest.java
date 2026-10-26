@@ -3,6 +3,7 @@ package io.github.liquibaselinter.report;
 import static io.github.liquibaselinter.report.ReportItem.ReportItemType.ERROR;
 import static io.github.liquibaselinter.report.ReportsFixture.fullReport;
 import static org.approvaltests.Approvals.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.liquibaselinter.report.ReportItem.ReportItemType;
 import java.io.ByteArrayOutputStream;
@@ -46,6 +47,15 @@ class AnsiConsoleReporterTest {
         String output = processReportWithConfig(fullReport(), reporterConfig);
 
         verify(output);
+    }
+
+    @Test
+    void shouldRestoreSystemOutAfterProcessing() {
+        PrintStream originalOut = System.out;
+
+        new AnsiConsoleReporter(ReporterConfig.defaultConfig()).processReport(ReportsFixture.emptyReport());
+
+        assertThat(System.out).isSameAs(originalOut);
     }
 
     private String processReportWithConfig(Report report, ReporterConfig reporterConfig) {

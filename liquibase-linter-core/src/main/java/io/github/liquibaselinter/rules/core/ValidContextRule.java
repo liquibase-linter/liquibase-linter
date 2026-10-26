@@ -7,8 +7,7 @@ import io.github.liquibaselinter.rules.LintRuleChecker;
 import io.github.liquibaselinter.rules.LintRuleViolationGenerator;
 import io.github.liquibaselinter.rules.RuleViolation;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
+import java.util.List;
 import liquibase.ContextExpression;
 import liquibase.changelog.ChangeSet;
 
@@ -34,8 +33,8 @@ public class ValidContextRule implements ChangeSetRule {
                 .stream()
                 .filter(context -> ruleChecker.checkPattern(context, changeSet))
                 .map(context -> violations.withFormattedMessage())
-                .collect(Collectors.toList());
+                .toList();
         }
-        return Collections.emptyList();
+        return List.of();
     }
 }

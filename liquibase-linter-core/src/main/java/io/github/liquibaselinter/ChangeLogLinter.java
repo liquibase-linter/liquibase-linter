@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import liquibase.ContextExpression;
 import liquibase.Scope;
 import liquibase.change.Change;
@@ -136,7 +135,7 @@ public class ChangeLogLinter {
      * would make the exclusion pattern depend on Liquibase metadata rather than where the file lives.
      */
     private boolean isFilePathNotIgnored(String physicalFilePath) {
-        if (physicalFilePath != null && config.getIgnoreFilesPattern() != null) {
+        if (config.getIgnoreFilesPattern() != null) {
             String normalizedPath = physicalFilePath.replace('\\', '/');
             return !config.getIgnoreFilesPattern().matcher(normalizedPath).matches();
         }
@@ -191,7 +190,7 @@ public class ChangeLogLinter {
             .getItems()
             .stream()
             .filter(item -> item.type() == ReportItem.ReportItemType.ERROR)
-            .collect(Collectors.toList());
+            .toList();
         final long errorCount = errors.size();
         if (errorCount > 0) {
             final String errorList = errors

@@ -127,18 +127,10 @@ public final class Config {
     public Config mergeWith(Config otherConfig) {
         final ListMultimap<String, RuleConfig> mergedRules = ArrayListMultimap.create();
         final ListMultimap<String, Reporter> mergedReporting = ArrayListMultimap.create();
-        if (getRules() != null) {
-            mergedRules.putAll(getRules());
-        }
-        if (otherConfig.getRules() != null) {
-            mergedRules.putAll(otherConfig.getRules());
-        }
-        if (getReporting() != null) {
-            mergedReporting.putAll(getReporting());
-        }
-        if (otherConfig.getReporting() != null) {
-            mergedReporting.putAll(otherConfig.getReporting());
-        }
+        mergedRules.putAll(getRules());
+        mergedRules.putAll(otherConfig.getRules());
+        mergedReporting.putAll(getReporting());
+        mergedReporting.putAll(otherConfig.getReporting());
         return new Config.Builder(this).withRules(mergedRules).withReporting(mergedReporting).withImports().build();
     }
 
@@ -151,12 +143,8 @@ public final class Config {
     public Config combineWith(Config otherConfig) {
         final ListMultimap<String, RuleConfig> mergedRules = ArrayListMultimap.create();
         final ListMultimap<String, Reporter> mergedReporting = ArrayListMultimap.create();
-        if (getRules() != null) {
-            mergedRules.putAll(getRules());
-        }
-        if (getReporting() != null) {
-            mergedReporting.putAll(getReporting());
-        }
+        mergedRules.putAll(getRules());
+        mergedReporting.putAll(getReporting());
         combine(getRules(), otherConfig.getRules(), mergedRules);
         combine(getReporting(), otherConfig.getReporting(), mergedReporting);
         return new Config.Builder(this).withRules(mergedRules).withReporting(mergedReporting).withImports().build();
@@ -167,17 +155,15 @@ public final class Config {
         ListMultimap<String, T> imported,
         ListMultimap<String, T> combined
     ) {
-        if (imported != null) {
-            imported.asMap().forEach((key, importedRulesList) -> {
-                // If the main config has a config of the same name, it overrides any imported config for the same
-                // name. But if not config of the same name exists in the main config, merge all the imported
-                // configs together. This could cause multiple configs of the same name from different imported
-                // files to end up in the final merged config.
-                if (config == null || !config.containsKey(key)) {
-                    combined.putAll(key, importedRulesList);
-                }
-            });
-        }
+        imported.asMap().forEach((key, importedRulesList) -> {
+            // If the main config has a config of the same name, it overrides any imported config for the same
+            // name. But if not config of the same name exists in the main config, merge all the imported
+            // configs together. This could cause multiple configs of the same name from different imported
+            // files to end up in the final merged config.
+            if (!config.containsKey(key)) {
+                combined.putAll(key, importedRulesList);
+            }
+        });
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

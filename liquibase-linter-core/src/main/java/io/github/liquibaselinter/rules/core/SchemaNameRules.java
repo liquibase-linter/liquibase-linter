@@ -51,6 +51,8 @@ import liquibase.change.core.SetTableRemarksChange;
 
 public class SchemaNameRules {
 
+    private SchemaNameRules() {}
+
     private static Collection<String> getSchemaName(Change change) {
         if (change instanceof AbstractModifyDataChange abstractModifyDataChange) {
             return Collections.singletonList(abstractModifyDataChange.getSchemaName());

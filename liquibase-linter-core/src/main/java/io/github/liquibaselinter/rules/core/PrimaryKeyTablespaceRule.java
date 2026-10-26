@@ -40,9 +40,6 @@ public class PrimaryKeyTablespaceRule implements ChangeRule {
     }
 
     private static List<String> primaryKeyTablespacesFromCreateTable(CreateTableChange change) {
-        if (change.getColumns() == null) {
-            return Collections.emptyList();
-        }
         return change
             .getColumns()
             .stream()

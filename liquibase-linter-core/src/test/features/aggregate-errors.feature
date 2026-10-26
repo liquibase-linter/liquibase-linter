@@ -42,3 +42,34 @@ Feature: Violations should be aggregated in the final report
        - Should have at least one context on the change set
        - Preconditions are not allowed in this project
       """
+
+  Scenario: Should aggregate changelog errors
+    Given liquibase-linter is configured with
+      """json
+      {
+        "rules": {
+          "changelog-file-name": {
+            "pattern": "^[^ ]+$"
+          },
+          "has-context": true
+        }
+      }
+      """
+    And the main XML changelog file "filename with-space.xml" contains changesets
+      """xml
+      <changeSet id="201808283523452" author="liquibase-linter">
+        <sql>SELECT 1 FROM DUAL</sql>
+      </changeSet>
+
+      <changeSet id="2017013452354" author="liquibase-linter">
+        <comment>This changeset is fully ignored lql-ignore</comment>
+        <sql>SELECT 1 FROM DUAL</sql>
+      </changeSet>
+      """
+    When liquibase-linter runs
+    Then a violation is detected with the following message
+      """
+      Linting failed with 2 errors:
+       - ChangeLog filename 'filename with-space.xml' must follow pattern '^[^ ]+$'
+       - Should have at least one context on the change set
+      """

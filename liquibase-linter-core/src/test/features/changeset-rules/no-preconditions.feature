@@ -39,3 +39,30 @@ Feature: Rule "no-preconditions"
       """
       Preconditions are not allowed in this project
       """
+
+  Scenario: Should allow empty preconditions at changeset level
+    Given the main XML changelog file contains changesets
+      """xml
+      <changeSet id="201809011238" author="luke.rogers">
+        <preConditions />
+        <insert tableName="FOO">
+          <column name="BAR" value="test value" />
+        </insert>
+      </changeSet>
+      """
+    When liquibase-linter runs
+    Then no violation is detected
+
+  Scenario: Should allow empty preconditions at changelog level
+    Given the main XML changelog file contains changesets
+      """xml
+      <preConditions />
+
+      <changeSet id="201809011238" author="luke.rogers">
+        <insert tableName="FOO">
+          <column name="BAR" value="test value" />
+        </insert>
+      </changeSet>
+      """
+    When liquibase-linter runs
+    Then no violation is detected

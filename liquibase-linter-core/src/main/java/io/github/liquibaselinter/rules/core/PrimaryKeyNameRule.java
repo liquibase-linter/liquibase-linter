@@ -52,9 +52,6 @@ public class PrimaryKeyNameRule implements ChangeRule {
     }
 
     private static List<String> primaryKeyNamesFromCreateTable(CreateTableChange change) {
-        if (change.getColumns() == null) {
-            return Collections.emptyList();
-        }
         return change
             .getColumns()
             .stream()

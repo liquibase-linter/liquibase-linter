@@ -7,8 +7,10 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import liquibase.change.AddColumnConfig;
 import liquibase.change.Change;
+import liquibase.change.ColumnConfig;
 import liquibase.change.core.AddColumnChange;
 import liquibase.change.core.CreateTableChange;
+import liquibase.change.core.InsertDataChange;
 import liquibase.change.core.MergeColumnChange;
 import liquibase.change.core.RenameColumnChange;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +28,18 @@ class ColumnNameRuleTest {
     @Test
     void shouldHaveName() {
         assertThat(rule).hasName("column-name");
+    }
+
+    @DisplayName("Columns of other changes with columns should be ignored")
+    @Test
+    void columnsOfOtherChangesWithColumnsShouldBeIgnored() {
+        InsertDataChange insertDataChange = new InsertDataChange();
+        insertDataChange.addColumn(new ColumnConfig().setName("invalid name"));
+
+        assertThat(rule)
+            .withConfig(RuleConfig.builder().withPattern("^[A-Z_]+$"))
+            .checkingChange(insertDataChange)
+            .hasNoViolations();
     }
 
     @DisplayName("Column name must not be null")
