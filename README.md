@@ -65,4 +65,28 @@ If you're already using the `liquibase-maven-plugin`, you can add `liquibase-par
 
 **2** Add the [config file](https://liquibase-linter.github.io/liquibase-linter/docs/configure), and start turning [on rules](https://liquibase-linter.github.io/liquibase-linter/docs/rules/).
 
+### With the Gradle plugin
+
+**1** Apply the `io.github.liquibase-linter` plugin in your `build.gradle.kts`:
+
+```kotlin
+plugins {
+    id("io.github.liquibase-linter") version "1.1.0"
+}
+
+repositories {
+    mavenCentral()
+}
+
+liquibaseLinter {
+    changeLogFile = "src/main/resources/db/changelog/db.changelog-master.xml"
+    // This is the default value for configurationFile
+    configurationFile = file("src/test/resources/lqlint.json")
+}
+```
+
+The `liquibaseLinterCheck` task is run by `check`, so by `build` too.
+
+**2** Add the [config file](https://liquibase-linter.github.io/liquibase-linter/docs/configure), and start turning [on rules](https://liquibase-linter.github.io/liquibase-linter/docs/rules/).
+
 Try the [full documentation](https://liquibase-linter.github.io/liquibase-linter/docs/install) for details of config and rules.
