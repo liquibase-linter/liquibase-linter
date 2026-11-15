@@ -47,6 +47,9 @@ jobs:
         run: |
           pnpm install --frozen-lockfile --filter .
           pnpm run prettier:check
+      - name: Setup Gradle
+        # Caches the dependencies and the build cache of the Gradle plugin build, run by Maven
+        uses: gradle/actions/setup-gradle@v6
       - name: Build
         run: mvn --no-transfer-progress --batch-mode clean verify
 
@@ -101,7 +104,7 @@ jobs:
           LIQUIBASE_NEXT_MINOR_VERSION=$(semver ${{ matrix.liquibase-minor-version }}.0 --increment minor);
           LIQUIBASE_VERSION_RANGE="[${{ matrix.liquibase-minor-version }}.0,${LIQUIBASE_NEXT_MINOR_VERSION})";
           echo "Liquibase version range: ${LIQUIBASE_VERSION_RANGE}";
-          mvn clean verify --no-transfer-progress --batch-mode -Dliquibase.version="${LIQUIBASE_VERSION_RANGE}"
+          mvn clean verify --no-transfer-progress --batch-mode -Dliquibase.version="${LIQUIBASE_VERSION_RANGE}" -Dgradle.skip=true
   # Summary job that allows checking for workflow status
   # This job is used as a required status check to pass before merging to the main branch
   status-checks:

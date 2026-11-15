@@ -56,12 +56,24 @@ jobs:
           version=$(grep -oP '<version>\K[0-9]+\.[0-9]+\.[0-9]+' README.md | head -n 1)
           echo "previousVersion=$version" >> $GITHUB_OUTPUT
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
       - name: Prepare and perform release
         run: mvn release:prepare release:perform --no-transfer-progress --batch-mode -DreleaseVersion=${{ github.event.inputs.releaseVersion }} -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}
         env:
           CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
           CENTRAL_PORTAL_PASSWORD: ${{ secrets.CENTRAL_PORTAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Publish the Gradle plugin on the Gradle Plugin Portal
+        # Only once release:perform has succeeded, i.e. Maven Central has validated the core the plugin depends on.
+        # release:perform built the released version in target/checkout, including the repository staging the core.
+        working-directory: target/checkout/liquibase-linter-gradle-plugin
+        run: mvn --no-transfer-progress --batch-mode exec:exec@gradle-publish-plugins
+        env:
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
 
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
@@ -77,6 +89,7 @@ jobs:
             README.md \
             website/docs/install.md \
             examples/gradle/build.gradle \
+            examples/liquibase-linter-gradle-plugin/build.gradle.kts \
             examples/liquibase-linter-maven-plugin/pom.xml \
             examples/liquibase-maven-plugin/pom.xml \
           )
