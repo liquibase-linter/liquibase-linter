@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.github.liquibase-linter") version "1.1.0"
+    id("io.github.liquibase-linter") version "1.2.0"
 }
 
 repositories {
