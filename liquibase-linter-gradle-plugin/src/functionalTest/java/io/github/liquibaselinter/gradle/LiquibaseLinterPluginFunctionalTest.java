@@ -335,7 +335,11 @@ class LiquibaseLinterPluginFunctionalTest {
 
         BuildResult result = project.buildAndFail("check");
 
-        assertThat(result.getOutput()).contains("configurationFile", "missing/lqlint.json");
+        // Gradle reports the absolute path, with the separator of the platform
+        assertThat(result.getOutput()).contains(
+            "configurationFile",
+            project.path("missing/lqlint.json").toAbsolutePath().toString()
+        );
     }
 
     private static String readSettings(TestProject project) {

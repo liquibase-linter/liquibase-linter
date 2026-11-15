@@ -15,6 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Map;
 import liquibase.Scope;
@@ -157,8 +158,14 @@ public abstract class LintChangeLogAction implements WorkAction<LintChangeLogPar
     }
 
     private static String relativePath(File projectDirectory, String path) {
+        Path candidate;
+        try {
+            candidate = Path.of(path);
+        } catch (InvalidPathException notAFilePath) {
+            // e.g. 'classpath:...' on Windows, where ':' is only allowed after a drive letter
+            return path;
+        }
         Path projectPath = projectDirectory.toPath().toAbsolutePath().normalize();
-        Path candidate = Path.of(path);
         if (candidate.isAbsolute() && candidate.normalize().startsWith(projectPath)) {
             return toLiquibasePath(projectPath.relativize(candidate.normalize()));
         }
