@@ -71,7 +71,7 @@ See this simple [example](https://github.com/liquibase-linter/liquibase-linter/t
 
 ### Using the Gradle plugin
 
-If you just want to lint your liquibase scripts during build, use the Gradle plugin provided by Liquibase Linter. It requires Gradle 8.14 or later.
+If you just want to lint your liquibase scripts during build, use the Gradle plugin provided by Liquibase Linter. It requires Gradle 8.8 or later.
 
 1. Apply the `io.github.liquibase-linter` plugin to your project.
 2. Add `lqlint.json` to the `src/test/resources` directory of your project. This is the default location, but you can change it in the plugin configuration.
