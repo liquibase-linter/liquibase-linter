@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.liquibase-linter</groupId>
+    <artifactId>liquibase-linter</artifactId>
+    <version>1.1.1-SNAPSHOT</version>
+  </parent>
+
+  <!--
+    The Gradle plugin is built by Gradle (see build.gradle.kts and README.md): this module only runs that build from
+    the Maven one. It is not published to Maven Central (see excludeArtifacts in the parent), but to the Gradle Plugin
+    Portal, by the gradle-publish-plugins execution.
+  -->
+  <artifactId>liquibase-linter-gradle-plugin-build</artifactId>
+  <packaging>pom</packaging>
+  <name>liquibase-linter: Gradle plugin (build)</name>
+  <description>Builds the Gradle plugin with Gradle</description>
+
+  <properties>
+    <gradle.executable>${project.basedir}/gradlew</gradle.executable>
+    <gradle.task>build</gradle.task>
+    <!-- Skips the Gradle build, e.g. when checking the compatibility of the core with other Liquibase versions -->
+    <gradle.skip>false</gradle.skip>
+    <!-- Repository, in Maven layout, holding the artifacts of this build the Gradle build depends on -->
+    <gradle.staging.repository>${project.build.directory}/staging-repository</gradle.staging.repository>
+    <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
+    <maven.install.skip>true</maven.install.skip>
+  </properties>
+
+  <dependencies>
+    <!-- Builds liquibase-linter-core before this module, and lets it be copied to the staging repository -->
+    <dependency>
+      <groupId>io.github.liquibase-linter</groupId>
+      <artifactId>liquibase-linter-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven-dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>stage-reactor-artifacts</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${gradle.staging.repository}</outputDirectory>
+              <useRepositoryLayout>true</useRepositoryLayout>
+              <copyPom>true</copyPom>
+              <addParentPoms>true</addParentPoms>
+              <includeGroupIds>${project.groupId}</includeGroupIds>
+              <skip>${gradle.skip}</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>${exec-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>gradle</id>
+            <phase>package</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${gradle.executable}</executable>
+              <arguments>
+                <argument>${gradle.task}</argument>
+                <argument>-PlinterRepository=${gradle.staging.repository}</argument>
+                <argument>--console=plain</argument>
+                <argument>--stacktrace</argument>
+              </arguments>
+              <skip>${gradle.skip}</skip>
+            </configuration>
+          </execution>
+          <execution>
+            <!--
+              Publishes the plugin to the Gradle Plugin Portal: run explicitly by the release workflow, after release:perform,
+              so that the plugin is only published once Maven Central has validated the core it depends on:
+              mvn exec:exec@gradle-publish-plugins
+              Credentials are read by Gradle from GRADLE_PUBLISH_KEY and GRADLE_PUBLISH_SECRET.
+            -->
+            <id>gradle-publish-plugins</id>
+            <phase>none</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${gradle.executable}</executable>
+              <arguments>
+                <argument>publishPlugins</argument>
+                <argument>-PlinterRepository=${gradle.staging.repository}</argument>
+                <argument>--console=plain</argument>
+                <argument>--stacktrace</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>build</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>gradle-windows</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <properties>
+        <gradle.executable>${project.basedir}\gradlew.bat</gradle.executable>
+      </properties>
+    </profile>
+    <profile>
+      <id>gradle-skip-tests</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+        </property>
+      </activation>
+      <properties>
+        <gradle.task>assemble</gradle.task>
+      </properties>
+    </profile>
+  </profiles>
+</project>

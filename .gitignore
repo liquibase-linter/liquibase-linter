@@ -9,3 +9,6 @@ databasechangelog.csv.new
 .classpath
 .project
 .factorypath
+.gradle/
+.kotlin/
+build/

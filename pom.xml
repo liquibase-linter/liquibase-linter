@@ -33,6 +33,7 @@
     <module>liquibase-linter-core</module>
     <module>liquibase-parser-extension</module>
     <module>liquibase-linter-maven-plugin</module>
+    <module>liquibase-linter-gradle-plugin</module>
   </modules>
 
   <scm>
@@ -162,6 +163,10 @@
           <publishingServerId>central</publishingServerId>
           <autoPublish>true</autoPublish>
           <waitUntil>validated</waitUntil>
+          <excludeArtifacts>
+            <!-- Only runs the Gradle build: the Gradle plugin is published to the Gradle Plugin Portal -->
+            <excludeArtifact>liquibase-linter-gradle-plugin-build</excludeArtifact>
+          </excludeArtifacts>
         </configuration>
       </plugin>
       <plugin>
