@@ -56,6 +56,7 @@ public abstract class LintChangeLogAction implements WorkAction<LintChangeLogPar
         File projectDirectory = parameters.getProjectDirectory().get().getAsFile();
         String changeLogFile = relativePath(projectDirectory, parameters.getChangeLogFile().get());
         File reportFile = parameters.getReportFile().get().getAsFile();
+        GradleLoggerReporter gradleReporter = new GradleLoggerReporter(LOGGER);
         try (
             URLClassLoader classLoader = projectClassLoader(parameters);
             ResourceAccessor resourceAccessor = new CompositeResourceAccessor(
@@ -65,11 +66,13 @@ public abstract class LintChangeLogAction implements WorkAction<LintChangeLogPar
         ) {
             Scope.child(Map.of(Scope.Attr.logService.name(), new GradleLogService(LOGGER)), () -> {
                 DatabaseChangeLog databaseChangeLog = parseChangeLog(changeLogFile, resourceAccessor);
-                Config config = loadConfig(projectDirectory, resourceAccessor).mergeWith(gradleConfig(reportFile));
+                Config config = loadConfig(projectDirectory, resourceAccessor).mergeWith(
+                    gradleConfig(gradleReporter, reportFile)
+                );
                 new ChangeLogLinter(resourceAccessor, config).lintChangeLog(databaseChangeLog);
             });
         } catch (ChangeLogLintingException lintingException) {
-            handleViolations(lintingException, reportFile);
+            handleViolations(lintingException, gradleReporter, reportFile);
         } catch (GradleException exception) {
             throw exception;
         } catch (Exception exception) {
@@ -80,12 +83,22 @@ public abstract class LintChangeLogAction implements WorkAction<LintChangeLogPar
         }
     }
 
-    private void handleViolations(ChangeLogLintingException lintingException, File reportFile) {
+    private void handleViolations(
+        ChangeLogLintingException lintingException,
+        GradleLoggerReporter gradleReporter,
+        File reportFile
+    ) {
         if (!reportFile.exists()) {
             // Some violations, e.g. of 'file-not-included', are raised before the reporters are called
             writeReport(reportFile, lintingException.getMessage());
         }
-        String message = lintingException.getMessage() + "\n\nSee the report at: " + reportFile.toPath().toUri();
+        int printedViolations = gradleReporter.printedViolations();
+        // The violations already printed by the reporter are not repeated, only summed up
+        String summary =
+            printedViolations > 0
+                ? "Liquibase linting failed with " + printedViolations + " violation(s)."
+                : lintingException.getMessage();
+        String message = summary + "\n\nSee the report at: " + reportFile.toPath().toUri();
         if (getParameters().getIgnoreFailures().get()) {
             LOGGER.warn(message);
         } else {
@@ -147,9 +160,9 @@ public abstract class LintChangeLogAction implements WorkAction<LintChangeLogPar
         return config;
     }
 
-    private static Config gradleConfig(File reportFile) {
+    private static Config gradleConfig(GradleLoggerReporter gradleReporter, File reportFile) {
         ImmutableListMultimap.Builder<String, Reporter> reporting = new ImmutableListMultimap.Builder<>();
-        reporting.put("gradle", new GradleLoggerReporter(LOGGER));
+        reporting.put("gradle", gradleReporter);
         reporting.put(
             TextReporter.NAME,
             new TextReporter(ReporterConfig.builder().withPath(reportFile.getAbsolutePath()).build())

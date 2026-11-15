@@ -52,7 +52,12 @@ class LiquibaseLinterPluginFunctionalTest {
 
         assertThat(result.task(TASK).getOutcome()).isEqualTo(TaskOutcome.FAILED);
         assertLintIssueIsReported(result, MASTER);
-        assertThat(result.getOutput()).contains("Linting failed with 1 errors", "See the report at: file:");
+        assertThat(result.getOutput()).contains(
+            "Liquibase linting failed with 1 violation(s).",
+            "See the report at: file:"
+        );
+        // Printed once by the reporter, not repeated in the failure message
+        assertThat(result.getOutput()).containsOnlyOnce(INDEX_NAME_VIOLATION.substring("'index-name': ".length()));
         assertThat(project.path("build/reports/liquibase-linter/liquibaseLinterCheck.txt"))
             .content()
             .contains(MASTER, "changeSet '2'", INDEX_NAME_VIOLATION);
@@ -260,6 +265,23 @@ class LiquibaseLinterPluginFunctionalTest {
 
         project.file(MASTER, changeLog(CREATE_TABLE_CHANGESET, INVALID_INDEX_CHANGESET));
         assertThat(project.buildAndFail(TASK).task(TASK).getOutcome()).isEqualTo(TaskOutcome.FAILED);
+    }
+
+    @Test
+    void reports_the_violation_in_the_failure_message_when_failing_fast() {
+        TestProject project = javaProject("")
+            .file(
+                "src/test/resources/lqlint.json",
+                LINT_CONFIGURATION.replace("\"fail-fast\": false", "\"fail-fast\": true")
+            )
+            .file(MASTER, changeLog(CREATE_TABLE_CHANGESET, INVALID_INDEX_CHANGESET));
+
+        BuildResult result = project.buildAndFail("check");
+
+        // The linting stops at the first violation, before the reporters are called: the failure message holds it
+        assertThat(result.getOutput())
+            .contains("Change Set ID: 2", "Index names must be the table name", "See the report at: file:")
+            .doesNotContain("violation(s) found");
     }
 
     @Test

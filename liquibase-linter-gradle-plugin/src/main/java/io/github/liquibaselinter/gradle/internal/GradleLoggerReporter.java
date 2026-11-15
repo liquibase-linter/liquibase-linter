@@ -18,6 +18,7 @@ import org.gradle.api.logging.Logger;
 class GradleLoggerReporter implements Reporter {
 
     private final Logger logger;
+    private int printedViolations;
 
     GradleLoggerReporter(Logger logger) {
         this.logger = logger;
@@ -34,6 +35,7 @@ class GradleLoggerReporter implements Reporter {
             logger.info("No violation found");
             return;
         }
+        printedViolations = errors.size();
         logger.error("{} violation(s) found", errors.size());
         errors
             .stream()
@@ -63,6 +65,14 @@ class GradleLoggerReporter implements Reporter {
             .stream()
             .sorted(Comparator.comparing(ReportItem::rule).thenComparing(ReportItem::message))
             .forEach(item -> logger.error("\t\t'{}': {}", item.rule(), item.message().replace("\n", "\n\t\t")));
+    }
+
+    /**
+     * @return the number of violations printed in the build output, 0 if the report has not been processed, e.g.
+     *     when the linting failed before the reporters were called
+     */
+    int printedViolations() {
+        return printedViolations;
     }
 
     @Override
