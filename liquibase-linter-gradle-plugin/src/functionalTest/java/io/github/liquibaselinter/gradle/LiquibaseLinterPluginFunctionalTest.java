@@ -317,6 +317,16 @@ class LiquibaseLinterPluginFunctionalTest {
     }
 
     @Test
+    void is_compatible_with_isolated_projects() {
+        TestProject project = javaProject("").file(MASTER, changeLog(CREATE_TABLE_CHANGESET, VALID_INDEX_CHANGESET));
+
+        BuildResult result = project.build("check", "-Dorg.gradle.unsafe.isolated-projects=true");
+
+        assertThat(result.getOutput()).contains("Isolated Projects is an incubating feature");
+        assertThat(result.task(TASK).getOutcome()).isEqualTo(TaskOutcome.SUCCESS);
+    }
+
+    @Test
     void reports_a_clear_error_when_the_configuration_file_is_missing() {
         TestProject project = javaProject("configurationFile = file(\"missing/lqlint.json\")").file(
             MASTER,

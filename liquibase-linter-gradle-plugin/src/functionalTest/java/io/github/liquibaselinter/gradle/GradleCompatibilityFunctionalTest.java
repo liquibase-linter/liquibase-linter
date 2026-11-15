@@ -4,10 +4,12 @@ import static io.github.liquibaselinter.gradle.TestProject.CREATE_TABLE_CHANGESE
 import static io.github.liquibaselinter.gradle.TestProject.INVALID_INDEX_CHANGESET;
 import static io.github.liquibaselinter.gradle.TestProject.LINT_CONFIGURATION;
 import static io.github.liquibaselinter.gradle.TestProject.changeLog;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -49,6 +51,21 @@ class GradleCompatibilityFunctionalTest {
         LiquibaseLinterPluginFunctionalTest.assertLintIssueIsReported(
             project.buildAndFail("check", "--configuration-cache"),
             "src/main/resources/master.xml"
+        );
+    }
+
+    @Test
+    void reports_unsupported_gradle_versions() {
+        TestProject project = new TestProject(projectDir).withGradleVersion("8.7").buildScript(
+            """
+            plugins {
+                id("io.github.liquibase-linter")
+            }
+            """
+        );
+
+        assertThat(project.buildAndFail("help").getOutput()).contains(
+            "The liquibase-linter Gradle plugin requires Gradle 8.8 or later, but this build uses 8.7."
         );
     }
 }

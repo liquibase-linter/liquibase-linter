@@ -1,3 +1,5 @@
+import org.gradle.plugin.compatibility.compatibility
+
 plugins {
     `java-gradle-plugin`
     alias(libs.plugins.plugin.publish)
@@ -76,8 +78,12 @@ testing {
             targets.configureEach {
                 testTask.configure {
                     shouldRunAfter(test)
-                    // Gradle versions the plugin is tested against, in addition to the one running this build
-                    systemProperty("liquibaseLinter.compatibilityGradleVersions", "8.14.7")
+                    // Gradle versions the plugin is tested against, in addition to the one running this build:
+                    // the minimum supported one (LiquibaseLinterPlugin.MINIMUM_GRADLE_VERSION), and the latest 8.x
+                    systemProperty(
+                        "liquibaseLinter.compatibilityGradleVersions",
+                        providers.gradleProperty("compatibilityGradleVersions").getOrElse("8.8,8.14.7"),
+                    )
                     // The test builds resolve liquibase-linter-core from the same repository as this build
                     val linterRepository = providers.gradleProperty("linterRepository")
                     if (linterRepository.isPresent) {
@@ -109,6 +115,13 @@ gradlePlugin {
             displayName = "Liquibase Linter"
             description = "Check your Liquibase changelogs against configured lint rules"
             tags = listOf("liquibase", "lint", "linter", "database", "migration", "changelog")
+            compatibility {
+                features {
+                    // Both checked by the functional tests
+                    configurationCache = true
+                    isolatedProjects = true
+                }
+            }
         }
     }
 }
