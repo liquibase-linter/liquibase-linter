@@ -1,0 +1,15 @@
+[versions]
+assertj = "3.27.7"
+junit = "6.1.3"
+# Default Liquibase version used by the plugin to parse changelogs, overridable by users with `liquibaseLinter.liquibaseVersion`
+liquibase = "4.33.0"
+
+[libraries]
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase" }
+
+[plugins]
+plugin-publish = { id = "com.gradle.plugin-publish", version = "2.2.1" }
