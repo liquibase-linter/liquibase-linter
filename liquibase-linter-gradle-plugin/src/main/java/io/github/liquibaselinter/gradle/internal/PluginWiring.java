@@ -15,6 +15,7 @@ import org.gradle.api.attributes.Category;
 import org.gradle.api.attributes.LibraryElements;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.attributes.java.TargetJvmEnvironment;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.ReportingBasePlugin;
 import org.gradle.api.provider.Provider;
@@ -163,11 +164,25 @@ public final class PluginWiring {
             .getExtensions()
             .getByType(SourceSetContainer.class)
             .named(SourceSet.MAIN_SOURCE_SET_NAME);
+        // The runtime classpath of the main source set, without its compiled classes: changelogs are resources, so
+        // linting must neither trigger the compilation, nor be out of date whenever a class changes
+        FileCollection changeLogClasspath = project.files(
+            // The task outputs, not the task itself, which the configuration cache cannot serialize
+            main.flatMap(sourceSet ->
+                project
+                    .getTasks()
+                    .named(sourceSet.getProcessResourcesTaskName())
+                    .map(processResources -> processResources.getOutputs().getFiles())
+            ),
+            main.flatMap(sourceSet ->
+                project.getConfigurations().named(sourceSet.getRuntimeClasspathConfigurationName())
+            )
+        );
         project
             .getTasks()
             .withType(LiquibaseLinterCheck.class)
             .configureEach(task -> {
-                task.getClasspath().convention(main.map(SourceSet::getRuntimeClasspath));
+                task.getClasspath().convention(changeLogClasspath);
                 task.getChangeLogSources().convention(
                     main.map(sourceSet -> sourceSet.getResources().getSourceDirectories())
                 );

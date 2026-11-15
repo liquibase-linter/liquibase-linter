@@ -263,6 +263,21 @@ class LiquibaseLinterPluginFunctionalTest {
     }
 
     @Test
+    void does_not_compile_and_is_up_to_date_when_a_class_changes() {
+        TestProject project = javaProject("")
+            .file(MASTER, changeLog(CREATE_TABLE_CHANGESET, VALID_INDEX_CHANGESET))
+            .file("src/main/java/example/Example.java", "package example; class Example {}");
+
+        BuildResult first = project.build(TASK);
+        assertThat(first.task(TASK).getOutcome()).isEqualTo(TaskOutcome.SUCCESS);
+        assertThat(first.task(":compileJava")).isNull();
+
+        project.file("src/main/java/example/Example.java", "package example; class Example { int field; }");
+        project.build("compileJava");
+        assertThat(project.build(TASK).task(TASK).getOutcome()).isEqualTo(TaskOutcome.UP_TO_DATE);
+    }
+
+    @Test
     void is_up_to_date_until_the_configuration_changes() {
         TestProject project = javaProject("").file(MASTER, changeLog(CREATE_TABLE_CHANGESET, INVALID_INDEX_CHANGESET));
         project.file("src/test/resources/lqlint.json", "{ \"rules\": {} }");

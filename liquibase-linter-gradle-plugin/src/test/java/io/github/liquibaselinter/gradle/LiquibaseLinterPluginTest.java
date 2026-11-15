@@ -87,7 +87,9 @@ class LiquibaseLinterPluginTest {
         assertThat(task.getChangeLogSources().getFiles()).containsExactlyElementsOf(
             sourceSets.getByName("main").getResources().getSrcDirs()
         );
-        assertThat(task.getClasspath().getFiles()).contains(sourceSets.getByName("main").getOutput().getResourcesDir());
+        assertThat(task.getClasspath().getFiles())
+            .contains(sourceSets.getByName("main").getOutput().getResourcesDir())
+            .doesNotContainAnyElementsOf(sourceSets.getByName("main").getOutput().getClassesDirs().getFiles());
     }
 
     @Test

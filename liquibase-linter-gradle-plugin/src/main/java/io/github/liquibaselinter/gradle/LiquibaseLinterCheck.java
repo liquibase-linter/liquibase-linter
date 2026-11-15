@@ -57,7 +57,8 @@ public abstract class LiquibaseLinterCheck extends DefaultTask {
 
     /**
      * The classpath changelogs are looked up in, e.g. by {@code classpath:} includes.
-     * Defaults to the runtime classpath of the main source set.
+     * Defaults to the runtime classpath of the main source set, without its compiled classes: the processed resources,
+     * and the runtime dependencies.
      *
      * @return the classpath of the changelogs
      */
