@@ -22,7 +22,7 @@
     <guava.version>33.8.0-jre</guava.version>
     <commons-jexl3.version>3.7.1</commons-jexl3.version>
     <commons-io.version>2.22.0</commons-io.version>
-    <cucumber.version>8.0.4</cucumber.version>
+    <cucumber.version>8.1.0</cucumber.version>
     <jacoco.version>0.8.16</jacoco.version>
   </properties>
 
