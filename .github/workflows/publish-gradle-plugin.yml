@@ -1,0 +1,59 @@
+name: Publish Gradle plugin
+
+# Publishes the Gradle plugin of an existing release to the Gradle Plugin Portal, without releasing anything else:
+# e.g. when its publication by the release workflow failed, or was rejected by the Portal review.
+# The core the plugin depends on must already be on Maven Central: the Gradle build resolves it from there.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag of the release to publish the Gradle plugin of, e.g. 1.2.0'
+        required: true
+      validateOnly:
+        description: 'Only validate the publication, without publishing anything'
+        type: boolean
+        default: true
+
+concurrency:
+  group: publish-gradle-plugin
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish ${{ inputs.tag }} on the Gradle Plugin Portal
+    if: github.repository == 'liquibase-linter/liquibase-linter'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ inputs.tag }}
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          # Publishing must not reuse, nor pollute, the cache of the regular builds
+          cache-disabled: true
+
+      - name: Publish the Gradle plugin
+        working-directory: liquibase-linter-gradle-plugin
+        # The inputs are passed as environment variables, never interpolated in the script
+        run: |
+          if [ "$VALIDATE_ONLY" = "true" ]; then
+            ./gradlew publishPlugins --validate-only --console=plain --stacktrace
+          else
+            ./gradlew publishPlugins --console=plain --stacktrace
+          fi
+        env:
+          VALIDATE_ONLY: ${{ inputs.validateOnly }}
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
