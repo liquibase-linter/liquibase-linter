@@ -9,10 +9,6 @@ on:
       tag:
         description: 'Tag of the release to publish the Gradle plugin of, e.g. 1.2.0'
         required: true
-      validateOnly:
-        description: 'Only validate the publication, without publishing anything'
-        type: boolean
-        default: true
 
 concurrency:
   group: publish-gradle-plugin
@@ -46,14 +42,7 @@ jobs:
 
       - name: Publish the Gradle plugin
         working-directory: liquibase-linter-gradle-plugin
-        # The inputs are passed as environment variables, never interpolated in the script
-        run: |
-          if [ "$VALIDATE_ONLY" = "true" ]; then
-            ./gradlew publishPlugins --validate-only --console=plain --stacktrace
-          else
-            ./gradlew publishPlugins --console=plain --stacktrace
-          fi
+        run: ./gradlew publishPlugins --console=plain --stacktrace
         env:
-          VALIDATE_ONLY: ${{ inputs.validateOnly }}
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
           GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
