@@ -11,6 +11,7 @@
     ":automergeRequireAllStatusChecks",
     ":label(dependencies)"
   ],
+  "prHourlyLimit": 0,
   "packageRules": [
     {
       "matchPackageNames": ["org.liquibase:liquibase-core"],
