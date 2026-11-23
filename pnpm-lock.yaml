@@ -191,8 +191,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       prettier-plugin-java:
-        specifier: 2.11.0
-        version: 2.11.0(prettier@3.10.1)
+        specifier: 2.12.0
+        version: 2.12.0(prettier@3.10.1)
       prettier-plugin-packagejson:
         specifier: 3.1.0
         version: 3.1.0(prettier@3.10.1)
@@ -4408,8 +4408,8 @@ packages:
   prettier-plugin-gherkin@4.0.0:
     resolution: {integrity: sha512-EBDwV1Ou9rG+seoh7jcwZ6sXXyHwsbUks5TeSyrlrLaTdz+/qYvnHuwY8rk7mb6/+M1ZGuY4/SiVc68ybwvJOA==}
 
-  prettier-plugin-java@2.11.0:
-    resolution: {integrity: sha512-pLwm2wHvVvW5eVVLf1cq2orY2ATaIj5ngN8hJ5ZdXYzUHzxrfaZkk2xmu8Mz/duBXAc2xT/cUH5+dK414HQSTw==}
+  prettier-plugin-java@2.12.0:
+    resolution: {integrity: sha512-0uWedEdr2ZUZHyPPCA/L9/cYzuP5X0P8D7Wtfl71Rm6TDvpOxrbk0Htel49/CEAyk/40/XJpb8bUXcvivoRD/A==}
     peerDependencies:
       prettier: ^3.0.0
 
@@ -5247,8 +5247,8 @@ packages:
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
 
-  web-tree-sitter@0.27.0:
-    resolution: {integrity: sha512-XK08gj6RwTMQatAG7uVRP8MunqotL/XC19vHgkSPKmELgbGPBj4ECvB8haHOUnyj6ls2B8t42UTro14zxGgAHg==}
+  web-tree-sitter@0.27.2:
+    resolution: {integrity: sha512-ZRo86GKI4aOSBAqOrPmCtriExI3xIzu1sNw/V6v3b4QGxrEmO19FGwbMNdyhw3MJLAZIw0xAV0oSpqX361eAyQ==}
 
   webpack-bundle-analyzer@4.10.2:
     resolution: {integrity: sha512-vJptkMm9pk5si4Bv922ZbKLV8UTT4zib4FPgXMhgzUny0bfDDkLXAVQs3ly3fS4/TN9ROFtb0NFrm04UXFE/Vw==}
@@ -11197,10 +11197,10 @@ snapshots:
       '@cucumber/messages': 32.3.1
       prettier: 3.10.1
 
-  prettier-plugin-java@2.11.0(prettier@3.10.1):
+  prettier-plugin-java@2.12.0(prettier@3.10.1):
     dependencies:
       prettier: 3.10.1
-      web-tree-sitter: 0.27.0
+      web-tree-sitter: 0.27.2
 
   prettier-plugin-packagejson@3.1.0(prettier@3.10.1):
     dependencies:
@@ -12111,7 +12111,7 @@ snapshots:
 
   web-namespaces@2.0.1: {}
 
-  web-tree-sitter@0.27.0: {}
+  web-tree-sitter@0.27.2: {}
 
   webpack-bundle-analyzer@4.10.2:
     dependencies:
